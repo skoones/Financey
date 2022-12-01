@@ -1,0 +1,44 @@
+openapi: 3.0.3
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+#servers:
+#  - url: 'https'
+paths:
+  /test:
+    get:
+      operationId: testGet
+      description: "test get"
+      responses:
+        "200":
+          description: OK
+
+  /testWithContent:
+    get:
+      operationId: testGetWithContent
+      description: "test get with content"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref:
+                "#/components/schemas/TestDTO"
+      responses:
+        "200":
+          description: OK
+#          content:
+#            "application/json":
+#              schema:
+#                $ref:
+#                  "#/components/schemas/TestDTO"
+
+components:
+  schemas:
+   TestDTO:
+     properties:
+       testMessage:
+         type: string
+
+
+  
