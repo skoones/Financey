@@ -15,9 +15,7 @@ import org.springframework.data.mongodb.repository.MongoRepository
 interface EntryRepository : MongoRepository<Entry, String>, CustomEntryRepository
 
 interface CustomEntryRepository {
-
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
-
 }
 
 class CustomEntryRepositoryImpl(
@@ -28,7 +26,7 @@ class CustomEntryRepositoryImpl(
         val existingEntries = mongoTemplate.find(query, Entry::class.java)
 
         return if (existingEntries.size != ids.size) {
-            Left(ElementDoesNotExistError("Entry with at least one of the ids could not be found."))
+            Left(ElementDoesNotExistError("Entry with at least one of the specified IDs could not be found."))
         } else {
             mongoTemplate.findAllAndRemove(query, Entry::class.java)
             Right(Unit)
