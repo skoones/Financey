@@ -1,9 +1,5 @@
 spring:
-  data:
-    mongodb:
-      host:
-        mongo_db
-      port:
-          27017
-      database:
+  profiles:
+    active:
+      "dev"
 
