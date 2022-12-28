@@ -11,6 +11,7 @@ plugins {
     id("com.rameshkp.openapi-merger-gradle-plugin") version "1.0.4"
     kotlin("jvm") version "1.7.21"
     kotlin("plugin.spring") version "1.7.21"
+    kotlin("kapt") version "1.6.10"
 }
 
 group = "com.financey"
@@ -30,7 +31,6 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-web")
-//	implementation("org.springframework.boot:spring-boot-starter-validation") todo fix?
     implementation("javax.validation:validation-api:2.0.1.Final")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -39,6 +39,9 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.mapstruct:mapstruct:1.5.3.Final")
+    implementation("org.mapstruct:mapstruct-processor:1.5.3.Final")
+    kapt("org.mapstruct:mapstruct-processor:1.5.3.Final")
 }
 
 tasks.withType<KotlinCompile> {
@@ -85,4 +88,9 @@ openApiGenerate {
             "dateLibrary" to "java8"
         )
     )
+}
+
+tasks.register("prepareBackend") {
+    dependsOn("mergeOpenApiFiles")
+    openApiGenerate
 }
