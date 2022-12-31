@@ -86,12 +86,16 @@ openApiGenerate {
     configOptions.set(
         mutableMapOf(
             "interfaceOnly" to "true",
-            "dateLibrary" to "java8"
+            "dateLibrary" to "java8",
+            "useTags" to "true"
         )
     )
 }
 
 tasks.register("prepareBackend") {
-    dependsOn("mergeOpenApiFiles")
-    openApiGenerate
+    dependsOn("clean", "mergeOpenApiFiles",  tasks.openApiGenerate)
 }
+
+tasks.getByName("openApiGenerate").mustRunAfter(tasks.getByName("mergeOpenApiFiles"))
+tasks.getByName("mergeOpenApiFiles").mustRunAfter(tasks.getByName("clean"))
+
