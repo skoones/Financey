@@ -87,7 +87,8 @@ openApiGenerate {
         mutableMapOf(
             "interfaceOnly" to "true",
             "dateLibrary" to "java8",
-            "useTags" to "true"
+            "useTags" to "true",
+            "enumPropertyNaming" to "UPPERCASE"
         )
     )
 }
