@@ -5,6 +5,7 @@ info:
   version: 1.0.0
 servers:
   - url: 'http://localhost:8980/budget' # todo https?
+
 paths:
   /{userId}/budgetSum:
     get:

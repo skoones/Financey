@@ -1,23 +1,20 @@
 openapi: 3.0.3
 info:
-  title: Main view
-  description:  Main view
+  title: Entry schema
+  description: Schema containing API specification related to entries.
   version: 1.0.0
 servers:
   - url: 'http://localhost:8980/entry' # todo https?
-    variables:
-      userId:
-        default: "demo"
-        description: "Id of the currently logged user."
+
 paths:
   /{userId}/add:
     post:
       operationId: addEntry
-      description: "Add entry category to a budget. If the name is null, add a new uncategorized entry."
+      description: "Add a new entry to the budget."
       parameters:
         - name: userId
           in: path
-          description: "Id of the currently logged user"
+          description: "Id of the currently logged user."
           required: true
           schema:
             type: string
@@ -28,45 +25,24 @@ paths:
           application/json:
             schema:
               $ref:
-                '#/components/schemas/EntryCategoryDTO'
+                '#/components/schemas/EntryDTO'
       responses:
         "200":
           description: OK
           # TODO maybe send back the added entry here?
-  /{userId}/categories/delete/{name}:
-    delete:
-      operationId: deleteCategory
-      description: "Delete entry category with a given name."
-      parameters:
-        - in: path
-          name: name
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: userId
-          description: "Id of the currently logged user"
-          required: true
-          schema:
-            type: string
-      tags:
-        - entry
-      responses:
-        "200":
-          description: OK
-  /{userId}/delete/{name}:
+  /{userId}/delete/{id}:
     delete:
       operationId: deleteEntry
-      description: "Delete entry with a given name."
+      description: "Delete entry with a given id."
       parameters:
         - in: path
-          name: name
+          name: id
           required: true
           schema:
             type: string
         - in: path
           name: userId
-          description: "Id of the currently logged user"
+          description: "Id of the currently logged user."
           required: true
           schema:
             type: string
@@ -78,15 +54,6 @@ paths:
 
 components:
   schemas:
-    EntryCategoryDTO:
-      description: "Entry category. A null name means a new uncategorized entry."
-      properties:
-        name:
-          type: string
-        entries:
-          type: array
-          items:
-            $ref: "#/components/schemas/EntryDTO"
     EntryDTO:
       required:
         - value
@@ -94,6 +61,8 @@ components:
         - name
         - budgetName
       properties:
+        id:
+          type: string
         value:
           type: number
         currency:

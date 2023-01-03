@@ -5,10 +5,7 @@ info:
   version: 1.0.0
 servers:
   - url: 'http://localhost:8980/budgets' # todo https?
-    variables:
-      userId:
-        default: "demo"
-        description: "Id of the currently logged user."
+
 paths:
   /{userId}/categories:
     get:
@@ -17,7 +14,7 @@ paths:
       parameters:
         - name: userId # todo is this parameter necessary once authentication is in place?
           in: path
-          description: "Id of the currently logged user"
+          description: "Id of the currently logged user."
           required: true
           schema:
             type: string
@@ -39,7 +36,7 @@ paths:
       parameters:
         - name: userId
           in: path
-          description: "Id of the currently logged user"
+          description: "Id of the currently logged user."
           required: true
           schema:
             type: string
@@ -60,7 +57,7 @@ paths:
       parameters:
         - name: userId
           in: path
-          description: "Id of the currently logged user"
+          description: "Id of the currently logged user."
           required: true
           schema:
             type: string
@@ -82,7 +79,7 @@ paths:
       parameters:
         - name: userId
           in: path
-          description: "Id of the currently logged user"
+          description: "Id of the currently logged user."
           required: true
           schema:
             type: string
@@ -96,14 +93,14 @@ paths:
       responses:
         "200":
           description: OK
-  /{userId}/categories/delete/{name}:
+  /{userId}/categories/delete/{categoryId}:
     delete:
       operationId: deleteCategory
       description: "Delete budget category with a given name."
 
       parameters:
         - in: path
-          name: name
+          name: categoryId
           required: true
           schema:
             type: string
@@ -118,13 +115,13 @@ paths:
       responses:
         "200":
           description: OK
-  /{userId}/delete/{name}:
+  /{userId}/delete/{budgetId}:
     delete:
       operationId: deleteBudget
       description: "Delete budget with a given name."
       parameters:
         - in: path
-          name: name
+          name: budgetId
           required: true
           schema:
             type: string
@@ -165,11 +162,7 @@ components:
           type: string
         name:
           type: string
-        entryCategories:
-          type: array
-          items:
-            $ref: "./EntrySchema.yaml#/components/schemas/EntryCategoryDTO"
-        uncategorizedEntries:
+        budgetEntries:
           type: array
           items:
             $ref: "./EntrySchema.yaml#/components/schemas/EntryDTO"
