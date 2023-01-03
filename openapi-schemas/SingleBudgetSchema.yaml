@@ -4,16 +4,19 @@ info:
   description: Title
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8980/{userId}/budget' # todo https?
-    variables:
-      userId:
-        default: "demo"
-        description: "Id of the currently logged user."
+  - url: 'http://localhost:8980/budget' # todo https?
 paths:
-  /budgetSum:
+  /{userId}/budgetSum:
     get:
       operationId: getBudgetSum
       description: "Get the total sum of budget entry values in a given currency."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged user"
+          required: true
+          schema:
+            type: string
       tags:
         - singleBudget
       requestBody:

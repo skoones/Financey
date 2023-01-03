@@ -4,16 +4,23 @@ info:
   description: Title
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8980/{userId}/budgets' # todo https?
+  - url: 'http://localhost:8980/budgets' # todo https?
     variables:
       userId:
         default: "demo"
         description: "Id of the currently logged user."
 paths:
-  /categories:
+  /{userId}/categories:
     get:
       operationId: getUserCategories
       description: "Get categories for given user."
+      parameters:
+        - name: userId # todo is this parameter necessary once authentication is in place?
+          in: path
+          description: "Id of the currently logged user"
+          required: true
+          schema:
+            type: string
       tags:
         - budget
       responses:
@@ -25,10 +32,17 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/BudgetCategoryDTO"
-  /addCategory:
+  /{userId}/addCategory:
     post:
       operationId: addCategory
       description: "Add a new budget category."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged user"
+          required: true
+          schema:
+            type: string
       tags:
         - budget
       requestBody:
@@ -39,10 +53,17 @@ paths:
       responses:
         "200":
           description: OK
-  /budgetFavorites:
+  /{userId}/budgetFavorites:
     get:
       operationId: recentBudgetList
       description: "Get list of recent budget names."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged user"
+          required: true
+          schema:
+            type: string
       tags:
         - budget
       responses:
@@ -54,10 +75,17 @@ paths:
                 type: array
                 items:
                   type: string
-  /add:
+  /{userId}/add:
     post:
       operationId: addBudget
       description: "Add a new budget to category or a new top-level budget."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged user"
+          required: true
+          schema:
+            type: string
       tags:
         - budget
       requestBody:
@@ -68,13 +96,20 @@ paths:
       responses:
         "200":
           description: OK
-  /categories/delete/{name}:
+  /{userId}/categories/delete/{name}:
     delete:
       operationId: deleteCategory
       description: "Delete budget category with a given name."
+
       parameters:
         - in: path
           name: name
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          description: "Id of the currently logged user"
           required: true
           schema:
             type: string
@@ -83,13 +118,19 @@ paths:
       responses:
         "200":
           description: OK
-  /delete/{name}:
+  /{userId}/delete/{name}:
     delete:
       operationId: deleteBudget
       description: "Delete budget with a given name."
       parameters:
         - in: path
           name: name
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          description: "Id of the currently logged user"
           required: true
           schema:
             type: string

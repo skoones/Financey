@@ -4,16 +4,23 @@ info:
   description:  Main view
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8980/{userId}/entry' # todo https?
+  - url: 'http://localhost:8980/entry' # todo https?
     variables:
       userId:
         default: "demo"
         description: "Id of the currently logged user."
 paths:
-  /add:
+  /{userId}/add:
     post:
       operationId: addEntry
       description: "Add entry category to a budget. If the name is null, add a new uncategorized entry."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged user"
+          required: true
+          schema:
+            type: string
       tags:
         - entry
       requestBody:
@@ -26,7 +33,7 @@ paths:
         "200":
           description: OK
           # TODO maybe send back the added entry here?
-  /categories/delete/{name}:
+  /{userId}/categories/delete/{name}:
     delete:
       operationId: deleteCategory
       description: "Delete entry category with a given name."
@@ -36,18 +43,30 @@ paths:
           required: true
           schema:
             type: string
+        - in: path
+          name: userId
+          description: "Id of the currently logged user"
+          required: true
+          schema:
+            type: string
       tags:
         - entry
       responses:
         "200":
           description: OK
-  /delete/{name}:
+  /{userId}/delete/{name}:
     delete:
       operationId: deleteEntry
       description: "Delete entry with a given name."
       parameters:
         - in: path
           name: name
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          description: "Id of the currently logged user"
           required: true
           schema:
             type: string
