@@ -4,21 +4,18 @@ info:
   description: Title
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8980/budgets' # todo https?
+  - url: 'http://localhost:8980/{userId}/budgets' # todo https?
+    variables:
+      userId:
+        default: "demo"
+        description: "Id of the currently logged user."
 paths:
-  /categories/{userId}:
+  /categories:
     get:
       operationId: getUserCategories
-      description: "Get categories for given user"
+      description: "Get categories for given user."
       tags:
         - budget
-      parameters:
-        - name: userId # todo is this parameter necessary once authentication is in place?
-          in: path
-          description: "Username of the currently logged user"
-          required: true
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -31,7 +28,7 @@ paths:
   /addCategory:
     post:
       operationId: addCategory
-      description: "Add a new budget category"
+      description: "Add a new budget category."
       tags:
         - budget
       requestBody:
@@ -42,19 +39,12 @@ paths:
       responses:
         "200":
           description: OK
-  /{userId}/budgetFavorites:
+  /budgetFavorites:
     get:
       operationId: recentBudgetList
-      description: "Get list of recent budget names"
+      description: "Get list of recent budget names."
       tags:
         - budget
-      parameters:
-        - name: userId # todo is this parameter necessary once authentication is in place?
-          in: path
-          description: "Username of the currently logged user"
-          required: true
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -64,10 +54,10 @@ paths:
                 type: array
                 items:
                   type: string
-  /addBudget:
+  /add:
     post:
       operationId: addBudget
-      description: "Add a new budget"
+      description: "Add a new budget to category or a new top-level budget."
       tags:
         - budget
       requestBody:
@@ -78,13 +68,42 @@ paths:
       responses:
         "200":
           description: OK
+  /categories/delete/{name}:
+    delete:
+      operationId: deleteCategory
+      description: "Delete budget category with a given name."
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+  /delete/{name}:
+    delete:
+      operationId: deleteBudget
+      description: "Delete budget with a given name."
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
 
 
 components:
   schemas:
     BudgetCategoryDTO:
-      required:
-        - name
+      description: "Budget category. A null name means a new uncategorized budget."
       properties:
         name:
           type: string
@@ -101,9 +120,15 @@ components:
         - name
         - isInvestment
       properties:
+        id:
+          type: string
         name:
           type: string
-        budgetEntries:
+        entryCategories:
+          type: array
+          items:
+            $ref: "./EntrySchema.yaml#/components/schemas/EntryCategoryDTO"
+        uncategorizedEntries:
           type: array
           items:
             $ref: "./EntrySchema.yaml#/components/schemas/EntryDTO"

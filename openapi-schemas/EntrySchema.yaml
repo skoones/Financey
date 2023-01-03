@@ -4,12 +4,16 @@ info:
   description:  Main view
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8980/entry' # todo https?
+  - url: 'http://localhost:8980/{userId}/entry' # todo https?
+    variables:
+      userId:
+        default: "demo"
+        description: "Id of the currently logged user."
 paths:
-  /addEntry:
+  /add:
     post:
       operationId: addEntry
-      description: "Add entry to a budget"
+      description: "Add entry category to a budget. If the name is null, add a new uncategorized entry."
       tags:
         - entry
       requestBody:
@@ -17,15 +21,53 @@ paths:
           application/json:
             schema:
               $ref:
-                '#/components/schemas/EntryDTO'
+                '#/components/schemas/EntryCategoryDTO'
       responses:
         "200":
           description: OK
-          # TODO
-
+          # TODO maybe send back the added entry here?
+  /categories/delete/{name}:
+    delete:
+      operationId: deleteCategory
+      description: "Delete entry category with a given name."
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      tags:
+        - entry
+      responses:
+        "200":
+          description: OK
+  /delete/{name}:
+    delete:
+      operationId: deleteEntry
+      description: "Delete entry with a given name."
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      tags:
+        - entry
+      responses:
+        "200":
+          description: OK
 
 components:
   schemas:
+    EntryCategoryDTO:
+      description: "Entry category. A null name means a new uncategorized entry."
+      properties:
+        name:
+          type: string
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/EntryDTO"
     EntryDTO:
       required:
         - value
@@ -36,17 +78,27 @@ components:
         value:
           type: number
         currency:
-          type: string
-          enum: [PLN, EUR, CHF]
+         $ref: "#/components/schemas/Currency"
         name:
           type: string
         entryType:
-          type: string
-          enum:
-            - income
-            - expense
-          default: expense
+          $ref: "#/components/schemas/EntryType"
         budgetName:
          type: string
-
+        date:
+          type: string
+          format: date
+          example: "01-01-2022"
+    Currency:
+      type: string
+      enum:
+        - PLN
+        - EUR
+        - CHF
+    EntryType:
+      type: string
+      default: expense
+      enum:
+        - income
+        - expense
 
