@@ -1,0 +1,121 @@
+openapi: 3.0.3
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8980/budgets' # todo https?
+paths:
+  /categories/{userId}:
+    get:
+      operationId: getUserCategories
+      description: "Get categories for given user"
+      tags:
+        - budget
+      parameters:
+        - name: userId # todo is this parameter necessary once authentication is in place?
+          in: path
+          description: "Username of the currently logged user"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetCategoryDTO"
+  /addCategory:
+    post:
+      operationId: addCategory
+      description: "Add a new budget category"
+      tags:
+        - budget
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetCategoryDTO"
+      responses:
+        "200":
+          description: OK
+  /{userId}/budgetFavorites:
+    get:
+      operationId: recentBudgetList
+      description: "Get list of recent budget names"
+      tags:
+        - budget
+      parameters:
+        - name: userId # todo is this parameter necessary once authentication is in place?
+          in: path
+          description: "Username of the currently logged user"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /addBudget:
+    post:
+      operationId: addBudget
+      description: "Add a new budget"
+      tags:
+        - budget
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetCategoryDTO"
+      responses:
+        "200":
+          description: OK
+
+
+components:
+  schemas:
+    BudgetCategoryDTO:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        subcategories:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetCategoryDTO"
+        budgets:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetDTO"
+    BudgetDTO:
+      required:
+        - name
+        - isInvestment
+      properties:
+        name:
+          type: string
+        budgetEntries:
+          type: array
+          items:
+            $ref: "./EntrySchema.yaml#/components/schemas/EntryDTO"
+        isInvestment:
+          type: boolean
+    UserDTO:
+      properties:
+        userId:
+          type: string
+        password:
+          type: string
+        budgets:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetDTO"

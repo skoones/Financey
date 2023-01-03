@@ -1,0 +1,52 @@
+openapi: 3.0.3
+info:
+  title: Main view
+  description:  Main view
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8980/entry' # todo https?
+paths:
+  /addEntry:
+    post:
+      operationId: addEntry
+      description: "Add entry to a budget"
+      tags:
+        - entry
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/EntryDTO'
+      responses:
+        "200":
+          description: OK
+          # TODO
+
+
+components:
+  schemas:
+    EntryDTO:
+      required:
+        - value
+        - currency
+        - name
+        - budgetName
+      properties:
+        value:
+          type: number
+        currency:
+          type: string
+          enum: [PLN, EUR, CHF]
+        name:
+          type: string
+        entryType:
+          type: string
+          enum:
+            - income
+            - expense
+          default: expense
+        budgetName:
+         type: string
+
+
