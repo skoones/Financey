@@ -8,3 +8,8 @@ spring:
       password: rootpass
       database: financey_db
       auto-index-creation: true
+logging:
+  level:
+    com:
+      financey:
+        DEBUG
