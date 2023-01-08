@@ -35,6 +35,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("javax.servlet:javax.servlet-api:4.0.1") // todo fix??
     implementation ("io.github.microutils:kotlin-logging-jvm:3.0.4")
     compileOnly("org.projectlombok:lombok")
