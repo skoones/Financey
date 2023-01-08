@@ -7,14 +7,36 @@ servers:
   - url: 'http://localhost:8980/budgets' # todo https?
 
 paths:
+  /{userId}/budgets:
+    get:
+      operationId: getUncategorizedBudgets
+      description: "Get budget without an assigned category for a given user."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetDTO"
   /{userId}/categories:
     get:
-      operationId: getUserCategories
+      operationId: getCategories
       description: "Get categories for given user."
       parameters:
-        - name: userId # todo is this parameter necessary once authentication is in place?
+        - name: userId
           in: path
-          description: "Id of the currently logged user."
+          description: "Id of the currently logged in user."
           required: true
           schema:
             type: string
@@ -36,7 +58,7 @@ paths:
       parameters:
         - name: userId
           in: path
-          description: "Id of the currently logged user."
+          description: "Id of the currently logged in user."
           required: true
           schema:
             type: string
@@ -57,7 +79,7 @@ paths:
       parameters:
         - name: userId
           in: path
-          description: "Id of the currently logged user."
+          description: "Id of the currently logged in user."
           required: true
           schema:
             type: string
@@ -79,7 +101,7 @@ paths:
       parameters:
         - name: userId
           in: path
-          description: "Id of the currently logged user."
+          description: "Id of the currently logged in user."
           required: true
           schema:
             type: string
@@ -106,7 +128,7 @@ paths:
             type: string
         - in: path
           name: userId
-          description: "Id of the currently logged user"
+          description: "Id of the currently logged in user"
           required: true
           schema:
             type: string
@@ -127,7 +149,7 @@ paths:
             type: string
         - in: path
           name: userId
-          description: "Id of the currently logged user"
+          description: "Id of the currently logged in user"
           required: true
           schema:
             type: string
@@ -142,7 +164,12 @@ components:
   schemas:
     BudgetCategoryDTO:
       description: "Budget category. A null name means a new uncategorized budget."
+      required:
+        - userId
+        - name
       properties:
+        userId:
+          type: string
         name:
           type: string
         subcategories:
@@ -168,13 +195,4 @@ components:
             $ref: "./EntrySchema.yaml#/components/schemas/EntryDTO"
         isInvestment:
           type: boolean
-    UserDTO:
-      properties:
-        userId:
-          type: string
-        password:
-          type: string
-        budgets:
-          type: array
-          items:
-            $ref: "#/components/schemas/BudgetDTO"
+

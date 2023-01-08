@@ -7,20 +7,14 @@ servers:
   - url: 'http://localhost:8980/entry' # todo https?
 
 paths:
-  /{userId}/add:
+  /add:
     post:
       operationId: addEntry
       description: "Add a new entry to the budget."
-      parameters:
-        - name: userId
-          in: path
-          description: "Id of the currently logged user."
-          required: true
-          schema:
-            type: string
       tags:
         - entry
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -30,22 +24,18 @@ paths:
         "200":
           description: OK
           # TODO maybe send back the added entry here?
-  /{userId}/delete/{id}:
+  /delete/{ids}:
     delete:
-      operationId: deleteEntry
-      description: "Delete entry with a given id."
+      operationId: deleteEntriesByIds
+      description: "Delete entry with given ids."
       parameters:
         - in: path
-          name: id
+          name: ids
           required: true
           schema:
-            type: string
-        - in: path
-          name: userId
-          description: "Id of the currently logged user."
-          required: true
-          schema:
-            type: string
+            type: array
+            items:
+              type: string
       tags:
         - entry
       responses:
@@ -59,25 +49,27 @@ components:
         - value
         - currency
         - name
-        - budgetName
+        - userId
       properties:
         id:
           type: string
         value:
           type: number
         currency:
-         $ref: "#/components/schemas/Currency"
+         $ref: "#/components/schemas/EntryCurrency"
         name:
           type: string
         entryType:
           $ref: "#/components/schemas/EntryType"
-        budgetName:
+        userId:
+          type: string
+        budgetId:
          type: string
         date:
           type: string
           format: date
-          example: "01-01-2022"
-    Currency:
+          example: "2022-01-01"
+    EntryCurrency:
       type: string
       enum:
         - PLN
