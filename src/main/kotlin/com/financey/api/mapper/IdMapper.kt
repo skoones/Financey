@@ -1,4 +1,4 @@
-package com.financey.api.controller.mapper
+package com.financey.api.mapper
 
 import org.bson.types.ObjectId
 import org.mapstruct.Named

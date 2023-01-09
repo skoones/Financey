@@ -1,4 +1,4 @@
-package com.financey.api.controller.mapper
+package com.financey.api.mapper
 
 import com.financey.domain.model.Entry
 import org.mapstruct.Mapper

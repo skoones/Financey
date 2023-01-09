@@ -23,7 +23,11 @@ paths:
       responses:
         "200":
           description: OK
-          # TODO maybe send back the added entry here?
+          content:
+            text/plain:
+              schema:
+                type: string
+
   /delete/{ids}:
     delete:
       operationId: deleteEntriesByIds
