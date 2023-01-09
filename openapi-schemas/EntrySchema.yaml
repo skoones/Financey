@@ -1,0 +1,88 @@
+openapi: 3.0.3
+info:
+  title: Entry schema
+  description: Schema containing API specification related to entries.
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8980/entry' # todo https?
+
+paths:
+  /add:
+    post:
+      operationId: addEntry
+      description: "Add a new entry to the budget."
+      tags:
+        - entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/EntryDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /delete/{ids}:
+    delete:
+      operationId: deleteEntriesByIds
+      description: "Delete entry with given ids."
+      parameters:
+        - in: path
+          name: ids
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      tags:
+        - entry
+      responses:
+        "200":
+          description: OK
+
+components:
+  schemas:
+    EntryDTO:
+      required:
+        - value
+        - currency
+        - name
+        - userId
+      properties:
+        id:
+          type: string
+        value:
+          type: number
+        currency:
+         $ref: "#/components/schemas/EntryCurrency"
+        name:
+          type: string
+        entryType:
+          $ref: "#/components/schemas/EntryType"
+        userId:
+          type: string
+        budgetId:
+         type: string
+        date:
+          type: string
+          format: date
+          example: "2022-01-01"
+    EntryCurrency:
+      type: string
+      enum:
+        - PLN
+        - EUR
+        - CHF
+    EntryType:
+      type: string
+      default: expense
+      enum:
+        - income
+        - expense
+

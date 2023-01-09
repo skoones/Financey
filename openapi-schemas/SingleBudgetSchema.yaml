@@ -1,0 +1,46 @@
+openapi: 3.0.3
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8980/budget' # todo https?
+
+paths:
+  /{userId}/budgetSum:
+    get:
+      operationId: getBudgetSum
+      description: "Get the total sum of budget entry values in a given currency."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user"
+          required: true
+          schema:
+            type: string
+      tags:
+        - singleBudget
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currency:
+                  $ref: "./EntrySchema.yaml#/components/schemas/EntryCurrency"
+                budgetId: # todo maybe use budget name, since it has to be unique per user anyway?
+                  type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sum:
+                    type: number
+
+
+
+  

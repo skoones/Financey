@@ -1,0 +1,34 @@
+openapi: 3.0.3
+info:
+  title: User schema
+  description: Schema with user-related operations.
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8980/users' # todo https?
+paths:
+  /add:
+    post:
+      operationId: addUser
+      description: "Add a new user account to the database"
+      tags:
+        - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDTO"
+      responses:
+        "200":
+          description: OK
+  # todo update/delete
+
+components:
+  schemas:
+    UserDTO:
+      required:
+        - userId
+      properties:
+        userId:
+          type: string
+        password:
+          type: string

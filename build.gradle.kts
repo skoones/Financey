@@ -35,7 +35,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("javax.servlet:javax.servlet-api:4.0.1") // todo fix??
+    implementation ("io.github.microutils:kotlin-logging-jvm:3.0.4")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -62,40 +64,24 @@ sourceSets {
     }
 }
 
-openApiMerger {
-    inputDirectory.set(file(openApiSchemasDirectory))
-    output {
-        directory.set(file(mergedOpenApiDirectory))
-        fileName.set("schemas-merged")
-        fileExtension.set("yaml")
-    }
+val openapiSpecs = mapOf(
+    "mainView" to "openapi-schemas/EntrySchema.yaml",
+    "budgetsView" to "openapi-schemas/BudgetsSchema.yaml",
+    "singleBudgetView" to "openapi-schemas/SingleBudgetSchema.yaml"
+)
+openapiSpecs.forEach {
+    tasks.create("openApiGenerate-${it.key}", org.openapitools.generator.gradle.plugin.tasks.GenerateTask::class) {
+        generatorName.set("kotlin-spring")
+        inputSpec.set("$rootDir/${it.value}")
+        outputDir.set(generatedOpenApiBackendDirectory)
 
-    openApi {
-        openApiVersion.set("3.0.3")
-        info {
-            title.set("Open API Merger")
-            version.set("0.0")
-        }
-    }
-}
-
-openApiGenerate {
-    generatorName.set("kotlin-spring")
-    inputSpec.set("$mergedOpenApiDirectory/schemas-merged.yaml")
-    outputDir.set(generatedOpenApiBackendDirectory)
-    configOptions.set(
-        mutableMapOf(
+        configOptions.set(mapOf(
             "interfaceOnly" to "true",
             "dateLibrary" to "java8",
-            "useTags" to "true"
-        )
-    )
+            "useTags" to "true",
+            "enumPropertyNaming" to "UPPERCASE"
+        ))
+        sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).java.srcDir("$buildDir/generated/openapi/src")
+    }
 }
-
-tasks.register("prepareBackend") {
-    dependsOn("clean", "mergeOpenApiFiles",  tasks.openApiGenerate)
-}
-
-tasks.getByName("openApiGenerate").mustRunAfter(tasks.getByName("mergeOpenApiFiles"))
-tasks.getByName("mergeOpenApiFiles").mustRunAfter(tasks.getByName("clean"))
-
+tasks.register("openApiGenerateAll") { dependsOn(openapiSpecs.keys.map { "openApiGenerate-$it" }, "clean") }
