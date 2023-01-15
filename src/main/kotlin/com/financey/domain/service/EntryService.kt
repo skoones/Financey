@@ -14,10 +14,10 @@ class EntryService(
 ) {
     private val logger = KotlinLogging.logger {}
 
-    fun save(entry: Entry): Entry {
-        val savedEntry = entryRepository.save(entry)
+    suspend fun save(entry: Entry): Either<Nothing, Entry> = either {
+        val savedEntry = entryRepository.save(entry).bind()
         logger.debug { "Saved $savedEntry to database" }
-        return savedEntry
+        savedEntry
     }
 
     suspend fun delete(ids: List<String>): Either<PersistenceError, Unit> = either {

@@ -1,8 +1,6 @@
 package com.financey.api.controller
 
-import arrow.core.Either.Left
 import arrow.core.Either.Right
-import com.financey.api.HttpErrorCodeUtils.findHttpCodeForPersistenceError
 import com.financey.api.mapper.EntryDtoMapper
 import com.financey.domain.service.EntryService
 import kotlinx.coroutines.runBlocking
@@ -20,14 +18,18 @@ class EntryController(
 
     override fun addEntry(entryDTO: EntryDTO): ResponseEntity<String> {
         val entry = entryDtoMapper.fromDto(entryDTO)
-        val savedEntry = entryService.save(entry)
+        val savedEntry = runBlocking {
+            entryService.save(entry)
+        } as Right
 
-        return ResponseEntity.ok("Entry saved with id ${savedEntry.id}.")
+        return ResponseEntity.ok("Entry saved with id ${savedEntry.value.id}.")
     }
 
     override fun updateEntry(entryDTO: EntryDTO): ResponseEntity<String> {
        val entry = entryDtoMapper.fromDto(entryDTO)
-       entryService.save(entry)
+       runBlocking {
+           entryService.save(entry)
+       }
 
        return ResponseEntity.ok("Updated entry with id ${entry.id}.")
     }
@@ -36,10 +38,8 @@ class EntryController(
         val deletionResult = runBlocking {
             entryService.delete(ids)
         }
-        return when (deletionResult) {
-            is Left -> findHttpCodeForPersistenceError(deletionResult)
-            is Right -> ResponseEntity.ok("Entries with given ids have been deleted")
-        }
+        return deletionResult.fold({ throw it },
+            { ResponseEntity.ok("Entries with given ids have been deleted") })
     }
 
 }

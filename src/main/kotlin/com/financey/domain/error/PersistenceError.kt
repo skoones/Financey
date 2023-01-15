@@ -1,6 +1,8 @@
 package com.financey.domain.error
 
-sealed interface PersistenceError
+sealed class PersistenceError : Exception()
 
-@JvmInline
-value class ElementDoesNotExistError(val message: String?) : PersistenceError
+class ElementDoesNotExistError(override val message: String?) : PersistenceError()
+
+class DataAccessError(override val message: String?) : PersistenceError()
+
