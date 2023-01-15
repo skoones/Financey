@@ -10,7 +10,7 @@ paths:
   /{userId}/budgets:
     get:
       operationId: getUncategorizedBudgets
-      description: "Get budget without an assigned category for a given user."
+      description: "Get budgets without an assigned category for a given user."
       parameters:
         - name: userId
           in: path
@@ -29,6 +29,15 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/BudgetDTO"
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /{userId}/categories:
     get:
       operationId: getCategories
@@ -51,17 +60,10 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/BudgetCategoryDTO"
-  /{userId}/addCategory:
+  /addCategory:
     post:
       operationId: addCategory
       description: "Add a new budget category."
-      parameters:
-        - name: userId
-          in: path
-          description: "Id of the currently logged in user."
-          required: true
-          schema:
-            type: string
       tags:
         - budget
       requestBody:
@@ -72,6 +74,10 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /{userId}/budgetFavorites:
     get:
       operationId: recentBudgetList
@@ -94,31 +100,49 @@ paths:
                 type: array
                 items:
                   type: string
-  /{userId}/add:
+  /add:
     post:
       operationId: addBudget
       description: "Add a new budget to category or a new top-level budget."
-      parameters:
-        - name: userId
-          in: path
-          description: "Id of the currently logged in user."
-          required: true
-          schema:
-            type: string
       tags:
         - budget
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BudgetCategoryDTO"
+              $ref: "#/components/schemas/BudgetDTO"
       responses:
         "200":
           description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /update:
+    post:
+      operationId: updateBudget
+      description: "Update given budget."
+      tags:
+        - budget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/BudgetDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /{userId}/categories/delete/{categoryId}:
     delete:
       operationId: deleteCategory
-      description: "Delete budget category with a given name."
+      description: "Delete budget category with a given id."
       parameters:
         - in: path
           name: categoryId
@@ -136,27 +160,31 @@ paths:
       responses:
         "200":
           description: OK
-  /{userId}/delete/{budgetId}:
+          content:
+            text/plain:
+              schema:
+                type: string
+  /delete/{budgetIds}:
     delete:
-      operationId: deleteBudget
-      description: "Delete budget with a given name."
+      operationId: deleteBudgetsByIds
+      description: "Delete budgets with given ids."
       parameters:
         - in: path
-          name: budgetId
+          name: budgetIds
           required: true
           schema:
-            type: string
-        - in: path
-          name: userId
-          description: "Id of the currently logged in user"
-          required: true
-          schema:
-            type: string
+            type: array
+            items:
+              type: string
       tags:
         - budget
       responses:
         "200":
           description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /{userId}/budgetSum:
     get:
       operationId: getBudgetSum
@@ -214,7 +242,8 @@ components:
     BudgetDTO:
       required:
         - name
-        - isInvestment
+        - investment
+        - userId
       properties:
         id:
           type: string
@@ -224,6 +253,8 @@ components:
           type: array
           items:
             $ref: "./EntrySchema.yaml#/components/schemas/EntryDTO"
-        isInvestment:
+        investment:
           type: boolean
+        userId:
+          type: string
 
