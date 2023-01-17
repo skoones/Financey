@@ -1,6 +1,6 @@
 package com.financey.domain.error
 
-sealed class PersistenceError : Exception()
+sealed class PersistenceError : FinanceyError()
 
 class ElementDoesNotExistError(override val message: String?) : PersistenceError()
 

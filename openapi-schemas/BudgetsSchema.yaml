@@ -6,6 +6,7 @@ info:
 servers:
   - url: 'http://localhost:8980/budget' # todo https?
 
+#  TODO make separate API for budget categories
 paths:
   /{userId}/budgets:
     get:
@@ -60,6 +61,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/BudgetCategoryDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /addCategory:
     post:
       operationId: addCategory
@@ -67,6 +74,7 @@ paths:
       tags:
         - budget
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -78,10 +86,30 @@ paths:
             text/plain:
               schema:
                 type: string
+  /updateCategory:
+    post:
+      operationId: updateBudgetCategory
+      description: "Update given budget category."
+      tags:
+        - budget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/BudgetCategoryDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /{userId}/budgetFavorites:
     get:
-      operationId: recentBudgetList
-      description: "Get list of recent budget names."
+      operationId: getBudgetFavorites
+      description: "Get list of budgets marked by user as favorite."
       parameters:
         - name: userId
           in: path
@@ -99,7 +127,13 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
+                 $ref: "#/components/schemas/BudgetDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /add:
     post:
       operationId: addBudget
@@ -139,16 +173,18 @@ paths:
             text/plain:
               schema:
                 type: string
-  /{userId}/categories/delete/{categoryId}:
+  /{userId}/categories/delete/{categoryIds}:
     delete:
-      operationId: deleteCategory
-      description: "Delete budget category with a given id."
+      operationId: deleteBudgetCategories
+      description: "Delete budget categories with given ids."
       parameters:
         - in: path
-          name: categoryId
+          name: categoryIds
           required: true
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: path
           name: userId
           description: "Id of the currently logged in user"
@@ -186,7 +222,7 @@ paths:
               schema:
                 type: string
   /{userId}/budgetSum:
-    get:
+    post:
       operationId: getBudgetSum
       description: "Get the total sum of budget entry values in a given currency."
       parameters:
@@ -196,28 +232,25 @@ paths:
           required: true
           schema:
             type: string
+        - name: budgetId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: currency
+          in: query
+          required: true
+          schema:
+            $ref: "./EntrySchema.yaml#/components/schemas/EntryCurrency"
       tags:
-        - singleBudget
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                currency:
-                  $ref: "./EntrySchema.yaml#/components/schemas/EntryCurrency"
-                budgetId: # todo maybe use budget name, since it has to be unique per user anyway?
-                  type: string
+        - budget
       responses:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
-                type: object
-                properties:
-                  sum:
-                    type: number
+                type: number
 
 components:
   schemas:
@@ -227,6 +260,8 @@ components:
         - userId
         - name
       properties:
+        id:
+          type: string
         userId:
           type: string
         name:
@@ -257,4 +292,3 @@ components:
           type: boolean
         userId:
           type: string
-

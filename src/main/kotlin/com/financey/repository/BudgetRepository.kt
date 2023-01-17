@@ -21,6 +21,7 @@ interface CustomBudgetRepository {
     fun save(budget: Budget): Either<Nothing, Budget>
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
     fun getAllByUserId(userId: String): Either<PersistenceError, List<Budget>>
+    fun getAllByIds(ids: List<String>): Either<PersistenceError, List<Budget>>
 }
 
 class CustomBudgetRepositoryImpl(
@@ -43,6 +44,16 @@ class CustomBudgetRepositoryImpl(
 
     override fun getAllByUserId(userId: String): Either<PersistenceError, List<Budget>> {
         val query = Query().addCriteria(Budget::userId isEqualTo userId)
+
+        return try {
+            Right(mongoTemplate.find(query, Budget::class.java))
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
+        }
+    }
+
+    override fun getAllByIds(ids: List<String>): Either<PersistenceError, List<Budget>> {
+        val query = Query().addCriteria(Budget::id inValues ids)
 
         return try {
             Right(mongoTemplate.find(query, Budget::class.java))
