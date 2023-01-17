@@ -50,7 +50,7 @@ paths:
   /delete/{ids}:
     delete:
       operationId: deleteEntriesByIds
-      description: "Delete entry with given ids."
+      description: "Delete entries with given ids."
       parameters:
         - in: path
           name: ids
