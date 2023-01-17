@@ -5,7 +5,6 @@ import com.financey.api.mapper.BudgetDtoMapper
 import com.financey.domain.context.BudgetSumContext
 import com.financey.domain.service.BudgetCategoryService
 import com.financey.domain.service.BudgetService
-import com.financey.domain.service.UserService
 import kotlinx.coroutines.runBlocking
 import org.openapitools.api.BudgetApi
 import org.openapitools.model.BudgetCategoryDTO
@@ -20,7 +19,6 @@ import java.math.BigDecimal
 class BudgetController(
     @Autowired private val budgetService: BudgetService,
     @Autowired private val budgetCategoryService: BudgetCategoryService,
-    @Autowired private val userService: UserService,
     @Autowired private val budgetDtoMapper: BudgetDtoMapper
 ) : BudgetApi {
 
@@ -66,7 +64,7 @@ class BudgetController(
 
     override fun getBudgetFavorites(userId: String): ResponseEntity<List<BudgetDTO>> {
         val userFavoriteBudgets = runBlocking {
-            userService.getFavoriteBudgetsByUserId(userId)
+            budgetService.getFavoriteBudgetsByUserId(userId)
         }
 
         return userFavoriteBudgets.fold(
