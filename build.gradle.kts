@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val generatedOpenApiBackendDirectory by extra("$buildDir/openapi/generated")
+val generatedOpenApiFrontendDirectory by extra("$rootDir/financey-frontend/src/generated")
 val mergedOpenApiDirectory by extra("$buildDir/openapi/merged")
 val openApiSchemasDirectory by extra("$projectDir/openapi-schemas")
 
@@ -71,6 +72,7 @@ val openapiSpecs = mapOf(
 )
 openapiSpecs.forEach {
     tasks.create("openApiGenerate-${it.key}", org.openapitools.generator.gradle.plugin.tasks.GenerateTask::class) {
+        group = "openapi backend"
         generatorName.set("kotlin-spring")
         inputSpec.set("$rootDir/${it.value}")
         outputDir.set(generatedOpenApiBackendDirectory)
@@ -84,4 +86,27 @@ openapiSpecs.forEach {
         sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).java.srcDir("$buildDir/generated/openapi/src")
     }
 }
-tasks.register("openApiGenerateAll") { dependsOn(openapiSpecs.keys.map { "openApiGenerate-$it" }, "clean") }
+tasks.register("openApiGenerateBackend") {
+    dependsOn(openapiSpecs.keys.map { "openApiGenerate-$it" }, "clean")
+    group = "openapi backend"
+}
+
+openapiSpecs.forEach {
+    tasks.create("openApiGenerateFrontend-${it.key}", org.openapitools.generator.gradle.plugin.tasks.GenerateTask::class) {
+        group = "openapi frontend"
+        generatorName.set("typescript-angular")
+        inputSpec.set("$rootDir/${it.value}")
+        outputDir.set(generatedOpenApiFrontendDirectory)
+
+        configOptions.set(mapOf(
+            "modelPropertyNaming" to "camelCase",
+            "enumPropertyNaming" to "UPPERCASE"
+        ))
+//        sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).java.srcDir("$buildDir/generated/openapi/src")
+    }
+}
+
+tasks.register("openApiGenerateFrontend") {
+    dependsOn(openapiSpecs.keys.map { "openApiGenerateFrontend-$it" }, "clean")
+    group = "openapi frontend"
+}
