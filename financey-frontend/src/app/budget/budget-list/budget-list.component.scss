@@ -1,0 +1,5 @@
+@use '@angular/material' as mat;
+@import '../../../styles.scss';
+.list-header-row {
+  background-color: mat.get-color-from-palette($my-primary)
+}
