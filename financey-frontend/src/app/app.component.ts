@@ -8,7 +8,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  favoriteBudgetsTitle: string = FAVORITE_BUDGETS_TITLE
+  favoriteBudgetsTitle: string = FAVORITE_BUDGETS_TITLE;
+  recentBudgetsTitle: string = RECENT_BUDGETS_TITLE;
 }
 
-const FAVORITE_BUDGETS_TITLE: string = "Favorite budgets"
+// TODO extract to constants file
+const FAVORITE_BUDGETS_TITLE: string = "Favorite budgets";
+const RECENT_BUDGETS_TITLE: string = "Recent budgets";
