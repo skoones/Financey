@@ -8,6 +8,20 @@
       <mat-label>Name</mat-label>
       <input matInput placeholder="Name your entry">
     </mat-form-field>
+    <div class=".entry-currency-input">
+      <mat-form-field class="amount-input">
+        <mat-label>Amount</mat-label>
+        <input matInput placeholder="Insert entry amount">
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="currency-input">
+        <mat-label>Currency</mat-label>
+        <mat-select [(ngModel)]="selectedCurrency" name="food">
+          <mat-option *ngFor="let currency of currencyEnum | keyvalue" [value]="currency.value">
+            {{currency.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
     <mat-form-field appearance="fill">
       <mat-label>Entry date</mat-label>
       <input matInput [matDatepicker]="picker">
@@ -22,7 +36,7 @@
       <input type="text"
              placeholder="Pick a budget or create a new one"
              matInput
-             [formControl]="myControl"
+             [formControl]="budgetListControl"
              [matAutocomplete]="auto">
       <mat-autocomplete #auto="matAutocomplete">
         <mat-option *ngFor="let budget of filteredBudgets | async" [value]="budget.name">
