@@ -107,4 +107,16 @@ components:
       enum:
         - income
         - expense
+    InvestmentEntryDTO:
+      required:
+        - entry
+        - volume
+        - marketPriceAtOperation
+      properties:
+        entry:
+          $ref: "#/components/schemas/EntryDTO"
+        volume:
+          type: integer
+        marketPriceAtOperation:
+          type: number
 
