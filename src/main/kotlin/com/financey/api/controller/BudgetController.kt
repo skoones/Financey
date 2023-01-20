@@ -12,10 +12,12 @@ import org.openapitools.model.BudgetDTO
 import org.openapitools.model.EntryCurrency
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigDecimal
 
 @RestController
+@CrossOrigin
 class BudgetController(
     @Autowired private val budgetService: BudgetService,
     @Autowired private val budgetCategoryService: BudgetCategoryService,
