@@ -18,6 +18,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatToolbarModule} from "@angular/material/toolbar";
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     MatIconModule,
     MatCheckboxModule,
     ReactiveFormsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatToolbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
