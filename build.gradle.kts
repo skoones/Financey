@@ -91,22 +91,16 @@ tasks.register("openApiGenerateBackend") {
     group = "openapi backend"
 }
 
-openapiSpecs.forEach {
-    tasks.create("openApiGenerateFrontend-${it.key}", org.openapitools.generator.gradle.plugin.tasks.GenerateTask::class) {
-        group = "openapi frontend"
-        generatorName.set("typescript-angular")
-        inputSpec.set("$rootDir/${it.value}")
-        outputDir.set(generatedOpenApiFrontendDirectory)
-
-        configOptions.set(mapOf(
-            "modelPropertyNaming" to "camelCase",
-            "enumPropertyNaming" to "UPPERCASE"
-        ))
-//        sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).java.srcDir("$buildDir/generated/openapi/src")
-    }
-}
-
-tasks.register("openApiGenerateFrontend") {
-    dependsOn(openapiSpecs.keys.map { "openApiGenerateFrontend-$it" }, "clean")
+tasks.create("openApiGenerateFrontend", org.openapitools.generator.gradle.plugin.tasks.GenerateTask::class) {
     group = "openapi frontend"
+    generatorName.set("typescript-angular")
+    inputSpec.set("$openApiSchemasDirectory/AllComponentsSchema.yaml")
+    outputDir.set(generatedOpenApiBackendDirectory)
+    outputDir.set(generatedOpenApiFrontendDirectory)
+
+    configOptions.set(mapOf(
+        "modelPropertyNaming" to "camelCase",
+        "enumPropertyNaming" to "UPPERCASE",
+    ))
+    dependsOn("clean")
 }
