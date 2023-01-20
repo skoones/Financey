@@ -10,7 +10,7 @@ paths:
   /add:
     post:
       operationId: addEntry
-      description: "Add a new entry to the budget."
+      description: "Add a new entry."
       tags:
         - entry
       requestBody:
@@ -27,11 +27,30 @@ paths:
             text/plain:
               schema:
                 type: string
-
+  /update:
+    post:
+      operationId: updateEntry
+      description: "Update given entry."
+      tags:
+        - entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/EntryDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /delete/{ids}:
     delete:
       operationId: deleteEntriesByIds
-      description: "Delete entry with given ids."
+      description: "Delete entries with given ids."
       parameters:
         - in: path
           name: ids
@@ -45,7 +64,10 @@ paths:
       responses:
         "200":
           description: OK
-
+          content:
+            text/plain:
+              schema:
+                type: string
 components:
   schemas:
     EntryDTO:

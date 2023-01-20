@@ -1,5 +1,8 @@
 package com.financey.domain.service
 
+import arrow.core.Either
+import arrow.core.continuations.either
+import com.financey.domain.error.PersistenceError
 import com.financey.domain.model.Entry
 import com.financey.repository.EntryRepository
 import mu.KotlinLogging
@@ -11,14 +14,15 @@ class EntryService(
 ) {
     private val logger = KotlinLogging.logger {}
 
-    fun save(entry: Entry): Entry {
-        val savedEntry = entryRepository.save(entry)
+    suspend fun save(entry: Entry): Either<Nothing, Entry> = either {
+        val savedEntry = entryRepository.save(entry).bind()
         logger.debug { "Saved $savedEntry to database" }
-        return savedEntry
+        savedEntry
     }
 
-    fun delete(ids: List<String>) {
-        entryRepository.deleteAllById(ids)
+    suspend fun delete(ids: List<String>): Either<PersistenceError, Unit> = either {
+        entryRepository.deleteByIds(ids).bind()
+        logger.debug { "Removed entries with ids $ids from database" }
     }
 
 }
