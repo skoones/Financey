@@ -93,4 +93,16 @@ components:
           type: string
         password:
           type: string
+    InvestmentEntryDTO:
+      required:
+        - entry
+        - volume
+        - marketPriceAtOperation
+      properties:
+        entry:
+          $ref: "#/components/schemas/EntryDTO"
+        volume:
+          type: integer
+        marketPriceAtOperation:
+          type: number
 
