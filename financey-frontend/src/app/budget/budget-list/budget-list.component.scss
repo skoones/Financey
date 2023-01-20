@@ -3,3 +3,6 @@
 .list-header-row {
   background-color: mat.get-color-from-palette($my-primary)
 }
+mat-table {
+  height: 100%
+}
