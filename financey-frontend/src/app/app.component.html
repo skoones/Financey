@@ -1,0 +1,19 @@
+<section>
+    <p>
+      <mat-toolbar color="primary">
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span>Financey</span>
+      </mat-toolbar>
+    </p>
+  <div class="container">
+
+
+    <app-budget-list [title]="favoriteBudgetsTitle"></app-budget-list>
+    <app-add-entry></app-add-entry>
+    <app-budget-list [title]="recentBudgetsTitle"></app-budget-list>
+  </div>
+
+</section>
+
