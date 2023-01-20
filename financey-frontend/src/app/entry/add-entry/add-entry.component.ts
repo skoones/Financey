@@ -15,6 +15,9 @@ export class AddEntryComponent {
   budgets: BudgetDTO[] = []
   selectedCurrency: EntryCurrency = EntryCurrency.PLN;
   currencyEnum = EntryCurrency; // todo what is this type?
+  isInvestment: Boolean = false;
+  isSell: Boolean = false;
+  isBuy: Boolean = true;
 
   constructor(private budgetService: BudgetService) {}
 
