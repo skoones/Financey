@@ -292,3 +292,5 @@ components:
           type: boolean
         userId:
           type: string
+        categoryId:
+          type: string
