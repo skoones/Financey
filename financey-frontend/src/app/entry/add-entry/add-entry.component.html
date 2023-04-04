@@ -2,11 +2,32 @@
   <mat-card-header>
     <mat-card-title>Add entry</mat-card-title>
   </mat-card-header>
-  <mat-checkbox class="example-margin">Investment entry</mat-checkbox>
+  <mat-checkbox class="example-margin" [(ngModel)]="isInvestment">Investment entry</mat-checkbox>
   <form>
     <mat-form-field>
       <mat-label>Name</mat-label>
       <input matInput placeholder="Name your entry">
+    </mat-form-field>
+    <div class=".entry-currency-input">
+      <mat-form-field class="amount-input">
+        <mat-label>Amount</mat-label>
+        <input matInput placeholder="Insert entry amount">
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="currency-input">
+        <mat-label>Currency</mat-label>
+        <mat-select [(ngModel)]="selectedCurrency" name="food">
+          <mat-option *ngFor="let currency of currencyEnum | keyvalue" [value]="currency.value">
+            {{currency.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <mat-checkbox class="example-margin" *ngIf="isInvestment" [(ngModel)]="isBuy">Buy</mat-checkbox>
+    <mat-checkbox class="example-margin" *ngIf="isInvestment" [(ngModel)]="isSell">Sell</mat-checkbox>
+<!--    todo validate if this is an int/make this a special input field for ints -->
+    <mat-form-field *ngIf="isInvestment" [ngClass]="{'mat-form-field': isInvestment}">
+      <mat-label>Volume</mat-label>
+      <input matInput placeholder="Number of purchased/sold units">
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Entry date</mat-label>
@@ -22,7 +43,7 @@
       <input type="text"
              placeholder="Pick a budget or create a new one"
              matInput
-             [formControl]="myControl"
+             [formControl]="budgetListControl"
              [matAutocomplete]="auto">
       <mat-autocomplete #auto="matAutocomplete">
         <mat-option *ngFor="let budget of filteredBudgets | async" [value]="budget.name">

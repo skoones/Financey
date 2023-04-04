@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {map, Observable, startWith} from "rxjs";
 import {BudgetService} from "../../../generated/api/budget.service";
-import {BudgetDTO} from "../../../generated";
+import {BudgetDTO, EntryCurrency} from "../../../generated";
 
 @Component({
   selector: 'app-add-entry',
@@ -10,14 +10,19 @@ import {BudgetDTO} from "../../../generated";
   styleUrls: ['./add-entry.component.scss']
 })
 export class AddEntryComponent {
-  myControl = new FormControl('');
-  filteredBudgets: Observable<BudgetDTO[]> | undefined; // todo ??
+  budgetListControl = new FormControl('');
+  filteredBudgets: Observable<BudgetDTO[]> | undefined; // todo how to initialize this?
   budgets: BudgetDTO[] = []
+  selectedCurrency: EntryCurrency = EntryCurrency.PLN;
+  currencyEnum = EntryCurrency; // todo what is this type?
+  isInvestment: Boolean = false;
+  isSell: Boolean = false;
+  isBuy: Boolean = true;
 
   constructor(private budgetService: BudgetService) {}
 
   ngOnInit(): void {
-    this.filteredBudgets = this.myControl.valueChanges.pipe(
+    this.filteredBudgets = this.budgetListControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || '')),
     );
