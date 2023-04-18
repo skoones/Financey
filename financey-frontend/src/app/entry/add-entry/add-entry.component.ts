@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import {FormControl} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 import {map, Observable, startWith} from "rxjs";
 import {BudgetService} from "../../../generated/api/budget.service";
-import {BudgetDTO, EntryCurrency} from "../../../generated";
+import {BudgetDTO, EntryCurrency, EntryType} from "../../../generated";
 
 @Component({
   selector: 'app-add-entry',
@@ -10,18 +10,29 @@ import {BudgetDTO, EntryCurrency} from "../../../generated";
   styleUrls: ['./add-entry.component.scss']
 })
 export class AddEntryComponent {
+  EntryType = EntryType;
   budgetListControl = new FormControl('');
   filteredBudgets: Observable<BudgetDTO[]> | undefined; // todo how to initialize this?
   budgets: BudgetDTO[] = []
   selectedCurrency: EntryCurrency = EntryCurrency.PLN;
-  currencyEnum = EntryCurrency; // todo what is this type?
+  currencyEnum = EntryCurrency;
   isInvestment: Boolean = false;
   isSell: Boolean = false;
   isBuy: Boolean = true;
 
-  constructor(private budgetService: BudgetService) {}
+
+  form: FormGroup | undefined;
+  entryTypeControl: FormControl | undefined;
+
+  entryType: EntryType;
+  isChecked = false;
+
+  constructor(private budgetService: BudgetService) {
+    this.entryType = EntryType.EXPENSE
+  }
 
   ngOnInit(): void {
+
     this.filteredBudgets = this.budgetListControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || '')),
@@ -36,6 +47,8 @@ export class AddEntryComponent {
 
     return this.budgets.filter(budget => budget.name.toLowerCase().includes(filterValue));
   }
-
+  changeEntryType(value: EntryType) {
+    this.entryType = value
+  }
 
 }

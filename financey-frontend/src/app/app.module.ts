@@ -20,12 +20,14 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatSelectModule} from "@angular/material/select";
+import { IncomeCheckboxComponent } from './entry/add-entry/income-checkbox/income-checkbox.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BudgetListComponent,
-    AddEntryComponent
+    AddEntryComponent,
+    IncomeCheckboxComponent
   ],
   imports: [
     BrowserModule,
