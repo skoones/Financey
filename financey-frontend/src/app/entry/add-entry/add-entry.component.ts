@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl} from "@angular/forms";
 import {map, Observable, startWith} from "rxjs";
 import {BudgetService} from "../../../generated/api/budget.service";
 import {BudgetDTO, EntryCurrency, EntryType} from "../../../generated";
@@ -12,27 +12,20 @@ import {BudgetDTO, EntryCurrency, EntryType} from "../../../generated";
 export class AddEntryComponent {
   EntryType = EntryType;
   budgetListControl = new FormControl('');
-  filteredBudgets: Observable<BudgetDTO[]> | undefined; // todo how to initialize this?
+  filteredBudgets: Observable<BudgetDTO[]>;
   budgets: BudgetDTO[] = []
   selectedCurrency: EntryCurrency = EntryCurrency.PLN;
   currencyEnum = EntryCurrency;
   isInvestment: Boolean = false;
   isSell: Boolean = false;
   isBuy: Boolean = true;
-
-
-  form: FormGroup | undefined;
-  entryTypeControl: FormControl | undefined;
-
-  entryType: EntryType;
-  isChecked = false;
+  entryType: EntryType = EntryType.EXPENSE
 
   constructor(private budgetService: BudgetService) {
-    this.entryType = EntryType.EXPENSE
+    this.filteredBudgets = new Observable<BudgetDTO[]>()
   }
 
   ngOnInit(): void {
-
     this.filteredBudgets = this.budgetListControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || '')),
