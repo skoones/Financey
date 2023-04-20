@@ -1,0 +1,29 @@
+<mat-drawer-container [hasBackdrop]="true">
+  <mat-drawer #drawer class="financey-sidenav" mode="side">
+    <mat-nav-list >
+      <!--      todo placeholder links -->
+      <a mat-list-item routerLink="/home">Home</a>
+      <a mat-list-item routerLink="/budgets">All budgets</a>
+      <a mat-list-item routerLink="/budgets/single/">Single budget</a> <!-- todo router link -->
+      <a mat-list-item routerLink="/analysis">Analysis</a>
+      <a mat-list-item routerLink="/investments">Investments</a>
+    </mat-nav-list>
+  </mat-drawer>
+  <router-outlet></router-outlet>
+  <p>
+    <mat-toolbar color="primary">
+      <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="drawer.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>Financey</span>
+    </mat-toolbar>
+  </p>
+
+  <div class="container">
+    <app-budget-list [title]="favoriteBudgetsTitle"></app-budget-list>
+    <app-add-entry></app-add-entry>
+    <app-budget-list [title]="recentBudgetsTitle"></app-budget-list>
+  </div>
+
+</mat-drawer-container>
+

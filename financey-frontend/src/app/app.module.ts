@@ -21,13 +21,19 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatSelectModule} from "@angular/material/select";
 import { IncomeCheckboxComponent } from './entry/add-entry/income-checkbox/income-checkbox.component';
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatListModule} from "@angular/material/list";
+import { AllBudgetsViewComponent } from './budget/all-budgets-view/all-budgets-view.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BudgetListComponent,
     AddEntryComponent,
-    IncomeCheckboxComponent
+    IncomeCheckboxComponent,
+    AllBudgetsViewComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +53,9 @@ import { IncomeCheckboxComponent } from './entry/add-entry/income-checkbox/incom
     MatAutocompleteModule,
     MatToolbarModule,
     FormsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSidenavModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]
