@@ -3,8 +3,321 @@ info:
   title: My API
   version: 1.0.0
 paths:
-  /:
+  /budget/{userId}/budgets:
     get:
+      operationId: getUncategorizedBudgets
+      description: "Get budgets without an assigned category for a given user."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetDTO"
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /budget/{userId}/categories:
+    get:
+      operationId: getCategories
+      description: "Get categories for given user."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetCategoryDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /budget/addCategory:
+    post:
+      operationId: addCategory
+      description: "Add a new budget category."
+      tags:
+        - budget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetCategoryDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /budget/updateCategory:
+    post:
+      operationId: updateBudgetCategory
+      description: "Update given budget category."
+      tags:
+        - budget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/BudgetCategoryDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /budget/{userId}/budgetFavorites:
+    get:
+      operationId: getBudgetFavorites
+      description: "Get list of budgets marked by user as favorite."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /budget/add:
+    post:
+      operationId: addBudget
+      description: "Add a new budget to category or a new top-level budget."
+      tags:
+        - budget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /budget/update:
+    post:
+      operationId: updateBudget
+      description: "Update given budget."
+      tags:
+        - budget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/BudgetDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /budget/{userId}/categories/delete/{categoryIds}:
+    delete:
+      operationId: deleteBudgetCategories
+      description: "Delete budget categories with given ids."
+      parameters:
+        - in: path
+          name: categoryIds
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+        - in: path
+          name: userId
+          description: "Id of the currently logged in user"
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /budget/delete/{budgetIds}:
+    delete:
+      operationId: deleteBudgetsByIds
+      description: "Delete budgets with given ids."
+      parameters:
+        - in: path
+          name: budgetIds
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /budget/{userId}/budgetSum:
+    post:
+      operationId: getBudgetSum
+      description: "Get the total sum of budget entry values in a given currency."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user"
+          required: true
+          schema:
+            type: string
+        - name: budgetId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: currency
+          in: query
+          required: true
+          schema:
+            $ref: "./EntrySchema.yaml#/components/schemas/EntryCurrency"
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: number
+  /entry/add:
+    post:
+      operationId: addEntry
+      description: "Add a new entry."
+      tags:
+        - entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/EntryDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /entry/update:
+    post:
+      operationId: updateEntry
+      description: "Update given entry."
+      tags:
+        - entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/EntryDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /entry/delete/{ids}:
+    delete:
+      operationId: deleteEntriesByIds
+      description: "Delete entries with given ids."
+      parameters:
+        - in: path
+          name: ids
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      tags:
+        - entry
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /users/add:
+    post:
+      operationId: addUser
+      description: "Add a new user account to the database"
+      tags:
+        - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDTO"
       responses:
         "200":
           description: OK
