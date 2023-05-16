@@ -1,13 +1,5 @@
-<mat-drawer-container [hasBackdrop]="true" >
-  <p>
-    <mat-toolbar color="primary">
-      <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="toggleSidenav()" >
-        <mat-icon>menu</mat-icon>
-      </button>
-      <span>Financey</span>
-    </mat-toolbar>
-  </p>
-  <mat-drawer #drawer class="financey-sidenav" mode="side" [opened]="sidenavToggle" (closedStart)="toggleSidenav()">
+<mat-drawer-container [hasBackdrop]="true">
+  <mat-drawer #drawer class="financey-sidenav" mode="side">
     <mat-nav-list >
       <!--      todo placeholder links -->
       <a mat-list-item routerLink="/home">Home</a>

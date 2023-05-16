@@ -22,8 +22,8 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <mat-checkbox class="example-margin" *ngIf="isInvestment" [(ngModel)]="isBuy">Buy</mat-checkbox>
-    <mat-checkbox class="example-margin" *ngIf="isInvestment" [(ngModel)]="isSell">Sell</mat-checkbox>
+    <mat-checkbox class="example-margin" *ngIf="isInvestment" [(ngModel)]="isBuy" [disabled]="!!isSell" name="buy">Buy</mat-checkbox>
+    <mat-checkbox class="example-margin" *ngIf="isInvestment" [(ngModel)]="isSell" [disabled]="!!isBuy" name="sell">Sell</mat-checkbox>
 <!--    todo validate if this is an int/make this a special input field for ints -->
     <mat-form-field *ngIf="isInvestment" [ngClass]="{'mat-form-field': isInvestment}">
       <mat-label>Volume</mat-label>
@@ -38,6 +38,7 @@
       </mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
+    <income-checkbox *ngIf="!isInvestment" (valueChangeEvent) = "changeEntryType($event)"></income-checkbox>
     <mat-form-field appearance="fill">
       <mat-label>Budget</mat-label>
       <input type="text"

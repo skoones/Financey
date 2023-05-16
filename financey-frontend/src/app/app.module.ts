@@ -20,12 +20,20 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatSelectModule} from "@angular/material/select";
+import { IncomeCheckboxComponent } from './entry/add-entry/income-checkbox/income-checkbox.component';
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatListModule} from "@angular/material/list";
+import { AllBudgetsViewComponent } from './budget/all-budgets-view/all-budgets-view.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BudgetListComponent,
-    AddEntryComponent
+    AddEntryComponent,
+    IncomeCheckboxComponent,
+    AllBudgetsViewComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +53,9 @@ import {MatSelectModule} from "@angular/material/select";
     MatAutocompleteModule,
     MatToolbarModule,
     FormsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSidenavModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

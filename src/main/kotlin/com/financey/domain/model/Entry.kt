@@ -15,7 +15,7 @@ data class Entry(
     val currency: EntryCurrency,
     val name: String,
     val userId: String,
-    val budgetId: String?,
-    val entryType: EntryType?,
-    val date: LocalDate?
+    val budgetId: String? = null,
+    val entryType: EntryType? = EntryType.EXPENSE,
+    val date: LocalDate? = null
 )

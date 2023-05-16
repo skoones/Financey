@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27018
+      authentication-database: admin
+      username: rootuser
+      password: rootpass
+      database: financey_db
+      auto-index-creation: true

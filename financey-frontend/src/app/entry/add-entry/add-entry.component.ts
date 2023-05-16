@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {map, Observable, startWith} from "rxjs";
 import {BudgetService} from "../../../generated/api/budget.service";
-import {BudgetDTO, EntryCurrency} from "../../../generated";
+import {BudgetDTO, EntryCurrency, EntryType} from "../../../generated";
 
 @Component({
   selector: 'app-add-entry',
@@ -10,16 +10,20 @@ import {BudgetDTO, EntryCurrency} from "../../../generated";
   styleUrls: ['./add-entry.component.scss']
 })
 export class AddEntryComponent {
+  EntryType = EntryType;
   budgetListControl = new FormControl('');
-  filteredBudgets: Observable<BudgetDTO[]> | undefined; // todo how to initialize this?
+  filteredBudgets: Observable<BudgetDTO[]>;
   budgets: BudgetDTO[] = []
   selectedCurrency: EntryCurrency = EntryCurrency.PLN;
-  currencyEnum = EntryCurrency; // todo what is this type?
+  currencyEnum = EntryCurrency;
   isInvestment: Boolean = false;
   isSell: Boolean = false;
   isBuy: Boolean = true;
+  entryType: EntryType = EntryType.EXPENSE
 
-  constructor(private budgetService: BudgetService) {}
+  constructor(private budgetService: BudgetService) {
+    this.filteredBudgets = new Observable<BudgetDTO[]>()
+  }
 
   ngOnInit(): void {
     this.filteredBudgets = this.budgetListControl.valueChanges.pipe(
@@ -36,6 +40,8 @@ export class AddEntryComponent {
 
     return this.budgets.filter(budget => budget.name.toLowerCase().includes(filterValue));
   }
-
+  changeEntryType(value: EntryType) {
+    this.entryType = value
+  }
 
 }

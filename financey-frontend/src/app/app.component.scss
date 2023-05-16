@@ -1,12 +1,7 @@
 @use '@angular/material' as mat;
 @import '../styles.scss';
-.container {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  height: 100vh;
-}
 
-mat-toolbar {
-  background-color: mat.get-color-from-palette($my-primary)
+.financey-sidenav {
+  padding: 20px;
+  background-color: mat.get-color-from-palette($my-theme);
 }

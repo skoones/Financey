@@ -10,6 +10,14 @@ services:
       - 27017:27017
     volumes:
       - data:/data/db
+  mongodb-integration-tests:
+    image: 'mongo:4.4.3'
+    container_name: mongodb_integration
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: rootuser
+      MONGO_INITDB_ROOT_PASSWORD: rootpass
+    ports:
+      - 27018:27017
   mongo-express: # todo for development purposes, remove later
     image: mongo-express
     container_name: mongo_express_container
@@ -20,6 +28,17 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: rootuser
       ME_CONFIG_MONGODB_ADMINPASSWORD: rootpass
       ME_CONFIG_MONGODB_SERVER: mongodb_container
+  mongo-express-test: # todo for development purposes, remove later
+    image: mongo-express
+    container_name: mongo_express_integration
+    restart: always
+    ports:
+      - 8082:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: rootuser
+      ME_CONFIG_MONGODB_ADMINPASSWORD: rootpass
+      ME_CONFIG_MONGODB_SERVER: mongodb_integration
+
 
 networks:
   default:
