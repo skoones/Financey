@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
+import { Router } from '@angular/router';
 import {BudgetDTO} from "../../../generated";
-import {BudgetService} from "../../../generated/api/budget.service";
+import {BudgetService} from "../../../generated";
+
 
 @Component({
   selector: 'app-budget-list',
@@ -12,7 +14,7 @@ export class BudgetListComponent implements OnInit {
   @Input() title = "Budgets"
   displayedColumns = ['name'];
 
-  constructor(private budgetService: BudgetService) {}
+  constructor(private budgetService: BudgetService, private router: Router) {}
 
   budgets: BudgetDTO[] = []
 
@@ -21,6 +23,11 @@ export class BudgetListComponent implements OnInit {
     this.budgetService.getUncategorizedBudgets("demo").subscribe(data => {
       this.budgets = data;
     });
+  }
+
+  chooseBudget(budget: BudgetDTO) {
+    console.log(`budget ${budget.name} clicked`) // todo
+    this.router.navigate([`/budgets/single/${budget.id}`])
   }
 
 }
