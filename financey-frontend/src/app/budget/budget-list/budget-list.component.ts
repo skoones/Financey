@@ -26,8 +26,7 @@ export class BudgetListComponent implements OnInit {
   }
 
   chooseBudget(budget: BudgetDTO) {
-    console.log(`budget ${budget.name} clicked`) // todo
-    this.router.navigate([`/budgets/single/${budget.id}`])
+    this.router.navigate([`/budgets/single/${budget.id}`]);
   }
 
 }
