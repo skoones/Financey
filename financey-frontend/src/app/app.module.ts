@@ -25,7 +25,7 @@ import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatListModule} from "@angular/material/list";
 import { AllBudgetsViewComponent } from './budget/all-budgets-view/all-budgets-view.component';
 import { HomeComponent } from './home/home.component';
-import { SingleBudgetHomeViewComponent } from './budget/single-budget-home-view/single-budget-home-view.component';
+import { SingleBudgetMainViewComponent } from './budget/single-budget-main-view/single-budget-main-view.component';
 import { SingleBudgetViewComponent } from './budget/single-budget-view/single-budget-view.component';
 
 @NgModule({
@@ -36,7 +36,7 @@ import { SingleBudgetViewComponent } from './budget/single-budget-view/single-bu
     IncomeCheckboxComponent,
     AllBudgetsViewComponent,
     HomeComponent,
-    SingleBudgetHomeViewComponent,
+    SingleBudgetMainViewComponent,
     SingleBudgetViewComponent
   ],
   imports: [

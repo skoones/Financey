@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SingleBudgetHomeViewComponent } from './single-budget-home-view.component';
+import { SingleBudgetMainViewComponent } from './single-budget-main-view.component';
 
 describe('SingleBudgetViewComponent', () => {
-  let component: SingleBudgetHomeViewComponent;
-  let fixture: ComponentFixture<SingleBudgetHomeViewComponent>;
+  let component: SingleBudgetMainViewComponent;
+  let fixture: ComponentFixture<SingleBudgetMainViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SingleBudgetHomeViewComponent ]
+      declarations: [ SingleBudgetMainViewComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SingleBudgetHomeViewComponent);
+    fixture = TestBed.createComponent(SingleBudgetMainViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
