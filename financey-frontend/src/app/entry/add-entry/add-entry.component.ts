@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import {FormControl} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
 import {map, Observable, startWith} from "rxjs";
 import {BudgetService} from "../../../generated/api/budget.service";
-import {BudgetDTO, EntryCurrency, EntryType} from "../../../generated";
+import {BudgetDTO, EntryCurrency, EntryDTO, EntryService, EntryType} from "../../../generated";
 
 @Component({
   selector: 'app-add-entry',
@@ -10,18 +10,30 @@ import {BudgetDTO, EntryCurrency, EntryType} from "../../../generated";
   styleUrls: ['./add-entry.component.scss']
 })
 export class AddEntryComponent {
-  EntryType = EntryType;
+  // todo FormGroup as in chatgpt answer
+  entryFormGroup: FormGroup;
   budgetListControl = new FormControl('');
   filteredBudgets: Observable<BudgetDTO[]>;
   budgets: BudgetDTO[] = []
-  selectedCurrency: EntryCurrency = EntryCurrency.PLN;
   currencyEnum = EntryCurrency;
   isInvestment: Boolean = false;
-  isSell: Boolean = false;
-  isBuy: Boolean = true;
+  isSellControl: FormControl;
+  isBuyControl: FormControl;
   entryType: EntryType = EntryType.EXPENSE
+  constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private entryService: EntryService) {
+    this.isBuyControl = new FormControl(true)
+    this.isSellControl = new FormControl({value: false, disabled: true})
 
-  constructor(private budgetService: BudgetService) {
+    this.entryFormGroup = this.formBuilder.group(({
+      name: ['', Validators.required],
+      amount: ['', Validators.required], // todo async validator for value validation
+      entryDate: [new Date(), Validators.required],
+      currency: [EntryCurrency.PLN, Validators.required],
+      budgetForEntry: [''],
+      volume: [1, Validators.required],
+      isBuy: this.isBuyControl,
+      isSell: this.isSellControl
+    }))
     this.filteredBudgets = new Observable<BudgetDTO[]>()
   }
 
@@ -42,6 +54,28 @@ export class AddEntryComponent {
   }
   changeEntryType(value: EntryType) {
     this.entryType = value
+  }
+
+  addEntry() {
+      const formGroupData = this.entryFormGroup.value;
+      const entryDto: EntryDTO = {
+        value: formGroupData.amount,
+        currency: formGroupData.currency,
+        name: formGroupData.name,
+        entryType: this.entryType,
+        userId: "demo", // todo placeholder userId
+        // todo optionally budgetId
+        date: formGroupData.entryDate
+      }
+      console.log(entryDto)
+      this.entryService.addEntry(entryDto).subscribe()
+  }
+
+  submitEntryForm() {
+    if (this.entryFormGroup.valid) {
+      this.addEntry();
+    }
+    // todo some snackbar about invalid form?
   }
 
 }
