@@ -3,6 +3,7 @@ import {FormBuilder, FormControl, FormGroup, NgForm, Validators} from "@angular/
 import {map, Observable, startWith} from "rxjs";
 import {BudgetService} from "../../../generated/api/budget.service";
 import {BudgetDTO, EntryCurrency, EntryDTO, EntryService, EntryType} from "../../../generated";
+import {BUDGETS_PATH} from "../../constants/path-constants";
 
 @Component({
   selector: 'app-add-entry',
@@ -10,16 +11,18 @@ import {BudgetDTO, EntryCurrency, EntryDTO, EntryService, EntryType} from "../..
   styleUrls: ['./add-entry.component.scss']
 })
 export class AddEntryComponent {
-  // todo FormGroup as in chatgpt answer
   entryFormGroup: FormGroup;
-  budgetListControl = new FormControl('');
+  budgetListControl = new FormControl();
   filteredBudgets: Observable<BudgetDTO[]>;
   budgets: BudgetDTO[] = []
   currencyEnum = EntryCurrency;
   isInvestment: Boolean = false;
   isSellControl: FormControl;
   isBuyControl: FormControl;
-  entryType: EntryType = EntryType.EXPENSE
+  entryType: EntryType = EntryType.EXPENSE;
+
+  userId: string = "demo"; // todo placeholder userId
+
   constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private entryService: EntryService) {
     this.isBuyControl = new FormControl(true)
     this.isSellControl = new FormControl({value: false, disabled: true})
@@ -33,7 +36,6 @@ export class AddEntryComponent {
       volume: [1, Validators.required],
       isBuy: this.isBuyControl,
       isSell: this.isSellControl,
-      budget: ['']
     }))
     this.filteredBudgets = new Observable<BudgetDTO[]>()
   }
@@ -43,7 +45,7 @@ export class AddEntryComponent {
       startWith(''),
       map(value => this._filter(value || '')),
     );
-    this.budgetService.getUncategorizedBudgets("demo").subscribe(data => { // todo placeholder userId
+    this.budgetService.getUncategorizedBudgets(this.userId).subscribe(data => {
       this.budgets = data;
     });
   }
@@ -57,16 +59,15 @@ export class AddEntryComponent {
     this.entryType = value
   }
 
-  addEntry() {
+  async addEntry() {
       const formGroupData = this.entryFormGroup.value;
       const entryDto: EntryDTO = {
         value: formGroupData.amount,
         currency: formGroupData.currency,
         name: formGroupData.name,
         entryType: this.entryType,
-        userId: "demo", // todo placeholder userId,
-        budgetId: "6461f9306e1cef0556956f10", // todo real value xd
-        // budgetId: this.budgetService.getByName(formGroupData.budget), // todo
+        userId: this.userId,
+        budgetId: await this.findBudgetIdFromName(this.budgetListControl.value),
         date: formGroupData.entryDate
       }
       console.log(entryDto)
@@ -75,9 +76,18 @@ export class AddEntryComponent {
 
   submitEntryForm() {
     if (this.entryFormGroup.valid) {
-      this.addEntry();
+      this.addEntry().then(() => {});
     }
     // todo some snackbar about invalid form?
+  }
+
+  async findBudgetIdFromName(budgetName: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      this.budgetService.getByName(budgetName)
+        .subscribe((budget: BudgetDTO) => {
+          resolve(<string>budget.id);
+        })
+    })
   }
 
 }

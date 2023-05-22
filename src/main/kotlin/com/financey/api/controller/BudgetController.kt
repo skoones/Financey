@@ -6,6 +6,7 @@ import com.financey.domain.context.BudgetSumContext
 import com.financey.domain.service.BudgetCategoryService
 import com.financey.domain.service.BudgetService
 import kotlinx.coroutines.runBlocking
+import org.apache.coyote.Response
 import org.openapitools.api.BudgetApi
 import org.openapitools.model.BudgetCategoryDTO
 import org.openapitools.model.BudgetDTO
@@ -72,6 +73,17 @@ class BudgetController(
         return userFavoriteBudgets.fold(
             { throw it },
             { budgets -> ResponseEntity.ok(budgets.map { budgetDtoMapper.toDto(it) })}
+        )
+    }
+
+    override fun getByName(name: String): ResponseEntity<BudgetDTO> {
+        val budgetResult = runBlocking {
+            budgetService.getByName(name)
+        }
+
+        return budgetResult.fold(
+            { throw it },
+            { budget -> ResponseEntity.ok(budgetDtoMapper.toDto(budget))}
         )
     }
 
