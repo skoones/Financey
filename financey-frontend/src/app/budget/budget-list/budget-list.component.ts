@@ -26,7 +26,7 @@ export class BudgetListComponent implements OnInit {
   }
 
   chooseBudget(budget: BudgetDTO) {
-    this.router.navigate([`/budgets/single/${budget.id}`]);
+    this.router.navigate([`/budgets/single/${budget.id}`],  { queryParams: { budget: JSON.stringify(budget) } });
   }
 
 }

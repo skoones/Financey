@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import {SINGLE_BUDGET_PATH} from "../../constants/path-constants";
+import {BudgetDTO} from "../../../generated";
 
 @Component({
   selector: 'app-single-budget-view',
@@ -10,12 +11,20 @@ import {SINGLE_BUDGET_PATH} from "../../constants/path-constants";
 })
 export class SingleBudgetViewComponent {
 
-  budgetId?: string | null;
+  budget?: BudgetDTO | undefined;
 
   constructor(private route: ActivatedRoute, private location: Location) { }
+
   ngOnInit() {
     this.location.replaceState(SINGLE_BUDGET_PATH);
-    this.budgetId = this.route.snapshot.paramMap.get('id');
+    this.initBudget();
+  }
+
+  initBudget() {
+    const budgetParam = this.route.snapshot.queryParams['budget'];
+    if (budgetParam) {
+      this.budget = JSON.parse(budgetParam);
+    }
   }
 
 }

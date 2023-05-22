@@ -32,7 +32,8 @@ export class AddEntryComponent {
       budgetForEntry: [''],
       volume: [1, Validators.required],
       isBuy: this.isBuyControl,
-      isSell: this.isSellControl
+      isSell: this.isSellControl,
+      budget: ['']
     }))
     this.filteredBudgets = new Observable<BudgetDTO[]>()
   }
@@ -63,8 +64,9 @@ export class AddEntryComponent {
         currency: formGroupData.currency,
         name: formGroupData.name,
         entryType: this.entryType,
-        userId: "demo", // todo placeholder userId
-        // todo optionally budgetId
+        userId: "demo", // todo placeholder userId,
+        budgetId: "6461f9306e1cef0556956f10", // todo real value xd
+        // budgetId: this.budgetService.getByName(formGroupData.budget), // todo
         date: formGroupData.entryDate
       }
       console.log(entryDto)

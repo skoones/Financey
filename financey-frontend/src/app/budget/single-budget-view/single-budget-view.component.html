@@ -1,3 +1,4 @@
 <div class="full-screen-container">
-  <p>single budget with id {{this.budgetId}}</p>
+  <app-entry-list [budget]="this.budget"></app-entry-list>
+  <p>single budget with id {{this.budget?.id}}</p>
 </div>

@@ -68,6 +68,37 @@ paths:
             text/plain:
               schema:
                 type: string
+  /{budgetId}/entries:
+    get:
+      operationId: getEntriesByBudgetId
+      description: "Get entries for budget with the given id."
+      parameters:
+        - name: budgetId
+          in: path
+          description: "Id of the budget."
+          required: true
+          schema:
+            type: string
+      tags:
+        - entry
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EntryDTO"
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
 components:
   schemas:
     EntryDTO:

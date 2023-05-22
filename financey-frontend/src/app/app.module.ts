@@ -27,6 +27,7 @@ import { AllBudgetsViewComponent } from './budget/all-budgets-view/all-budgets-v
 import { HomeComponent } from './home/home.component';
 import { SingleBudgetMainViewComponent } from './budget/single-budget-main-view/single-budget-main-view.component';
 import { SingleBudgetViewComponent } from './budget/single-budget-view/single-budget-view.component';
+import { EntryListComponent } from './entry/entry-list/entry-list.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { SingleBudgetViewComponent } from './budget/single-budget-view/single-bu
     AllBudgetsViewComponent,
     HomeComponent,
     SingleBudgetMainViewComponent,
-    SingleBudgetViewComponent
+    SingleBudgetViewComponent,
+    EntryListComponent
   ],
   imports: [
     BrowserModule,
