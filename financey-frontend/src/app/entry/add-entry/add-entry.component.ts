@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {map, Observable, startWith} from "rxjs";
-import {BudgetService} from "../../../generated/api/budget.service";
-import {BudgetDTO, EntryCurrency, EntryDTO, EntryService, EntryType} from "../../../generated";
-import {BUDGETS_PATH} from "../../constants/path-constants";
+import {BudgetService} from "../../../generated";
+import {BudgetDTO, EntryCurrency, EntryDTO, EntryService, EntryType, InvestmentEntryDTO} from "../../../generated";
 
 @Component({
   selector: 'app-add-entry',
@@ -65,13 +64,36 @@ export class AddEntryComponent {
         value: formGroupData.amount,
         currency: formGroupData.currency,
         name: formGroupData.name,
-        entryType: this.entryType,
+        entryType: this.isInvestment ? this.mapIsBuyToEntryType(this.isBuyControl.value) : this.entryType,
         userId: this.userId,
         budgetId: await this.findBudgetIdFromName(this.budgetListControl.value),
         date: formGroupData.entryDate
       }
-      console.log(entryDto)
-      this.entryService.addEntry(entryDto).subscribe()
+
+      if (this.isInvestment) {
+        const investmentEntryDto: InvestmentEntryDTO = {
+          entry: entryDto,
+          volume: formGroupData.volume,
+          marketPriceAtOperation: this.getMarketPriceAtOperation(formGroupData.amount, formGroupData.volume)
+        }
+
+        this.entryService.addInvestmentEntry(investmentEntryDto).subscribe()
+      } else {
+        this.entryService.addEntry(entryDto).subscribe()
+      }
+
+  }
+
+  private mapIsBuyToEntryType(isBuy: boolean): EntryType {
+    if (isBuy) {
+      return EntryType.EXPENSE;
+    } else {
+      return EntryType.INCOME;
+    }
+  }
+
+  private getMarketPriceAtOperation(amount: number, volume: number): number {
+    return amount / volume;
   }
 
   submitEntryForm() {
@@ -82,7 +104,7 @@ export class AddEntryComponent {
   }
 
   async findBudgetIdFromName(budgetName: string): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string>((resolve) => {
       this.budgetService.getByName(budgetName)
         .subscribe((budget: BudgetDTO) => {
           resolve(<string>budget.id);

@@ -27,6 +27,26 @@ paths:
             text/plain:
               schema:
                 type: string
+  /investment/add:
+    post:
+      operationId: addInvestmentEntry
+      description: "Add a new investment entry."
+      tags:
+        - entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/InvestmentEntryDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /update:
     post:
       operationId: updateEntry
