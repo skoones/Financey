@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {map, Observable, startWith} from "rxjs";
 import {BudgetService} from "../../../generated";
 import {BudgetDTO, EntryCurrency, EntryDTO, EntryService, EntryType, InvestmentEntryDTO} from "../../../generated";
@@ -23,7 +24,8 @@ export class AddEntryComponent {
 
   userId: string = "demo"; // todo placeholder userId
 
-  constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private entryService: EntryService) {
+  constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private entryService: EntryService,
+              private formSnackBar: MatSnackBar) {
     this.isBuyControl = new FormControl(true)
     this.isSellControl = new FormControl({value: false, disabled: true})
 
@@ -99,9 +101,13 @@ export class AddEntryComponent {
 
   submitEntryForm() {
     if (this.entryFormGroup.valid) {
-      this.addEntry().then(() => {});
+      this.addEntry().then(() => {
+      });
+    } else {
+      this.formSnackBar.open('Please fill out all required fields.', 'Close', {
+        duration: 5000,
+      });
     }
-    // todo some snackbar about invalid form?
   }
 
   async findBudgetIdFromName(budgetName: string): Promise<string> {

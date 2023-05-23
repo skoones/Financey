@@ -28,6 +28,7 @@ import { HomeComponent } from './home/home.component';
 import { SingleBudgetMainViewComponent } from './budget/single-budget-main-view/single-budget-main-view.component';
 import { SingleBudgetViewComponent } from './budget/single-budget-view/single-budget-view.component';
 import { EntryListComponent } from './entry/entry-list/entry-list.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { EntryListComponent } from './entry/entry-list/entry-list.component';
     MatNativeDateModule,
     MatIconModule,
     MatCheckboxModule,
+    MatSnackBarModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
     MatToolbarModule,
