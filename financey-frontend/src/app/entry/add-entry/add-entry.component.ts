@@ -3,6 +3,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {map, Observable, startWith} from "rxjs";
 import {BudgetService} from "../../../generated";
 import {BudgetDTO, EntryCurrency, EntryDTO, EntryService, EntryType, InvestmentEntryDTO} from "../../../generated";
+import {amountValidator} from "../../validators/amount-validator";
 
 @Component({
   selector: 'app-add-entry',
@@ -28,7 +29,7 @@ export class AddEntryComponent {
 
     this.entryFormGroup = this.formBuilder.group(({
       name: ['', Validators.required],
-      amount: ['', Validators.required], // todo async validator for value validation
+      amount: ['', Validators.required, amountValidator()],
       entryDate: [new Date(), Validators.required],
       currency: [EntryCurrency.PLN, Validators.required],
       budgetForEntry: [''],
