@@ -67,4 +67,15 @@ class EntryController(
         )
     }
 
+    override fun getInvestmentEntriesByBudgetId(budgetId: String): ResponseEntity<List<InvestmentEntryDTO>> {
+        val entriesResult = runBlocking {
+            investmentEntryService.getAllByBudgetId(budgetId)
+        }
+
+        return entriesResult.fold(
+            { throw it },
+            { entries -> ResponseEntity.ok(entries.map { entryDtoMapper.toInvestmentDto(it) })}
+        )
+    }
+
 }

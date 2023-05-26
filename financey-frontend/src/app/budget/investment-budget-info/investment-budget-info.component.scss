@@ -1,0 +1,21 @@
+@use '@angular/material' as mat;
+@import '../../../styles.scss';
+.compact-info-container {
+  width: 350px;
+  margin: 10px;
+  display: flex;
+  align-items: flex-start;
+  padding: 8px;
+  background-color: mat.get-color-from-palette($my-primary);
+  color: white;
+  border-radius: 4px;
+}
+
+mat-icon {
+  margin-right: 15px;
+}
+
+span {
+  font-weight: bold; /* Apply bold font weight to the span */
+  font-size: 16px;
+}

@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import {Component} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {Location} from '@angular/common';
 import {SINGLE_BUDGET_PATH} from "../../constants/path-constants";
 import {BudgetDTO} from "../../../generated";
 
@@ -11,9 +11,10 @@ import {BudgetDTO} from "../../../generated";
 })
 export class SingleBudgetViewComponent {
 
-  budget?: BudgetDTO | undefined;
+  budget?: BudgetDTO;
 
-  constructor(private route: ActivatedRoute, private location: Location) { }
+  constructor(private route: ActivatedRoute, private location: Location) {
+  }
 
   ngOnInit() {
     this.location.replaceState(SINGLE_BUDGET_PATH);

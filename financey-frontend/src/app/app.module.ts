@@ -29,6 +29,10 @@ import { SingleBudgetMainViewComponent } from './budget/single-budget-main-view/
 import { SingleBudgetViewComponent } from './budget/single-budget-view/single-budget-view.component';
 import { EntryListComponent } from './entry/entry-list/entry-list.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { EntryDetailsComponent } from './entry/entry-details/entry-details.component';
+import { InvestmentBudgetInfoComponent } from './budget/investment-budget-info/investment-budget-info.component';
+import { InvestmentEntryDetailsComponent } from './entry/investment-entry-details/investment-entry-details.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +44,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     HomeComponent,
     SingleBudgetMainViewComponent,
     SingleBudgetViewComponent,
-    EntryListComponent
+    EntryListComponent,
+    EntryDetailsComponent,
+    InvestmentBudgetInfoComponent,
+    InvestmentEntryDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -63,7 +70,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     FormsModule,
     MatSelectModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

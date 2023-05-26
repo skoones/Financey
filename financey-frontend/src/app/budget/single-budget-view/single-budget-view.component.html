@@ -1,4 +1,4 @@
 <div class="full-screen-container">
   <app-entry-list [budget]="this.budget"></app-entry-list>
-  <p>single budget with id {{this.budget?.id}}</p>
+  <app-investment-budget-info *ngIf="this.budget?.investment" message="This is an investment budget." icon="info" class="investment-info"></app-investment-budget-info>
 </div>
