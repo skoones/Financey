@@ -1,8 +1,11 @@
-import { Component, Input } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import {BudgetDTO, EntryDTO, EntryService, InvestmentEntryDTO} from "../../../generated";
+import {Component, Input} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {BudgetDTO, BudgetService, EntryDTO, EntryService, InvestmentEntryDTO} from "../../../generated";
 import {EntryDetailsComponent} from "../entry-details/entry-details.component";
 import {InvestmentEntryDetailsComponent} from "../investment-entry-details/investment-entry-details.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {FormBuilder} from "@angular/forms";
+import {ComponentType} from "@angular/cdk/overlay";
 
 type GeneralEntry = EntryDTO | InvestmentEntryDTO;
 
@@ -17,7 +20,9 @@ export class EntryListComponent {
   displayedColumns = ['name'];
   @Input() budget?: BudgetDTO;
 
-  constructor(private entryService: EntryService, private dialog: MatDialog) {}
+  constructor(private entryService: EntryService, private budgetService: BudgetService, private dialog: MatDialog,
+              private formSnackBar: MatSnackBar, private formBuilder: FormBuilder) {
+  }
 
   entries: EntryDTO[] = []
 
@@ -26,7 +31,8 @@ export class EntryListComponent {
   allEntries: GeneralEntry[] = []
 
   ngOnInit(): void {
-    this.initializeEntryList().then(() => {});
+    this.initializeEntryList().then(() => {
+    });
   }
 
   async initializeEntryList() {
@@ -54,20 +60,39 @@ export class EntryListComponent {
   }
 
   chooseEntry(entry: GeneralEntry) {
-    console.log(this.isInvestmentEntry(entry))
     const dialogRef = this.isInvestmentEntry(entry) ? this.openComponentFromDialog(entry, InvestmentEntryDetailsComponent) :
-      this.openComponentFromDialog(entry, EntryDetailsComponent);
+      this.openEntryComponentFromDialog<EntryDetailsComponent>(entry, this.getEntryDetailsComponent(entry));
 
-    dialogRef.afterClosed().subscribe();
-  }
-
-  private openComponentFromDialog<T>(entry: GeneralEntry, component: new () => T) {
-    return this.dialog.open(component, {
-      data: entry
+    dialogRef.componentInstance.updateEventEmitter.subscribe((hasUpdates) => {
+      if (hasUpdates) {
+        this.initializeEntryList().then(() => {});
+      }
     });
   }
 
-  isInvestmentEntry(entry: GeneralEntry): entry is InvestmentEntryDTO{
+  private getEntryDetailsComponent(entry: EntryDTO) {
+    return new EntryDetailsComponent(this.formBuilder, this.budgetService, this.entryService, this.formSnackBar, entry);
+  }
+
+  private openComponentFromDialog<T>(entry: GeneralEntry, component: new () => T) {
+    const budget = this.budget;
+
+    return this.dialog.open(component, {
+      data: { entry, budget }
+    });
+  }
+
+  private openEntryComponentFromDialog<T>(entry: GeneralEntry,
+                                          component: EntryDetailsComponent) {
+    const budget = this.budget;
+    const componentType: ComponentType<EntryDetailsComponent> = EntryDetailsComponent;
+
+    return this.dialog.open(componentType, {
+      data: { entry: entry, budget: budget }
+    });
+  }
+
+  isInvestmentEntry(entry: GeneralEntry): entry is InvestmentEntryDTO {
     return (entry as InvestmentEntryDTO).volume !== undefined;
   }
 

@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import {map, Observable, startWith} from "rxjs";
 import {BudgetService} from "../../../generated";
 import {BudgetDTO, EntryCurrency, EntryDTO, EntryService, EntryType, InvestmentEntryDTO} from "../../../generated";
-import {amountValidator} from "../../validators/amount-validator";
+import {amountValidator, volumeValidator} from "../../validators/amount-validator";
 
 enum AddEntryResult {
   Success,
@@ -40,7 +40,7 @@ export class AddEntryComponent {
       entryDate: [new Date(), Validators.required],
       currency: [EntryCurrency.PLN, Validators.required],
       budgetForEntry: [''],
-      volume: [1, Validators.required],
+      volume: [1, Validators.required, volumeValidator()],
       isBuy: this.isBuyControl,
       isSell: this.isSellControl,
     }))

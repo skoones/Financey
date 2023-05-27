@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter} from '@angular/core';
 
 @Component({
   selector: 'app-investment-entry-details',
@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./investment-entry-details.component.scss']
 })
 export class InvestmentEntryDetailsComponent {
+  updateEventEmitter = new EventEmitter<boolean>();
 
 }
