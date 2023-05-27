@@ -14,7 +14,7 @@ enum UpdateEntryResult {
 @Component({
   selector: 'app-entry-details',
   templateUrl: './entry-details.component.html',
-  styleUrls: ['./entry-details.component.scss']
+  styleUrls: ['./entry-details.component.scss'],
 })
 export class EntryDetailsComponent {
   entryFormGroup?: FormGroup;
@@ -33,13 +33,14 @@ export class EntryDetailsComponent {
   }
 
   ngOnInit(): void {
-    this.entryFormGroup = this.formBuilder.group(({
+    this.entryFormGroup = this.formBuilder.group({
       name: [this.entry?.name, Validators.required],
       amount: [this.entry?.value, Validators.required, amountValidator()],
       entryDate: [this.entry?.date, new Date(), Validators.required],
       currency: [this.entry?.currency, Validators.required],
       budgetForEntry: [this.budget],
-    }))
+      entryType: [this.entry?.entryType]
+    })
   }
 
   ngOnDestroy() {
@@ -48,7 +49,7 @@ export class EntryDetailsComponent {
 
   changeEntryType(value: EntryType) {
     if (this.entry != undefined) {
-      this.entry.entryType = value
+      this.entry.entryType = value;
     }
   }
 
@@ -62,7 +63,7 @@ export class EntryDetailsComponent {
       entryType: this.entry?.entryType,
       userId: this.userId,
       budgetId: this.budget?.id,
-      date: formGroupData.entryDate
+      date: formGroupData.entryDate,
     }
 
     let result: string = "";
@@ -97,6 +98,10 @@ export class EntryDetailsComponent {
         panelClass: 'error-snackbar'
       });
     }
+  }
+
+  getIncomeCheckboxIsChecked(): boolean {
+    return this.entry?.entryType == EntryType.INCOME;
   }
 
 }
