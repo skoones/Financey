@@ -146,14 +146,21 @@ export class AddEntryComponent {
       } else {
         Object.keys(this.entryFormGroup.controls)
           .forEach((controlName) => {
-            console.log(this.entryFormGroup.get(controlName)?.errors)
-            if (this.entryFormGroup.get(controlName)?.errors?.['invalidAmount']) {
-              this.openErrorSnackbar('Amount should be a valid number.');
-            } else if (this.entryFormGroup.get(controlName)?.errors?.['negativeAmount']) {
-              this.openErrorSnackbar(`Amount should not be negative.`);
-            }
+            this.handleEntryFormErrors(controlName);
           })
       }
+    }
+  }
+
+  private handleEntryFormErrors(controlName: string) {
+    if (this.entryFormGroup.get(controlName)?.errors?.['amountErrors']?.invalidNumber) {
+      this.openErrorSnackbar('Amount should be a valid number.');
+    } else if (this.entryFormGroup.get(controlName)?.errors?.['amountErrors']?.lessEqualZero) {
+      this.openErrorSnackbar(`Amount should be greater than 0.`);
+    } else if (this.entryFormGroup.get(controlName)?.errors?.['volumeErrors']?.invalidNumber) {
+      this.openErrorSnackbar(`Volume should be a valid integer.`);
+    } else if (this.entryFormGroup.get(controlName)?.errors?.['volumeErrors']?.lessEqualZero) {
+      this.openErrorSnackbar(`Volume should be greater than 0.`);
     }
   }
 
