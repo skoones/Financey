@@ -11,7 +11,7 @@ import {
   EntryType,
   InvestmentEntryDTO
 } from "../../../generated";
-import {amountValidator, volumeValidator} from "../../validators/amount-validator";
+import {amountValidator, volumeValidator} from "../../validators/number-validators";
 
 enum AddEntryResult {
   Success,

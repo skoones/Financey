@@ -2,7 +2,7 @@ import {Component, EventEmitter, Inject, Input, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {BudgetDTO, BudgetService, EntryCurrency, EntryDTO, EntryService, EntryType} from "../../../generated";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {amountValidator} from "../../validators/amount-validator";
+import {amountValidator} from "../../validators/number-validators";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {tap} from "rxjs";
 
