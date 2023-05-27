@@ -1,9 +1,16 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {map, Observable, startWith} from "rxjs";
-import {BudgetService} from "../../../generated";
-import {BudgetDTO, EntryCurrency, EntryDTO, EntryService, EntryType, InvestmentEntryDTO} from "../../../generated";
+import {
+  BudgetDTO,
+  BudgetService,
+  EntryCurrency,
+  EntryDTO,
+  EntryService,
+  EntryType,
+  InvestmentEntryDTO
+} from "../../../generated";
 import {amountValidator, volumeValidator} from "../../validators/amount-validator";
 
 enum AddEntryResult {
@@ -62,43 +69,44 @@ export class AddEntryComponent {
 
     return this.budgets.filter(budget => budget.name.toLowerCase().includes(filterValue));
   }
+
   changeEntryType(value: EntryType) {
     this.entryType = value
   }
 
   async addEntry(): Promise<AddEntryResult> {
-      const formGroupData = this.entryFormGroup.value;
-      const entryDto: EntryDTO = {
-        value: formGroupData.amount,
-        currency: formGroupData.currency,
-        name: formGroupData.name,
-        entryType: this.isInvestment ? this.mapIsBuyToEntryType(this.isBuyControl.value) : this.entryType,
-        userId: this.userId,
-        budgetId: await this.findBudgetIdFromName(this.budgetListControl.value),
-        date: formGroupData.entryDate
+    const formGroupData = this.entryFormGroup.value;
+    const entryDto: EntryDTO = {
+      value: formGroupData.amount,
+      currency: formGroupData.currency,
+      name: formGroupData.name,
+      entryType: this.isInvestment ? this.mapIsBuyToEntryType(this.isBuyControl.value) : this.entryType,
+      userId: this.userId,
+      budgetId: await this.findBudgetIdFromName(this.budgetListControl.value),
+      date: formGroupData.entryDate
+    }
+
+    if (this.isInvestment) {
+      const investmentEntryDto: InvestmentEntryDTO = {
+        entry: entryDto,
+        volume: formGroupData.volume,
+        marketPriceAtOperation: this.getMarketPriceAtOperation(formGroupData.amount, formGroupData.volume)
       }
 
-      if (this.isInvestment) {
-        const investmentEntryDto: InvestmentEntryDTO = {
-          entry: entryDto,
-          volume: formGroupData.volume,
-          marketPriceAtOperation: this.getMarketPriceAtOperation(formGroupData.amount, formGroupData.volume)
-        }
-
-        if (this.entryBudgetIsInvestment(investmentEntryDto)) {
-          await this.entryService.addInvestmentEntry(investmentEntryDto);
-          return AddEntryResult.Success;
-        } else {
-          this.formSnackBar.open('Investment entry cannot be added to a non-investment budget.', 'Close', {
-            duration: 5000,
-            panelClass: 'error-snackbar'
-          });
-          return AddEntryResult.Fail;
-        }
-      } else {
-        await this.entryService.addEntry(entryDto);
+      if (this.entryBudgetIsInvestment(investmentEntryDto)) {
+        await this.entryService.addInvestmentEntry(investmentEntryDto);
         return AddEntryResult.Success;
+      } else {
+        this.formSnackBar.open('Investment entry cannot be added to a non-investment budget.', 'Close', {
+          duration: 5000,
+          panelClass: 'error-snackbar'
+        });
+        return AddEntryResult.Fail;
       }
+    } else {
+      await this.entryService.addEntry(entryDto);
+      return AddEntryResult.Success;
+    }
 
   }
 
@@ -128,11 +136,32 @@ export class AddEntryComponent {
         }
       });
     } else {
-      this.formSnackBar.open('Please fill out all required fields.', 'Close', {
-        duration: 5000,
-        panelClass: 'error-snackbar'
-      });
+      const hasMissingFields = Object.keys(this.entryFormGroup.controls)
+        .some((controlName) => {
+          return !!this.entryFormGroup.get(controlName)?.errors?.['required'];
+        })
+
+      if (hasMissingFields) {
+        this.openErrorSnackbar('Please fill out all required fields.');
+      } else {
+        Object.keys(this.entryFormGroup.controls)
+          .forEach((controlName) => {
+            console.log(this.entryFormGroup.get(controlName)?.errors)
+            if (this.entryFormGroup.get(controlName)?.errors?.['invalidAmount']) {
+              this.openErrorSnackbar('Amount should be a valid number.');
+            } else if (this.entryFormGroup.get(controlName)?.errors?.['negativeAmount']) {
+              this.openErrorSnackbar(`Amount should not be negative.`);
+            }
+          })
+      }
     }
+  }
+
+  private openErrorSnackbar(message: string) {
+    this.formSnackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: 'error-snackbar'
+    });
   }
 
   async findBudgetIdFromName(budgetName: string): Promise<string> {
