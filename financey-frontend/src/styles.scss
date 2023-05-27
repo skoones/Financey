@@ -25,3 +25,10 @@ $my-theme: mat.define-light-theme((
   align-items: center;
   height: 100vh;
 }
+
+.mat-mdc-snack-bar-container {
+  &.error-snackbar {
+    --mat-mdc-snack-bar-button-color: #f44336;
+  }
+
+}

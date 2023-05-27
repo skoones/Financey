@@ -6,6 +6,11 @@ import {BudgetService} from "../../../generated";
 import {BudgetDTO, EntryCurrency, EntryDTO, EntryService, EntryType, InvestmentEntryDTO} from "../../../generated";
 import {amountValidator} from "../../validators/amount-validator";
 
+enum AddEntryResult {
+  Success,
+  Fail
+}
+
 @Component({
   selector: 'app-add-entry',
   templateUrl: './add-entry.component.html',
@@ -61,7 +66,7 @@ export class AddEntryComponent {
     this.entryType = value
   }
 
-  async addEntry() {
+  async addEntry(): Promise<AddEntryResult> {
       const formGroupData = this.entryFormGroup.value;
       const entryDto: EntryDTO = {
         value: formGroupData.amount,
@@ -80,11 +85,25 @@ export class AddEntryComponent {
           marketPriceAtOperation: this.getMarketPriceAtOperation(formGroupData.amount, formGroupData.volume)
         }
 
-        this.entryService.addInvestmentEntry(investmentEntryDto).subscribe()
+        if (this.entryBudgetIsInvestment(investmentEntryDto)) {
+          await this.entryService.addInvestmentEntry(investmentEntryDto);
+          return AddEntryResult.Success;
+        } else {
+          this.formSnackBar.open('Investment entry cannot be added to a non-investment budget.', 'Close', {
+            duration: 5000,
+            panelClass: 'error-snackbar'
+          });
+          return AddEntryResult.Fail;
+        }
       } else {
-        this.entryService.addEntry(entryDto).subscribe()
+        await this.entryService.addEntry(entryDto);
+        return AddEntryResult.Success;
       }
 
+  }
+
+  private entryBudgetIsInvestment(investmentEntryDto: InvestmentEntryDTO): boolean {
+    return this.budgets.filter(b => b.id == investmentEntryDto.entry.budgetId).every(b => b.investment);
   }
 
   private mapIsBuyToEntryType(isBuy: boolean): EntryType {
@@ -101,11 +120,17 @@ export class AddEntryComponent {
 
   submitEntryForm() {
     if (this.entryFormGroup.valid) {
-      this.addEntry().then(() => {
+      this.addEntry().then((result) => {
+        if (result == AddEntryResult.Success) {
+          this.formSnackBar.open('Entry saved.', 'Close', {
+            duration: 5000,
+          });
+        }
       });
     } else {
       this.formSnackBar.open('Please fill out all required fields.', 'Close', {
         duration: 5000,
+        panelClass: 'error-snackbar'
       });
     }
   }
