@@ -26,16 +26,31 @@ export class EntryListComponent {
   allEntries: GeneralEntry[] = []
 
   ngOnInit(): void {
-      this.entryService.getEntriesByBudgetId(this.budget?.id ? this.budget.id : "").subscribe(data => {
-        this.entries = data;
+    this.initializeEntryList().then(() => {});
+  }
+
+  async initializeEntryList() {
+    this.entries = await this.getEntries();
+    if (this.budget?.investment) {
+      this.investmentEntries = await this.getInvestmentEntries();
+    }
+    this.allEntries = (this.entries as GeneralEntry[]).concat(this.investmentEntries as GeneralEntry[])
+  }
+
+  private async getInvestmentEntries(): Promise<InvestmentEntryDTO[]> {
+    return new Promise<InvestmentEntryDTO[]>((resolve) => {
+      this.entryService.getInvestmentEntriesByBudgetId(this.budget?.id ? this.budget.id : "").subscribe(data => {
+        resolve(<InvestmentEntryDTO[]>(data));
       });
-      if (this.budget?.investment) {
-        console.log("investment")
-        this.entryService.getInvestmentEntriesByBudgetId(this.budget?.id ? this.budget.id : "").subscribe(data => {
-          this.investmentEntries = data;
-        });
-      }
-      this.allEntries = (this.entries as GeneralEntry[]).concat(this.investmentEntries as GeneralEntry[]) //
+    })
+  }
+
+  private async getEntries(): Promise<EntryDTO[]> {
+    return new Promise<EntryDTO[]>((resolve) => {
+      this.entryService.getEntriesByBudgetId(this.budget?.id ? this.budget.id : "").subscribe(data => {
+        resolve(<EntryDTO[]>(data));
+      });
+    })
   }
 
   chooseEntry(entry: GeneralEntry) {
@@ -54,6 +69,10 @@ export class EntryListComponent {
 
   isInvestmentEntry(entry: GeneralEntry): entry is InvestmentEntryDTO{
     return (entry as InvestmentEntryDTO).volume !== undefined;
+  }
+
+  getGeneralEntryName(entry: GeneralEntry): string {
+    return this.isInvestmentEntry(entry) ? entry.entry.name : entry.name;
   }
 
 }
