@@ -61,7 +61,7 @@ export class EntryListComponent {
 
   chooseEntry(entry: GeneralEntry) {
     const dialogRef = this.isInvestmentEntry(entry) ? this.openComponentFromDialog(entry, InvestmentEntryDetailsComponent) :
-      this.openEntryComponentFromDialog<EntryDetailsComponent>(entry, this.getEntryDetailsComponent(entry));
+      this.openEntryComponentFromDialog<EntryDetailsComponent>(entry);
 
     dialogRef.componentInstance.updateEventEmitter.subscribe((hasUpdates) => {
       if (hasUpdates) {
@@ -69,11 +69,6 @@ export class EntryListComponent {
       }
     });
   }
-
-  private getEntryDetailsComponent(entry: EntryDTO) {
-    return new EntryDetailsComponent(this.formBuilder, this.budgetService, this.entryService, this.formSnackBar, entry);
-  }
-
   private openComponentFromDialog<T>(entry: GeneralEntry, component: new () => T) {
     const budget = this.budget;
 
@@ -82,8 +77,7 @@ export class EntryListComponent {
     });
   }
 
-  private openEntryComponentFromDialog<T>(entry: GeneralEntry,
-                                          component: EntryDetailsComponent) {
+  private openEntryComponentFromDialog<T>(entry: GeneralEntry) {
     const budget = this.budget;
     const componentType: ComponentType<EntryDetailsComponent> = EntryDetailsComponent;
 

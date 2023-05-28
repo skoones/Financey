@@ -4,7 +4,7 @@ import {BudgetDTO, BudgetService, EntryCurrency, EntryDTO, EntryService, EntryTy
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {amountValidator} from "../../validators/number-validators";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {tap} from "rxjs";
+import {firstValueFrom, tap} from "rxjs";
 
 enum UpdateEntryResult {
   Success,
@@ -55,6 +55,7 @@ export class EntryDetailsComponent {
 
   async updateEntry() {
     const formGroupData = this.entryFormGroup?.value;
+    // todo validation like in add entry component, maybe mixin?
     const entryDto: EntryDTO = {
       id: this.entry?.id,
       value: formGroupData.amount,
@@ -102,6 +103,13 @@ export class EntryDetailsComponent {
 
   getIncomeCheckboxIsChecked(): boolean {
     return this.entry?.entryType == EntryType.INCOME;
+  }
+
+  async deleteEntry() {
+    if (this.entry?.id != undefined) {
+      await firstValueFrom(this.entryService.deleteEntriesByIds([this.entry.id]))
+      this.hasUpdates = true;
+    }
   }
 
 }

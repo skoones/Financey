@@ -1,7 +1,7 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, Optional, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {map, Observable, startWith} from "rxjs";
+import {firstValueFrom, map, Observable, startWith} from "rxjs";
 import {
   BudgetDTO,
   BudgetService,
@@ -12,6 +12,7 @@ import {
   InvestmentEntryDTO
 } from "../../../generated";
 import {amountValidator, volumeValidator} from "../../validators/number-validators";
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 enum AddEntryResult {
   Success,
@@ -26,6 +27,8 @@ enum AddEntryResult {
 export class AddEntryComponent {
   entryFormGroup: FormGroup;
   budgetListControl = new FormControl();
+  @Input() budget?: BudgetDTO;
+  @Output() addEntryEventEmitter = new EventEmitter<boolean>();
   filteredBudgets: Observable<BudgetDTO[]>;
   budgets: BudgetDTO[] = []
   currencyEnum = EntryCurrency;
@@ -33,11 +36,13 @@ export class AddEntryComponent {
   isSellControl: FormControl;
   isBuyControl: FormControl;
   entryType: EntryType = EntryType.EXPENSE;
+  anyAdded: boolean = false;
 
   userId: string = "demo"; // todo placeholder userId
 
+
   constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private entryService: EntryService,
-              private formSnackBar: MatSnackBar) {
+              private formSnackBar: MatSnackBar, @Optional() @Inject(MAT_DIALOG_DATA) private data: any) {
     this.isBuyControl = new FormControl(true)
     this.isSellControl = new FormControl({value: false, disabled: true})
 
@@ -52,6 +57,7 @@ export class AddEntryComponent {
       isSell: this.isSellControl,
     }))
     this.filteredBudgets = new Observable<BudgetDTO[]>()
+    this.budget = data?.budget;
   }
 
   ngOnInit(): void {
@@ -62,6 +68,10 @@ export class AddEntryComponent {
     this.budgetService.getUncategorizedBudgets(this.userId).subscribe(data => {
       this.budgets = data;
     });
+  }
+
+  ngOnDestroy() {
+    this.addEntryEventEmitter.emit(this.anyAdded)
   }
 
   private _filter(value: string): BudgetDTO[] {
@@ -94,7 +104,8 @@ export class AddEntryComponent {
       }
 
       if (this.entryBudgetIsInvestment(investmentEntryDto)) {
-        await this.entryService.addInvestmentEntry(investmentEntryDto);
+        await firstValueFrom(this.entryService.addInvestmentEntry(investmentEntryDto));
+        this.anyAdded = true;
         return AddEntryResult.Success;
       } else {
         this.formSnackBar.open('Investment entry cannot be added to a non-investment budget.', 'Close', {
@@ -104,7 +115,8 @@ export class AddEntryComponent {
         return AddEntryResult.Fail;
       }
     } else {
-      await this.entryService.addEntry(entryDto);
+      await firstValueFrom(this.entryService.addEntry(entryDto));
+      this.anyAdded = true;
       return AddEntryResult.Success;
     }
 
@@ -172,12 +184,18 @@ export class AddEntryComponent {
   }
 
   async findBudgetIdFromName(budgetName: string): Promise<string> {
+    const name: string = budgetName || this.budget?.name || "";
+
     return new Promise<string>((resolve) => {
-      this.budgetService.getByName(budgetName)
+      this.budgetService.getByName(name)
         .subscribe((budget: BudgetDTO) => {
           resolve(<string>budget.id);
         })
     })
+  }
+
+  isInvestmentOrHasNoBudget() {
+    return this.budget == undefined || this.budget.investment;
   }
 
 }

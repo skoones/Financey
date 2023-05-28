@@ -1,7 +1,27 @@
+@use '@angular/material' as mat;
+@import '../../../styles.scss';
+
 .investment-info {
   position: fixed;
   top: 150px;
   left: 0;
   width: 100%;
   z-index: 9999; /* Adjust the z-index value as needed */
+}
+
+.add-entry-button {
+  background-color: mat.get-color-from-palette($my-primary);
+}
+
+.add-entry-button .mat-icon{
+  color: white;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.container button {
+  margin-bottom: 16px;
 }

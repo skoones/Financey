@@ -25,3 +25,12 @@ mat-checkbox {
 .currency-input {
   width: 30%;
 }
+
+.button-container {
+  display: flex;
+  align-items: center;
+}
+
+.flex-spacer {
+  flex-grow: 1;
+}
