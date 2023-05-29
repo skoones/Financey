@@ -109,6 +109,9 @@ export class EntryDetailsComponent {
     if (this.entry?.id != undefined) {
       await firstValueFrom(this.entryService.deleteEntriesByIds([this.entry.id]))
       this.hasUpdates = true;
+      this.formSnackBar.open('Entry deleted.', 'Close', {
+        duration: 5000,
+      });
     }
   }
 
