@@ -25,4 +25,10 @@ class EntryService(
         logger.debug { "Removed entries with ids $ids from database" }
     }
 
+    suspend fun getAllByBudgetId(budgetId: String): Either<PersistenceError, List<Entry>> = either {
+        val entries = entryRepository.getAllByBudgetId(budgetId).bind()
+        logger.debug { "Retrieved entries for budget id $budgetId from database" }
+        entries
+    }
+
 }

@@ -27,6 +27,26 @@ paths:
             text/plain:
               schema:
                 type: string
+  /investment/add:
+    post:
+      operationId: addInvestmentEntry
+      description: "Add a new investment entry."
+      tags:
+        - entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/InvestmentEntryDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /update:
     post:
       operationId: updateEntry
@@ -68,6 +88,69 @@ paths:
             text/plain:
               schema:
                 type: string
+  /{budgetId}/entries:
+    get:
+      operationId: getEntriesByBudgetId
+      description: "Get entries for budget with the given id."
+      parameters:
+        - name: budgetId
+          in: path
+          description: "Id of the budget."
+          required: true
+          schema:
+            type: string
+      tags:
+        - entry
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EntryDTO"
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /{budgetId}/investment/entries:
+    get:
+      operationId: getInvestmentEntriesByBudgetId
+      description: "Get investment entries for budget with the given id."
+      parameters:
+        - name: budgetId
+          in: path
+          description: "Id of the budget."
+          required: true
+          schema:
+            type: string
+      tags:
+        - entry
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InvestmentEntryDTO"
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+
 components:
   schemas:
     EntryDTO:

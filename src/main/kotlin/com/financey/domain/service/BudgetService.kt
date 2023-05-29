@@ -57,4 +57,10 @@ class BudgetService(
         sum
     }
 
+    suspend fun getByName(name: String): Either<PersistenceError, Budget> = either {
+        val budget = budgetRepository.getByName(name).bind()
+        logger.debug { "Retrieved budget with name ${name}." }
+        budget
+    }
+
 }

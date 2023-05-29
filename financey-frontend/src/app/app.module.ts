@@ -25,6 +25,14 @@ import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatListModule} from "@angular/material/list";
 import { AllBudgetsViewComponent } from './budget/all-budgets-view/all-budgets-view.component';
 import { HomeComponent } from './home/home.component';
+import { SingleBudgetMainViewComponent } from './budget/single-budget-main-view/single-budget-main-view.component';
+import { SingleBudgetViewComponent } from './budget/single-budget-view/single-budget-view.component';
+import { EntryListComponent } from './entry/entry-list/entry-list.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { EntryDetailsComponent } from './entry/entry-details/entry-details.component';
+import { InvestmentBudgetInfoComponent } from './budget/investment-budget-info/investment-budget-info.component';
+import { InvestmentEntryDetailsComponent } from './entry/investment-entry-details/investment-entry-details.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +41,13 @@ import { HomeComponent } from './home/home.component';
     AddEntryComponent,
     IncomeCheckboxComponent,
     AllBudgetsViewComponent,
-    HomeComponent
+    HomeComponent,
+    SingleBudgetMainViewComponent,
+    SingleBudgetViewComponent,
+    EntryListComponent,
+    EntryDetailsComponent,
+    InvestmentBudgetInfoComponent,
+    InvestmentEntryDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -49,13 +63,15 @@ import { HomeComponent } from './home/home.component';
     MatNativeDateModule,
     MatIconModule,
     MatCheckboxModule,
+    MatSnackBarModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
     MatToolbarModule,
     FormsModule,
     MatSelectModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

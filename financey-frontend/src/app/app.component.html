@@ -7,12 +7,11 @@
       <span>Financey</span>
     </mat-toolbar>
   </p>
-  <mat-drawer #drawer class="financey-sidenav" mode="side" [opened]="sidenavToggle" (closedStart)="toggleSidenav()">
+  <mat-drawer class="financey-sidenav" mode="side" [opened]="sidenavToggle" (closedStart)="toggleSidenav()">
     <mat-nav-list >
-      <!--      todo placeholder links -->
       <a mat-list-item routerLink="/home">Home</a>
       <a mat-list-item routerLink="/budgets">All budgets</a>
-      <a mat-list-item routerLink="/budgets/single/">Single budget</a> <!-- todo router link -->
+      <a mat-list-item routerLink="/budgets/single/main">Single budget</a>
       <a mat-list-item routerLink="/analysis">Analysis</a>
       <a mat-list-item routerLink="/investments">Investments</a>
     </mat-nav-list>

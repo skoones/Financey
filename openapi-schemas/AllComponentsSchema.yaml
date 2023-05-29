@@ -36,6 +36,32 @@ paths:
             text/plain:
               schema:
                 type: string
+  /budget/budget/{name}:
+    get:
+      operationId: getByName
+      description: "Get budget by name for given user."
+      parameters:
+        - name: name
+          in: path
+          description: "Budget name."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /budget/{userId}/categories:
     get:
       operationId: getCategories
@@ -268,6 +294,26 @@ paths:
             text/plain:
               schema:
                 type: string
+  /entry/investment/add:
+    post:
+      operationId: addInvestmentEntry
+      description: "Add a new investment entry."
+      tags:
+        - entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/InvestmentEntryDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /entry/update:
     post:
       operationId: updateEntry
@@ -323,6 +369,69 @@ paths:
       responses:
         "200":
           description: OK
+  /entry/{budgetId}/entries:
+    get:
+      operationId: getEntriesByBudgetId
+      description: "Get entries for budget with the given id."
+      parameters:
+        - name: budgetId
+          in: path
+          description: "Id of the budget."
+          required: true
+          schema:
+            type: string
+      tags:
+        - entry
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EntryDTO"
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /entry/{budgetId}/investment/entries:
+    get:
+      operationId: getInvestmentEntriesByBudgetId
+      description: "Get investment entries for budget with the given id."
+      parameters:
+        - name: budgetId
+          in: path
+          description: "Id of the budget."
+          required: true
+          schema:
+            type: string
+      tags:
+        - entry
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InvestmentEntryDTO"
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+
 components:
   schemas:
     BudgetCategoryDTO:

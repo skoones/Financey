@@ -1,0 +1,41 @@
+<mat-card class="mat-elevation-z8 add-entry-card">
+  <mat-card-header>
+    <mat-card-title>Add entry</mat-card-title>
+  </mat-card-header>
+  <form [formGroup]="entryFormGroup" *ngIf="entryFormGroup" (ngSubmit)="updateEntry()">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" placeholder="Name your entry">
+    </mat-form-field>
+    <div class=".entry-currency-input">
+      <mat-form-field class="amount-input">
+        <mat-label>Amount</mat-label>
+        <input matInput formControlName="amount" placeholder="Insert entry amount">
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="currency-input">
+        <mat-label>Currency</mat-label>
+        <mat-select formControlName="currency">
+          <mat-option *ngFor="let currency of currencyEnum | keyvalue" [value]="currency.value">
+            {{currency.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <mat-form-field appearance="fill">
+      <mat-label>Entry date</mat-label>
+      <input matInput formControlName="entryDate" [matDatepicker]="picker">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <income-checkbox [isChecked]="getIncomeCheckboxIsChecked()" (valueChangeEvent) = "changeEntryType($event)"></income-checkbox>
+  </form>
+  <mat-card-actions class="button-container">
+    <button mat-button color="primary" (click)="submitEntryForm()">Update</button>
+    <span class="flex-spacer"></span> <!-- Add a spacer element -->
+    <button mat-button color="accent" (click)="deleteEntry()">Delete</button>
+  </mat-card-actions>
+</mat-card>
+

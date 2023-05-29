@@ -18,3 +18,17 @@ $my-theme: mat.define-light-theme((
 @include mat.core-theme($my-theme);
 
 @include mat.button-theme($my-theme);
+
+.full-screen-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 100vh;
+}
+
+.mat-mdc-snack-bar-container {
+  &.error-snackbar {
+    --mat-mdc-snack-bar-button-color: #f44336;
+  }
+
+}
