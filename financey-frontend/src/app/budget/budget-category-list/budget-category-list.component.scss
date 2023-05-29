@@ -1,0 +1,15 @@
+@use '@angular/material' as mat;
+@import '../../../styles.scss';
+.list-header-row {
+  background-color: mat.get-color-from-palette($my-primary);
+}
+mat-table {
+  height: 100%
+}
+.header-cell {
+  color: white
+}
+
+.mat-cell-hover:hover {
+  background-color: lightgray;
+}

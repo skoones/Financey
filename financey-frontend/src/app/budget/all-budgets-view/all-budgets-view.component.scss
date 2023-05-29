@@ -1,0 +1,28 @@
+@use '@angular/material' as mat;
+@import '../../../styles.scss';
+
+.add-button {
+  background-color: mat.get-color-from-palette($my-primary) !important;
+}
+
+.add-button .mat-icon{
+  color: white;
+}
+
+.add-category-dialog {
+  width: 500px;
+}
+
+.add-budget-dialog {
+  width: 500px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.container button {
+  margin-bottom: 16px;
+}
+

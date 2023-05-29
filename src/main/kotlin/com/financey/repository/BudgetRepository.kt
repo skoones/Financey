@@ -8,7 +8,7 @@ import com.financey.domain.error.ElementDoesNotExistError
 import com.financey.domain.error.MultipleElementsError
 import com.financey.domain.error.PersistenceError
 import com.financey.domain.model.Budget
-import com.financey.domain.model.Entry
+import com.financey.domain.model.BudgetCategory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -16,22 +16,41 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.inValues
 import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.transaction.annotation.Transactional
 
 interface BudgetRepository : MongoRepository<Budget, String>, CustomBudgetRepository
 
 interface CustomBudgetRepository {
-    fun save(budget: Budget): Either<Nothing, Budget>
+    fun save(budget: Budget): Either<PersistenceError, Budget>
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
     fun getAllByUserId(userId: String): Either<PersistenceError, List<Budget>>
     fun getAllByIds(ids: List<String>): Either<PersistenceError, List<Budget>>
     fun getByName(name: String): Either<PersistenceError, Budget>
 }
 
-class CustomBudgetRepositoryImpl(
+open class CustomBudgetRepositoryImpl(
+    @Autowired private val categoryRepository: BudgetCategoryRepository,
     @Autowired private val mongoTemplate: MongoTemplate
 ) : CustomBudgetRepository {
 
-    override fun save(budget: Budget): Either<Nothing, Budget> = Right(mongoTemplate.save(budget))
+    override fun save(budget: Budget): Either<PersistenceError, Budget> {
+        val category = budget.categoryId?.let {
+            categoryRepository.getById(it)
+        }
+
+        return category?.fold(
+            { Left(it) },
+            { saveBudgetAndUpdateCategory(budget, it) }
+        ) ?: Right(mongoTemplate.save(budget))
+    }
+
+    @Transactional
+    open fun saveBudgetAndUpdateCategory(budget: Budget, category: BudgetCategory): Either<Nothing, Budget> {
+        val currentCategoryBudgets = category.budgets
+        val newBudgets = currentCategoryBudgets?.plus(budget) ?: listOfNotNull(budget)
+        categoryRepository.save(category.copy(budgets = newBudgets))
+        return Right(mongoTemplate.save(budget))
+    }
 
     override fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit> {
         val query = Query().addCriteria(Budget::id inValues ids)

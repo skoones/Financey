@@ -34,5 +34,10 @@ class BudgetCategoryService(
         logger.debug { "Removed budget categories with ids $categoryIds from database" }
     }
 
+    suspend fun getByName(name: String): Either<PersistenceError, BudgetCategory> = either {
+        val budget = budgetCategoryRepository.getByName(name).bind()
+        logger.debug { "Retrieved budget with name ${name}." }
+        budget
+    }
 
 }

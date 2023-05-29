@@ -29,7 +29,7 @@ export class AddEntryComponent {
   budgetListControl = new FormControl();
   @Input() budget?: BudgetDTO;
   @Output() addEntryEventEmitter = new EventEmitter<boolean>();
-  filteredBudgets: Observable<BudgetDTO[]>;
+  filteredBudgets: Observable<BudgetDTO[]> = new Observable<BudgetDTO[]>();
   budgets: BudgetDTO[] = []
   currencyEnum = EntryCurrency;
   isInvestment: Boolean = false;
@@ -56,7 +56,6 @@ export class AddEntryComponent {
       isBuy: this.isBuyControl,
       isSell: this.isSellControl,
     }))
-    this.filteredBudgets = new Observable<BudgetDTO[]>()
     this.budget = data?.budget;
   }
 

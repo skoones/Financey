@@ -6,7 +6,6 @@ import com.financey.domain.context.BudgetSumContext
 import com.financey.domain.service.BudgetCategoryService
 import com.financey.domain.service.BudgetService
 import kotlinx.coroutines.runBlocking
-import org.apache.coyote.Response
 import org.openapitools.api.BudgetApi
 import org.openapitools.model.BudgetCategoryDTO
 import org.openapitools.model.BudgetDTO
@@ -27,11 +26,14 @@ class BudgetController(
 
     override fun addBudget(budgetDTO: BudgetDTO): ResponseEntity<String> {
         val budget = budgetDtoMapper.fromDto(budgetDTO)
-        val savedBudget = runBlocking {
+        val budgetResult = runBlocking {
             budgetService.save(budget)
-        } as Right
+        }
 
-        return ResponseEntity.ok("Budget saved with id ${savedBudget.value.id}.")
+        return budgetResult.fold(
+            { throw it },
+            { ResponseEntity.ok("Budget saved with id ${it.id}.")  }
+        )
     }
 
     override fun deleteBudgetsByIds(budgetIds: List<String>): ResponseEntity<String> {
@@ -56,6 +58,7 @@ class BudgetController(
 
     override fun getUncategorizedBudgets(userId: String): ResponseEntity<List<BudgetDTO>> {
         val budgetsResult = runBlocking {
+             // todo fix, this gets categorized budgets as well
             budgetService.getAllByUserId(userId)
         }
 
@@ -117,6 +120,17 @@ class BudgetController(
         } as Right
 
         return ResponseEntity.ok("Budget category saved with id ${savedCategory.value.id}.")
+    }
+
+    override fun getCategoryByName(name: String): ResponseEntity<BudgetCategoryDTO> {
+        val categoryResult = runBlocking {
+            budgetCategoryService.getByName(name)
+        }
+
+        return categoryResult.fold(
+            { throw it },
+            { ResponseEntity.ok(budgetDtoMapper.toCategoryDto(it)) }
+        )
     }
 
     override fun updateBudgetCategory(budgetCategoryDTO: BudgetCategoryDTO): ResponseEntity<String> {

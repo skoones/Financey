@@ -1,3 +1,13 @@
 <div class="full-screen-container">
-
+  <div class="container">
+    <button mat-button class="add-button" style="color:white" (click)="openAddCategoryPopup()">
+      <mat-icon>add</mat-icon>
+      Add budget category
+    </button>
+    <button mat-button class="add-button" style="color:white" (click)="openAddBudgetPopup()">
+      <mat-icon>add</mat-icon>
+      Add budget
+    </button>
+    <app-budget-category-list></app-budget-category-list>
+  </div>
 </div>

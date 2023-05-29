@@ -20,10 +20,10 @@ class BudgetService(
 ) {
     private val logger = KotlinLogging.logger {}
 
-    suspend fun save(budget: Budget): Either<Nothing, Budget> = either {
-       val savedBudget = budgetRepository.save(budget).bind()
-       logger.debug { "Saved $savedBudget to database" }
-       savedBudget
+    suspend fun save(budget: Budget): Either<PersistenceError, Budget> = either {
+        val savedBudget = budgetRepository.save(budget).bind()
+        logger.debug { "Saved $savedBudget to database" }
+        savedBudget
     }
 
     suspend fun delete(ids: List<String>): Either<PersistenceError, Unit> = either {

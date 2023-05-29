@@ -40,6 +40,7 @@
     <income-checkbox *ngIf="!isInvestment" (valueChangeEvent) = "changeEntryType($event)"></income-checkbox>
     <mat-form-field *ngIf="this.budget == undefined" appearance="fill">
       <mat-label>Budget</mat-label>
+      <!-- todo creating a new one -->
       <input type="text"
              placeholder="Pick a budget or create a new one"
              matInput

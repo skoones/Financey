@@ -5,6 +5,7 @@ import arrow.core.Either.Left
 import arrow.core.Either.Right
 import com.financey.domain.error.DataAccessError
 import com.financey.domain.error.ElementDoesNotExistError
+import com.financey.domain.error.MultipleElementsError
 import com.financey.domain.error.PersistenceError
 import com.financey.domain.model.Budget
 import com.financey.domain.model.BudgetCategory
@@ -22,6 +23,8 @@ interface CustomBudgetCategoryRepository {
     fun save(budgetCategory: BudgetCategory): Either<Nothing, BudgetCategory>
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
     fun getAllByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>>
+    fun getById(id: String): Either<PersistenceError, BudgetCategory>
+    fun getByName(name: String): Either<PersistenceError, BudgetCategory>
 }
 
 class CustomBudgetCategoryRepositoryImpl(
@@ -47,6 +50,35 @@ class CustomBudgetCategoryRepositoryImpl(
 
         return try {
             Right(mongoTemplate.find(query, BudgetCategory::class.java))
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budget categories could not be found."))
+        }
+    }
+
+    override fun getById(id: String): Either<PersistenceError, BudgetCategory> {
+        val query = Query().addCriteria(BudgetCategory::id isEqualTo id)
+        return try {
+            val foundResult = mongoTemplate.find(query, BudgetCategory::class.java)
+            when (foundResult.size) {
+                0 -> Left(ElementDoesNotExistError("There is no category for budget with given id."))
+                1 -> Right(foundResult.first())
+                else -> Left(MultipleElementsError("There is more than one category for budget with given id in the database."))
+            }
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budget category could not be found."))
+        }
+    }
+
+    override fun getByName(name: String): Either<PersistenceError, BudgetCategory> {
+        val query = Query().addCriteria(BudgetCategory::name isEqualTo name)
+
+        return try {
+            val existingBudgets = mongoTemplate.find(query, BudgetCategory::class.java)
+            when (existingBudgets.size) {
+                0 -> Left(ElementDoesNotExistError("There is no category with the given name in the database."))
+                1 -> Right(existingBudgets.first())
+                else -> Left(MultipleElementsError("Multiple categories with given name have been found."))
+            }
         } catch (e: DataAccessException) {
             Left(DataAccessError("There was an issue with accessing database data. Budget categories could not be found."))
         }

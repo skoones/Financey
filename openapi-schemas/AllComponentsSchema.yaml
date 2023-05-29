@@ -90,6 +90,32 @@ paths:
             text/plain:
               schema:
                 type: string
+  /budget/category/{name}:
+    get:
+      operationId: getCategoryByName
+      description: "Get budget category by name."
+      parameters:
+        - name: name
+          in: path
+          description: "Budget category name."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetCategoryDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /budget/addCategory:
     post:
       operationId: addCategory
@@ -467,10 +493,12 @@ components:
         budgetEntries:
           type: array
           items:
-            $ref: "#/components/schemas/EntryDTO"
+            $ref: "./EntrySchema.yaml#/components/schemas/EntryDTO"
         investment:
           type: boolean
         userId:
+          type: string
+        categoryId:
           type: string
     EntryDTO:
       required:
