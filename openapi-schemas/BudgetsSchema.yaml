@@ -326,6 +326,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/BudgetDTO"
+        parentCategoryId:
+          type: string
     BudgetDTO:
       required:
         - name

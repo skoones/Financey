@@ -1,10 +1,20 @@
+<button mat-button *ngIf="hasElements(this.previousTopLevelBudgetList)" style="color:white" class="add-button" (click)="loadPreviousTopLevelBudgets()">
+  <mat-icon>arrow_back_ios_new</mat-icon>
+  Back
+</button>
 <section class="mat-elevation-z8">
   <table mat-table [dataSource]="topLevelBudgets">
-
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef class="header-cell"> {{title}} </th>
-<!--      <td mat-cell *matCellDef="let budgetCategory" (click)="chooseBudget(budgetCategory)" class="mat-cell-hover"> {{budgetCategory.name}} </td>-->
-      <td mat-cell *matCellDef="let topLevelBudget" (click)="chooseTopLevelBudget(topLevelBudget)" class="mat-cell-hover"> {{topLevelBudget.name}} </td>
+      <!--      <td mat-cell *matCellDef="let budgetCategory" (click)="chooseBudget(budgetCategory)" class="mat-cell-hover"> {{budgetCategory.name}} </td>-->
+      <td mat-cell *matCellDef="let topLevelBudget" (click)="chooseTopLevelBudget(topLevelBudget)" class="mat-cell-hover cell-with-icon">
+        <div class="text-container">
+          {{topLevelBudget.name}}
+        </div>
+        <div *ngIf="isExpandableCategory(topLevelBudget)" class="icon-container">
+          <mat-icon>arrow_forward_ios</mat-icon>
+        </div>
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="list-header-row"></tr>

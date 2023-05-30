@@ -58,8 +58,7 @@ class BudgetController(
 
     override fun getUncategorizedBudgets(userId: String): ResponseEntity<List<BudgetDTO>> {
         val budgetsResult = runBlocking {
-             // todo fix, this gets categorized budgets as well
-            budgetService.getAllByUserId(userId)
+            budgetService.getAllUncategorizedByUserId(userId)
         }
 
         return budgetsResult.fold(
@@ -115,11 +114,14 @@ class BudgetController(
 
     override fun addCategory(budgetCategoryDTO: BudgetCategoryDTO): ResponseEntity<String> {
         val category = budgetDtoMapper.fromCategoryDto(budgetCategoryDTO)
-        val savedCategory = runBlocking {
+        val categoryResult = runBlocking {
             budgetCategoryService.save(category)
-        } as Right
+        }
 
-        return ResponseEntity.ok("Budget category saved with id ${savedCategory.value.id}.")
+        return categoryResult.fold(
+            { throw it },
+            { ResponseEntity.ok("Budget category saved with id ${it.id}.")  }
+        )
     }
 
     override fun getCategoryByName(name: String): ResponseEntity<BudgetCategoryDTO> {

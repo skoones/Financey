@@ -16,22 +16,32 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.inValues
 import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.transaction.annotation.Transactional
 
 interface BudgetCategoryRepository : MongoRepository<Budget, String>, CustomBudgetCategoryRepository
 
 interface CustomBudgetCategoryRepository {
-    fun save(budgetCategory: BudgetCategory): Either<Nothing, BudgetCategory>
+    fun save(budgetCategory: BudgetCategory): Either<PersistenceError, BudgetCategory>
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
     fun getAllByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>>
     fun getById(id: String): Either<PersistenceError, BudgetCategory>
     fun getByName(name: String): Either<PersistenceError, BudgetCategory>
 }
 
-class CustomBudgetCategoryRepositoryImpl(
+open class CustomBudgetCategoryRepositoryImpl(
     @Autowired private val mongoTemplate: MongoTemplate
 ) : CustomBudgetCategoryRepository {
 
-    override fun save(budgetCategory: BudgetCategory): Either<Nothing, BudgetCategory> = Right(mongoTemplate.save(budgetCategory))
+    override fun save(budgetCategory: BudgetCategory): Either<PersistenceError, BudgetCategory> {
+        val parentCategory = budgetCategory.parentCategoryId?.let {
+            this.getById(it)
+        }
+
+        return parentCategory?.fold(
+            { Left(it) },
+            { saveCategoryAndUpdateParent(budgetCategory, it) }
+        ) ?: Right(mongoTemplate.save(budgetCategory))
+    }
 
     override fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit> {
         val query = Query().addCriteria(BudgetCategory::id inValues ids)
@@ -82,6 +92,14 @@ class CustomBudgetCategoryRepositoryImpl(
         } catch (e: DataAccessException) {
             Left(DataAccessError("There was an issue with accessing database data. Budget categories could not be found."))
         }
+    }
+
+    @Transactional
+    open fun saveCategoryAndUpdateParent(category: BudgetCategory, parentCategory: BudgetCategory): Either<PersistenceError, BudgetCategory> {
+        val parentCategorySubcategories = parentCategory.subcategories
+        val newSubcategories = parentCategorySubcategories?.plus(category) ?: listOfNotNull(category)
+        this.save(parentCategory.copy(subcategories = newSubcategories))
+        return Right(mongoTemplate.save(category))
     }
 
 }

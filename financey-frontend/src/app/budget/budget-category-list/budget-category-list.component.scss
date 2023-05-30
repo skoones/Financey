@@ -7,9 +7,34 @@ mat-table {
   height: 100%
 }
 .header-cell {
-  color: white
+  color: white;
+  text-align: center;
 }
 
 .mat-cell-hover:hover {
   background-color: lightgray;
+}
+
+.cell-with-icon {
+  position: relative;
+}
+
+.icon-container {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+  margin-right: 8px;
+}
+
+.text-container {
+  display: inline-block;
+}
+
+.add-button {
+  background-color: mat.get-color-from-palette($my-primary) !important;
+}
+
+.add-button .mat-icon{
+  color: white;
 }

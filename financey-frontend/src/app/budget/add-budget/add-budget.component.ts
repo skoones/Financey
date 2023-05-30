@@ -98,6 +98,7 @@ export class AddBudgetComponent {
     });
   }
 
+  // todo mixin?
   async findCategoryIdFromName(categoryName: string): Promise<string> {
     const name: string = categoryName;
 

@@ -23,7 +23,7 @@ class BudgetCategoryService(
         categories
     }
 
-    suspend fun save(category: BudgetCategory): Either<Nothing, BudgetCategory> = either {
+    suspend fun save(category: BudgetCategory): Either<PersistenceError, BudgetCategory> = either {
         val savedCategory = budgetCategoryRepository.save(category).bind()
         logger.debug ("Saved $savedCategory to database")
         savedCategory

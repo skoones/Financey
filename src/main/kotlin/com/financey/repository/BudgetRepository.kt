@@ -12,6 +12,7 @@ import com.financey.domain.model.BudgetCategory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.inValues
 import org.springframework.data.mongodb.core.query.isEqualTo
@@ -26,6 +27,7 @@ interface CustomBudgetRepository {
     fun getAllByUserId(userId: String): Either<PersistenceError, List<Budget>>
     fun getAllByIds(ids: List<String>): Either<PersistenceError, List<Budget>>
     fun getByName(name: String): Either<PersistenceError, Budget>
+    fun getAllUncategorizedByUserId(userId: String): Either<PersistenceError, List<Budget>>
 }
 
 open class CustomBudgetRepositoryImpl(
@@ -42,14 +44,6 @@ open class CustomBudgetRepositoryImpl(
             { Left(it) },
             { saveBudgetAndUpdateCategory(budget, it) }
         ) ?: Right(mongoTemplate.save(budget))
-    }
-
-    @Transactional
-    open fun saveBudgetAndUpdateCategory(budget: Budget, category: BudgetCategory): Either<Nothing, Budget> {
-        val currentCategoryBudgets = category.budgets
-        val newBudgets = currentCategoryBudgets?.plus(budget) ?: listOfNotNull(budget)
-        categoryRepository.save(category.copy(budgets = newBudgets))
-        return Right(mongoTemplate.save(budget))
     }
 
     override fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit> {
@@ -97,6 +91,26 @@ open class CustomBudgetRepositoryImpl(
         } catch (e: DataAccessException) {
             Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
         }
+    }
+
+    override fun getAllUncategorizedByUserId(userId: String): Either<PersistenceError, List<Budget>> {
+        val query = Query()
+            .addCriteria(Budget::userId isEqualTo userId)
+            .addCriteria(Criteria.where("categoryId").isNull)
+
+        return try {
+            Right(mongoTemplate.find(query, Budget::class.java))
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
+        }
+    }
+
+    @Transactional
+    open fun saveBudgetAndUpdateCategory(budget: Budget, category: BudgetCategory): Either<Nothing, Budget> {
+        val currentCategoryBudgets = category.budgets
+        val newBudgets = currentCategoryBudgets?.plus(budget) ?: listOfNotNull(budget)
+        categoryRepository.save(category.copy(budgets = newBudgets))
+        return Right(mongoTemplate.save(budget))
     }
 
 }

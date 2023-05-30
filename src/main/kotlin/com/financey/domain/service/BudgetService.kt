@@ -37,6 +37,12 @@ class BudgetService(
         budgets
     }
 
+    suspend fun getAllUncategorizedByUserId(userId: String): Either<PersistenceError, List<Budget>> = either {
+        val budgets = budgetRepository.getAllUncategorizedByUserId(userId).bind()
+        logger.debug { "Retrieved uncategorized budgets for user with id $userId" }
+        budgets
+    }
+
     suspend fun getFavoriteBudgetsByUserId(userId: String): Either<PersistenceError, List<Budget>> = either {
         val user = userRepository.getById(userId).bind()
         logger.debug { "Retrieved user with id $userId." }
