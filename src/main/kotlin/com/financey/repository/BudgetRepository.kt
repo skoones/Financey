@@ -28,6 +28,7 @@ interface CustomBudgetRepository {
     fun getAllByIds(ids: List<String>): Either<PersistenceError, List<Budget>>
     fun getByName(name: String): Either<PersistenceError, Budget>
     fun getAllUncategorizedByUserId(userId: String): Either<PersistenceError, List<Budget>>
+    fun getAllByCategoryId(categoryId: String): Either<PersistenceError, List<Budget>>
 }
 
 open class CustomBudgetRepositoryImpl(
@@ -42,7 +43,7 @@ open class CustomBudgetRepositoryImpl(
 
         return category?.fold(
             { Left(it) },
-            { saveBudgetAndUpdateCategory(budget, it) }
+            { Right(mongoTemplate.save(budget)) }
         ) ?: Right(mongoTemplate.save(budget))
     }
 
@@ -105,12 +106,14 @@ open class CustomBudgetRepositoryImpl(
         }
     }
 
-    @Transactional
-    open fun saveBudgetAndUpdateCategory(budget: Budget, category: BudgetCategory): Either<Nothing, Budget> {
-        val currentCategoryBudgets = category.budgets
-        val newBudgets = currentCategoryBudgets?.plus(budget) ?: listOfNotNull(budget)
-        categoryRepository.save(category.copy(budgets = newBudgets))
-        return Right(mongoTemplate.save(budget))
+    override fun getAllByCategoryId(categoryId: String): Either<PersistenceError, List<Budget>> {
+        val query = Query().addCriteria(Budget::categoryId isEqualTo categoryId)
+
+        return try {
+            Right(mongoTemplate.find(query, Budget::class.java))
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
+        }
     }
 
 }

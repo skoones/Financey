@@ -186,7 +186,8 @@ export class AddEntryComponent {
     const name: string = budgetName || this.budget?.name || "";
 
     return new Promise<string>((resolve) => {
-      this.budgetService.getByName(name)
+      // todo placeholder userId
+      this.budgetService.getByName(name, "demo")
         .subscribe((budget: BudgetDTO) => {
           resolve(<string>budget.id);
         })

@@ -40,4 +40,10 @@ class BudgetCategoryService(
         budget
     }
 
+    suspend fun getAllByParentId(parentId: String): Either<PersistenceError, List<BudgetCategory>> = either {
+        val categories = budgetCategoryRepository.getAllByParentId(parentId).bind()
+        logger.debug { "Retrieved budget categories with parent id $parentId"}
+        categories
+    }
+
 }

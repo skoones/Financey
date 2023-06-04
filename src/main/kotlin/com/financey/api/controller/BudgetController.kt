@@ -1,6 +1,5 @@
 package com.financey.api.controller
 
-import arrow.core.Either.Right
 import com.financey.api.mapper.BudgetDtoMapper
 import com.financey.domain.context.BudgetSumContext
 import com.financey.domain.service.BudgetCategoryService
@@ -78,7 +77,7 @@ class BudgetController(
         )
     }
 
-    override fun getByName(name: String): ResponseEntity<BudgetDTO> {
+    override fun getByName(name: String, userId: String): ResponseEntity<BudgetDTO> {
         val budgetResult = runBlocking {
             budgetService.getByName(name)
         }
@@ -124,7 +123,7 @@ class BudgetController(
         )
     }
 
-    override fun getCategoryByName(name: String): ResponseEntity<BudgetCategoryDTO> {
+    override fun getCategoryByName(name: String, userId: String): ResponseEntity<BudgetCategoryDTO> {
         val categoryResult = runBlocking {
             budgetCategoryService.getByName(name)
         }
@@ -152,6 +151,28 @@ class BudgetController(
         return deletionResult.fold(
             { throw it },
             { ResponseEntity.ok("Budget categories with given ids have been deleted") }
+        )
+    }
+
+    override fun getAllByCategoryId(categoryId: String): ResponseEntity<List<BudgetDTO>> {
+        val budgetsResult = runBlocking {
+            budgetService.getAllByCategoryId(categoryId)
+        }
+
+        return budgetsResult.fold(
+            { throw it },
+            { budgets -> ResponseEntity.ok(budgets.map { budgetDtoMapper.toDto(it) }) }
+        )
+    }
+
+    override fun getCategoriesByParentId(parentId: String): ResponseEntity<List<BudgetCategoryDTO>> {
+        val categoryResult = runBlocking {
+            budgetCategoryService.getAllByParentId(parentId)
+        }
+
+        return categoryResult.fold(
+            { throw it },
+            { categories -> ResponseEntity.ok(categories.map { budgetDtoMapper.toCategoryDto(it) }) }
         )
     }
 

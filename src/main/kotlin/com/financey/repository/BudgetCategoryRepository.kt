@@ -26,6 +26,7 @@ interface CustomBudgetCategoryRepository {
     fun getAllByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>>
     fun getById(id: String): Either<PersistenceError, BudgetCategory>
     fun getByName(name: String): Either<PersistenceError, BudgetCategory>
+    fun getAllByParentId(parentId: String): Either<PersistenceError, List<BudgetCategory>>
 }
 
 open class CustomBudgetCategoryRepositoryImpl(
@@ -39,7 +40,7 @@ open class CustomBudgetCategoryRepositoryImpl(
 
         return parentCategory?.fold(
             { Left(it) },
-            { saveCategoryAndUpdateParent(budgetCategory, it) }
+            { Right(mongoTemplate.save(budgetCategory)) }
         ) ?: Right(mongoTemplate.save(budgetCategory))
     }
 
@@ -94,12 +95,14 @@ open class CustomBudgetCategoryRepositoryImpl(
         }
     }
 
-    @Transactional
-    open fun saveCategoryAndUpdateParent(category: BudgetCategory, parentCategory: BudgetCategory): Either<PersistenceError, BudgetCategory> {
-        val parentCategorySubcategories = parentCategory.subcategories
-        val newSubcategories = parentCategorySubcategories?.plus(category) ?: listOfNotNull(category)
-        this.save(parentCategory.copy(subcategories = newSubcategories))
-        return Right(mongoTemplate.save(category))
+    override fun getAllByParentId(parentId: String): Either<PersistenceError, List<BudgetCategory>> {
+        val query = Query().addCriteria(BudgetCategory::parentCategoryId isEqualTo parentId)
+
+        return try {
+            Right(mongoTemplate.find(query, BudgetCategory::class.java))
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budget categories could not be found."))
+        }
     }
 
 }

@@ -9,7 +9,5 @@ data class BudgetCategory(
     @Id val id: ObjectId? = ObjectId.get(),
     val userId: String,
     val name: String,
-    val subcategories: List<BudgetCategory>?,
-    val budgets: List<Budget>?,
     val parentCategoryId: String?
 )

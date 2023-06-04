@@ -100,7 +100,8 @@ export class AddBudgetCategoryComponent {
     const name = categoryName;
 
     return new Promise<string>((resolve) => {
-      this.budgetService.getCategoryByName(name)
+      // todo placeholder userId
+      this.budgetService.getCategoryByName(name, "demo")
         .subscribe((category: BudgetCategoryDTO) => {
           resolve(<string>category.id);
         })

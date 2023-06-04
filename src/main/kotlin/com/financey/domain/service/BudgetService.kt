@@ -69,4 +69,10 @@ class BudgetService(
         budget
     }
 
+    suspend fun getAllByCategoryId(categoryId: String): Either<PersistenceError, List<Budget>> = either  {
+        val budget = budgetRepository.getAllByCategoryId(categoryId).bind()
+        logger.debug { "Retrieved budgets with category id ${categoryId}." }
+        budget
+    }
+
 }
