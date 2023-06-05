@@ -1,7 +1,12 @@
-<button mat-button *ngIf="hasElements(this.previousTopLevelBudgetList)" style="color:white" class="add-button" (click)="loadPreviousTopLevelBudgets()">
+<button mat-button *ngIf="this.currentLevel > 0" style="color:white" class="add-button" (click)="loadPreviousTopLevelBudgets()">
   <mat-icon>arrow_back_ios_new</mat-icon>
   Back
 </button>
+<mat-card *ngIf="this.currentCategoryName.length !== 0" class="current-category-name">
+  <mat-card-content>
+    <span>{{ this.currentCategoryName }}</span>
+  </mat-card-content>
+</mat-card>
 <section class="mat-elevation-z8">
   <table mat-table [dataSource]="topLevelBudgets">
     <ng-container matColumnDef="name">
@@ -11,7 +16,8 @@
         <div class="text-container">
           {{topLevelBudget.name}}
         </div>
-        <div *ngIf="isExpandableCategory(topLevelBudget)" class="icon-container">
+        <span class="flex-spacer"></span>
+        <div *ngIf="!this.isBudgetDto(topLevelBudget)" class="icon-container">
           <mat-icon>arrow_forward_ios</mat-icon>
         </div>
       </td>

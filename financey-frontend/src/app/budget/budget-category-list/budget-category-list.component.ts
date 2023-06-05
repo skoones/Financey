@@ -15,12 +15,12 @@ export class BudgetCategoryListComponent implements OnInit {
 
   @Input() title = "Budgets"
   displayedColumns = ['name'];
-
   constructor(private budgetService: BudgetService, private router: Router) {}
-
   topLevelBudgets: TopLevelBudget[] = []
-
-  previousTopLevelBudgetList: TopLevelBudget[] = []
+  levelToBudgetList = new Map<number, TopLevelBudget[]>()
+  levelToCategoryName = new Map<number, string>([[0, ""]])
+  currentLevel = 0
+  currentCategoryName = ""
 
   ngOnInit(): void {
     this.initializeTopLevelBudgetList().then(() => {});
@@ -32,11 +32,18 @@ export class BudgetCategoryListComponent implements OnInit {
   }
 
   async chooseTopLevelBudget(topLevelBudget: TopLevelBudget) {
-    if (this.isExpandableCategory(topLevelBudget)) {
+    if (!this.isBudgetDto(topLevelBudget)) {
       const category = topLevelBudget as BudgetCategoryDTO;
-      this.previousTopLevelBudgetList = this.topLevelBudgets;
       const fullSubcategories = await this.findFullCategories(category.subcategories);
-      this.topLevelBudgets = (fullSubcategories as TopLevelBudget[]) || (await category.budgets as TopLevelBudget[]);
+
+      this.topLevelBudgets = (fullSubcategories as TopLevelBudget[]).concat(category.budgets as TopLevelBudget[]);
+
+      const newLevel = this.currentLevel + 1
+      this.levelToBudgetList.set(newLevel, this.topLevelBudgets)
+      this.levelToCategoryName.set(newLevel, category.name)
+
+      this.currentLevel = newLevel
+      this.currentCategoryName = category.name
     } else {
       // todo
     }
@@ -50,24 +57,17 @@ export class BudgetCategoryListComponent implements OnInit {
 
     const budgets = await firstValueFrom(this.budgetService.getUncategorizedBudgets("demo"));
     this.topLevelBudgets = (categories as TopLevelBudget[]).concat(budgets as TopLevelBudget[]);
+    this.levelToBudgetList.set(this.currentLevel, this.topLevelBudgets);
   }
 
-
-  isExpandableCategory(topLevelBudget: TopLevelBudget): boolean {
-    if (this.isBudgetDto(topLevelBudget)) {
-      return false;
-    } else {
-      const category = topLevelBudget as BudgetCategoryDTO;
-      return this.hasElements(category.subcategories) || this.hasElements(category.budgets);
-    }
-  }
-
-  hasElements<T>(array: T[] | undefined): boolean {
-    return array != undefined && array.length > 0;
-  }
   loadPreviousTopLevelBudgets() {
-    this.topLevelBudgets = this.previousTopLevelBudgetList
-    this.previousTopLevelBudgetList = []
+    this.topLevelBudgets = this.levelToBudgetList.get(this.currentLevel - 1) || [];
+    this.currentCategoryName = this.levelToCategoryName.get(this.currentLevel - 1) || ""
+    this.currentLevel = this.currentLevel - 1;
+  }
+
+  isBudgetDto(topLevelBudget: TopLevelBudget) {
+    return (topLevelBudget as BudgetDTO).budgetEntries !== undefined;
   }
 
   private findFullCategories(categories: BudgetCategoryDTO[] | undefined): Promise<BudgetCategoryDTO[]> | undefined {
@@ -84,10 +84,6 @@ export class BudgetCategoryListComponent implements OnInit {
     });
 
     return Promise.all(categoryPromises);
-  }
-
-  private isBudgetDto(topLevelBudget: TopLevelBudget) {
-    return (topLevelBudget as BudgetDTO).budgetEntries !== undefined;
   }
 
 }

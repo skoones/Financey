@@ -1,6 +1,7 @@
 @use '@angular/material' as mat;
 @import '../../../styles.scss';
-.compact-info-container {
+
+.current-category-name {
   width: 350px;
   margin: 10px;
   display: flex;

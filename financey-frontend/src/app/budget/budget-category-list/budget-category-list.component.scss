@@ -38,3 +38,13 @@ mat-table {
 .add-button .mat-icon{
   color: white;
 }
+
+.current-category-name {
+  margin: 10px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  background-color: mat.get-color-from-palette($my-primary);
+  color: white;
+  border-radius: 4px;
+}

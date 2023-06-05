@@ -19,6 +19,11 @@
 
 .container {
   display: flex;
+  flex-direction: row;
+}
+
+.vertical-container {
+  display: flex;
   flex-direction: column;
 }
 
@@ -26,3 +31,6 @@
   margin-bottom: 16px;
 }
 
+.flex-spacer {
+  margin: 10px;
+}

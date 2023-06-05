@@ -64,7 +64,6 @@ export class AddBudgetComponent {
       investment: this.isInvestment
     }
 
-    console.log("got csateoru: " + budgetDto.categoryId)
     await firstValueFrom(this.budgetService.addBudget(budgetDto));
     this.anyAdded = true;
     return AddCategoryResult.Success;
@@ -99,16 +98,16 @@ export class AddBudgetComponent {
   }
 
   // todo mixin?
-  async findCategoryIdFromName(categoryName: string): Promise<string> {
+  async findCategoryIdFromName(categoryName: string): Promise<Promise<string> | undefined> {
     const name: string = categoryName;
 
-    return new Promise<string>((resolve) => {
+    return categoryName ? new Promise<string>((resolve) => {
       // todo placeholder userId
       this.budgetService.getCategoryByName(name, "demo")
         .subscribe((category: BudgetCategoryDTO) => {
           resolve(<string>category.id);
         })
-    })
+    }) : undefined;
   }
 
 }
