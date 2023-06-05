@@ -155,6 +155,32 @@ paths:
             text/plain:
               schema:
                 type: string
+  /category/{id}:
+    get:
+      operationId: getCategoryById
+      description: "Get budget category by id."
+      parameters:
+        - name: id
+          in: path
+          description: "Budget category d."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetCategoryDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /{userId}/budget/{name}:
     get:
       operationId: getByName

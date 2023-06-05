@@ -1,8 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import {BudgetCategoryDTO, BudgetDTO} from "../../../generated";
 import {BudgetService} from "../../../generated";
+import {BudgetDetailsComponent} from "../budget-details/budget-details.component";
 
 type TopLevelBudget = BudgetDTO | BudgetCategoryDTO;
 
@@ -15,7 +17,7 @@ export class BudgetCategoryListComponent implements OnInit {
 
   @Input() title = "Budgets"
   displayedColumns = ['name'];
-  constructor(private budgetService: BudgetService, private router: Router) {}
+  constructor(private budgetService: BudgetService, private router: Router, private dialog: MatDialog) {}
   topLevelBudgets: TopLevelBudget[] = []
   levelToBudgetList = new Map<number, TopLevelBudget[]>()
   levelToCategoryName = new Map<number, string>([[0, ""]])
@@ -45,7 +47,15 @@ export class BudgetCategoryListComponent implements OnInit {
       this.currentLevel = newLevel
       this.currentCategoryName = category.name
     } else {
-      // todo
+      const dialogRef = this.dialog.open(BudgetDetailsComponent, {
+        data: { budget: topLevelBudget, categoryId: (topLevelBudget as BudgetDTO).categoryId }
+      }  );
+
+      dialogRef.componentInstance.updateBudgetEventEmitter.subscribe((anyUpdated) => {
+        if (anyUpdated) {
+          this.initializeTopLevelBudgetList();
+        }
+      });
     }
   }
 

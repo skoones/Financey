@@ -71,9 +71,9 @@ open class CustomBudgetCategoryRepositoryImpl(
         return try {
             val foundResult = mongoTemplate.find(query, BudgetCategory::class.java)
             when (foundResult.size) {
-                0 -> Left(ElementDoesNotExistError("There is no category for budget with given id."))
+                0 -> Left(ElementDoesNotExistError("There is no budget category with given id."))
                 1 -> Right(foundResult.first())
-                else -> Left(MultipleElementsError("There is more than one category for budget with given id in the database."))
+                else -> Left(MultipleElementsError("There is more than one budget category with given id in the database."))
             }
         } catch (e: DataAccessException) {
             Left(DataAccessError("There was an issue with accessing database data. Budget category could not be found."))

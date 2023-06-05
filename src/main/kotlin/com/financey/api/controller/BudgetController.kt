@@ -176,4 +176,15 @@ class BudgetController(
         )
     }
 
+    override fun getCategoryById(id: String): ResponseEntity<BudgetCategoryDTO> {
+        val categoryResult = runBlocking {
+            budgetCategoryService.getById(id)
+        }
+
+        return categoryResult.fold(
+            { throw it },
+            { ResponseEntity.ok(budgetDtoMapper.toCategoryDto(it)) }
+        )
+    }
+
 }
