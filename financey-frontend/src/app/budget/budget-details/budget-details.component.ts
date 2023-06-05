@@ -2,6 +2,7 @@ import {Component, EventEmitter, Inject, Input, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import {firstValueFrom, map, Observable, startWith} from "rxjs";
 import {BudgetCategoryDTO, BudgetDTO, BudgetService} from "../../../generated";
 
@@ -20,13 +21,14 @@ export class BudgetDetailsComponent {
   @Input() budget?: BudgetDTO
   @Input() categoryId?: string
   @Output() updateBudgetEventEmitter = new EventEmitter<boolean>();
+  @Output() closePopup = new EventEmitter<void>();
 
   hasUpdates: boolean = false;
   userId: string = "demo"; // todo placeholder userId
   isInvestment = false;
 
   constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private formSnackBar: MatSnackBar,
-              @Inject(MAT_DIALOG_DATA) private data: any) {
+              private router: Router, @Inject(MAT_DIALOG_DATA) private data: any) {
     this.budget = data.budget
     this.categoryId = data.categoryId
 
@@ -104,4 +106,12 @@ export class BudgetDetailsComponent {
       });
     }
   }
+
+  openFullBudgetView() {
+    if (this.budget !== undefined) {
+      this.closePopup.emit();
+      this.router.navigate([`/budgets/single/${this.budget.id}`],  { queryParams: { budget: JSON.stringify(this.budget) } });
+    }
+  }
+
 }

@@ -49,12 +49,15 @@ export class BudgetCategoryListComponent implements OnInit {
     } else {
       const dialogRef = this.dialog.open(BudgetDetailsComponent, {
         data: { budget: topLevelBudget, categoryId: (topLevelBudget as BudgetDTO).categoryId }
-      }  );
+      });
 
       dialogRef.componentInstance.updateBudgetEventEmitter.subscribe((anyUpdated) => {
         if (anyUpdated) {
           this.initializeTopLevelBudgetList();
         }
+      });
+      dialogRef.componentInstance.closePopup.subscribe(() => {
+        this.dialog.closeAll()
       });
     }
   }

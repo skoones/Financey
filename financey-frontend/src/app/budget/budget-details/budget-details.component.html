@@ -1,7 +1,11 @@
 <mat-card class="mat-elevation-z8">
-  <mat-card-header>
-    <mat-card-title>Budget details</mat-card-title>
-  </mat-card-header>
+  <div class="title-container">
+    <mat-card-header>
+      <mat-card-title>Budget details</mat-card-title>
+      <span class="flex-spacer"></span>
+      <button mat-button color="primary" (click)="openFullBudgetView()">Full budget view</button>
+    </mat-card-header>
+  </div>
   <mat-checkbox class="example-margin" [(ngModel)]="isInvestment">Investment budget</mat-checkbox>
   <form [formGroup]="budgetFormGroup" (ngSubmit)="updateBudget()">
     <mat-form-field>
