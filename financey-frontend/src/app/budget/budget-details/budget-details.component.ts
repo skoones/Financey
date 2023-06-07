@@ -50,6 +50,7 @@ export class BudgetDetailsComponent {
 
   async updateBudget(): Promise<AddCategoryResult> {
     const formGroupData = this.budgetFormGroup.value;
+    console.log(formGroupData.name)
     const budgetDto: BudgetDTO = {
       id: this.budget?.id,
       name: formGroupData.name,
@@ -58,6 +59,7 @@ export class BudgetDetailsComponent {
       investment: this.isInvestment
     }
 
+    console.log(budgetDto)
     await firstValueFrom(this.budgetService.updateBudget(budgetDto));
     this.hasUpdates = true;
     return AddCategoryResult.Success;
@@ -81,6 +83,16 @@ export class BudgetDetailsComponent {
       if (hasMissingFields) {
         this.openErrorSnackbar('Please fill out all required fields.');
       }
+    }
+  }
+
+  updateNameValue() {
+    const nameControl = this.budgetFormGroup.get('name');
+    if (nameControl != undefined) {
+      if (!nameControl.dirty) {
+        nameControl.setValue(this.budget?.name);
+      }
+
     }
   }
 

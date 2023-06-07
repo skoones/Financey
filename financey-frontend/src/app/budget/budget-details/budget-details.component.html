@@ -6,7 +6,7 @@
       <button mat-button color="primary" (click)="openFullBudgetView()">Full budget view</button>
     </mat-card-header>
   </div>
-  <mat-checkbox class="example-margin" [(ngModel)]="isInvestment">Investment budget</mat-checkbox>
+  <mat-checkbox class="example-margin" [(ngModel)]="isInvestment" (ngModelChange)="updateNameValue()">Investment budget</mat-checkbox>
   <form [formGroup]="budgetFormGroup" (ngSubmit)="updateBudget()">
     <mat-form-field>
       <mat-label>Name</mat-label>
