@@ -1,12 +1,29 @@
 @use '@angular/material' as mat;
 @import '../../../styles.scss';
 
+$info-banner-top-distance: 150px;
+
 .investment-info {
   position: fixed;
-  top: 150px;
+  top: $info-banner-top-distance;
   left: 0;
   width: 100%;
-  z-index: 9999; /* Adjust the z-index value as needed */
+}
+
+.budget-name-container {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  top: $info-banner-top-distance;
+  left: 0;
+  width: 100%;
+}
+
+.budget-name {
+  background-color: mat.get-color-from-palette($my-primary);
+  color: white;
+  font-weight: bold;
+  margin-top: 20px; /* adjust the margin-top value as needed */
 }
 
 .add-entry-button {

@@ -79,7 +79,7 @@ class BudgetController(
 
     override fun getByName(name: String, userId: String): ResponseEntity<BudgetDTO> {
         val budgetResult = runBlocking {
-            budgetService.getByName(name)
+            budgetService.getByName(name, userId)
         }
 
         return budgetResult.fold(

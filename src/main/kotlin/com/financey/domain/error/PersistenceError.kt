@@ -4,6 +4,8 @@ sealed class PersistenceError : FinanceyError()
 
 class ElementDoesNotExistError(override val message: String?) : PersistenceError()
 
+class UniqueElementExistsError(override val message: String?) : PersistenceError()
+
 class DataAccessError(override val message: String?) : PersistenceError()
 
 class MultipleElementsError(override val message: String?) : PersistenceError()

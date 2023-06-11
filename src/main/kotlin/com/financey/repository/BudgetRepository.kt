@@ -3,10 +3,7 @@ package com.financey.repository
 import arrow.core.Either
 import arrow.core.Either.Left
 import arrow.core.Either.Right
-import com.financey.domain.error.DataAccessError
-import com.financey.domain.error.ElementDoesNotExistError
-import com.financey.domain.error.MultipleElementsError
-import com.financey.domain.error.PersistenceError
+import com.financey.domain.error.*
 import com.financey.domain.model.Budget
 import com.financey.domain.model.BudgetCategory
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,9 +23,9 @@ interface CustomBudgetRepository {
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
     fun getAllByUserId(userId: String): Either<PersistenceError, List<Budget>>
     fun getAllByIds(ids: List<String>): Either<PersistenceError, List<Budget>>
-    fun getByName(name: String): Either<PersistenceError, Budget>
     fun getAllUncategorizedByUserId(userId: String): Either<PersistenceError, List<Budget>>
     fun getAllByCategoryId(categoryId: String): Either<PersistenceError, List<Budget>>
+    fun getByName(name: String, userId: String): Either<PersistenceError, Budget>
 }
 
 open class CustomBudgetRepositoryImpl(
@@ -43,8 +40,8 @@ open class CustomBudgetRepositoryImpl(
 
         return category?.fold(
             { Left(it) },
-            { Right(mongoTemplate.save(budget)) }
-        ) ?: Right(mongoTemplate.save(budget))
+            { saveWithUniqueName(budget) }
+        ) ?: saveWithUniqueName(budget)
     }
 
     override fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit> {
@@ -79,8 +76,10 @@ open class CustomBudgetRepositoryImpl(
         }
     }
 
-    override fun getByName(name: String): Either<PersistenceError, Budget> {
-        val query = Query().addCriteria(Budget::name isEqualTo name)
+    override fun getByName(name: String, userId: String): Either<PersistenceError, Budget> {
+        val query = Query()
+            .addCriteria(Budget::name isEqualTo name)
+            .addCriteria(Budget::userId isEqualTo userId)
 
         return try {
             val existingBudgets = mongoTemplate.find(query, Budget::class.java)
@@ -115,5 +114,14 @@ open class CustomBudgetRepositoryImpl(
             Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
         }
     }
+
+    private fun saveWithUniqueName(budget: Budget) = getByName(budget.name, budget.userId)
+        .fold({ e ->
+            when (e) {
+                is ElementDoesNotExistError -> Right(mongoTemplate.save(budget))
+                else -> Left(e)
+            }
+        },
+            { Left(UniqueElementExistsError("Budget with given name already exists in the database.")) })
 
 }

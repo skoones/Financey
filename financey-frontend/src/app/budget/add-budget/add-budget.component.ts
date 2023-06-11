@@ -1,3 +1,4 @@
+import {HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import {Component, EventEmitter, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -54,7 +55,7 @@ export class AddBudgetComponent {
     return this.categories.filter(category => category.name.toLowerCase().includes(filterValue));
   }
 
-  async addBudget(): Promise<AddCategoryResult> {
+  async addBudget(): Promise<[AddCategoryResult, string]> {
     const formGroupData = this.budgetFormGroup.value;
     console.log(formGroupData.categoryForBudget)
     const budgetDto: BudgetDTO = {
@@ -64,16 +65,28 @@ export class AddBudgetComponent {
       investment: this.isInvestment
     }
 
-    await firstValueFrom(this.budgetService.addBudget(budgetDto));
-    this.anyAdded = true;
-    return AddCategoryResult.Success;
+    try {
+      await firstValueFrom(this.budgetService.addBudget(budgetDto, 'response'));
+      this.anyAdded = true;
+      return [AddCategoryResult.Success, "Budget saved."];
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.status === HttpStatusCode.BadRequest) {
+        return [AddCategoryResult.Fail, error.error];
+      } else {
+        return [AddCategoryResult.Fail, "Failed to save budget."];
+      }
+    }
   }
 
   submitBudgetForm() {
     if (this.budgetFormGroup.valid) {
       this.addBudget().then((result) => {
-        if (result == AddCategoryResult.Success) {
-          this.formSnackBar.open('Budget saved.', 'Close', {
+        if (result[0] == AddCategoryResult.Success) {
+          this.formSnackBar.open(result[1], 'Close', {
+            duration: 5000,
+          });
+        } else {
+          this.formSnackBar.open(result[1], 'Close', {
             duration: 5000,
           });
         }

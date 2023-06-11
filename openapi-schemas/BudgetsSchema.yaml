@@ -299,6 +299,12 @@ paths:
             text/plain:
               schema:
                 type: string
+        "400":
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
   /update:
     post:
       operationId: updateBudget
