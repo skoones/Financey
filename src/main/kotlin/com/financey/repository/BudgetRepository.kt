@@ -122,6 +122,6 @@ open class CustomBudgetRepositoryImpl(
                 else -> Left(e)
             }
         },
-            { Left(UniqueElementExistsError("Budget with given name already exists in the database.")) })
+            { Left(UniqueElementExistsError("Budget with given name already exists for this user.")) })
 
 }
