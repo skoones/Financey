@@ -42,6 +42,7 @@ export class BudgetDetailsComponent {
   ngOnInit(): void {
     const categoryId = this.budget?.categoryId || "";
     this.initializeBudgetForm(categoryId);
+    console.log(this.budget)
   }
 
   ngOnDestroy() {
@@ -59,7 +60,6 @@ export class BudgetDetailsComponent {
       investment: this.isInvestment
     }
 
-    console.log(budgetDto)
     await firstValueFrom(this.budgetService.updateBudget(budgetDto));
     this.hasUpdates = true;
     return AddCategoryResult.Success;

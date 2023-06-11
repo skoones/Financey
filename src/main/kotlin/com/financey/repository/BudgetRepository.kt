@@ -122,6 +122,9 @@ open class CustomBudgetRepositoryImpl(
                 else -> Left(e)
             }
         },
-            { Left(UniqueElementExistsError("Budget with given name already exists for this user.")) })
+            {
+                if (it.id != budget.id) Left(UniqueElementExistsError("Budget with given name already exists for this user."))
+                else Right(mongoTemplate.save(budget))
+            })
 
 }
