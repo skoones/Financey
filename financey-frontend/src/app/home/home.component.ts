@@ -8,8 +8,11 @@ import {BudgetDTO} from "../../generated";
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  favoriteBudgetsTitle: string = FAVORITE_BUDGETS_TITLE;
-  recentBudgetsTitle: string = RECENT_BUDGETS_TITLE;
+  private readonly FAVORITE_BUDGETS_TITLE = "Favorite budgets";
+  private readonly RECENT_BUDGETS_TITLE = "Recent budgets";
+
+  favoriteBudgetsTitle: string = this.FAVORITE_BUDGETS_TITLE;
+  recentBudgetsTitle: string = this.RECENT_BUDGETS_TITLE;
   @Output() sidenavToggleEvent = new EventEmitter<boolean>();
   recentBudgets: BudgetDTO[];
 
@@ -18,7 +21,3 @@ export class HomeComponent {
   }
 
 }
-
-// TODO extract to constants file
-const FAVORITE_BUDGETS_TITLE: string = "Favorite budgets";
-const RECENT_BUDGETS_TITLE: string = "Recent budgets";
