@@ -12,17 +12,18 @@ import {BudgetService} from "../../../generated";
 export class BudgetListComponent implements OnInit {
 
   @Input() title = "Budgets"
+  @Input() budgets: BudgetDTO[] = [];
   displayedColumns = ['name'];
 
   constructor(private budgetService: BudgetService, private router: Router) {}
 
-  budgets: BudgetDTO[] = []
-
   ngOnInit(): void {
     // todo placeholder userId
-    this.budgetService.getUncategorizedBudgets("demo").subscribe(data => {
-      this.budgets = data;
-    });
+    if (this.budgets?.length == 0) {
+      this.budgetService.getUncategorizedBudgets("demo").subscribe(data => {
+        this.budgets = data;
+      });
+    }
   }
 
   chooseBudget(budget: BudgetDTO) {

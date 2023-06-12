@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import {RecentlyViewedBudgetsService} from "../budget/recently-viewed-budgets.service";
+import {BudgetDTO} from "../../generated";
 
 @Component({
   selector: 'app-home',
@@ -8,9 +10,13 @@ import { Component, EventEmitter, Output } from '@angular/core';
 export class HomeComponent {
   favoriteBudgetsTitle: string = FAVORITE_BUDGETS_TITLE;
   recentBudgetsTitle: string = RECENT_BUDGETS_TITLE;
-  sidenavToggle: boolean = false;
-
   @Output() sidenavToggleEvent = new EventEmitter<boolean>();
+  recentBudgets: BudgetDTO[];
+
+  constructor(private recentlyViewedBudgetsService: RecentlyViewedBudgetsService) {
+    this.recentBudgets = recentlyViewedBudgetsService.getRecentlyViewed();
+  }
+
 }
 
 // TODO extract to constants file

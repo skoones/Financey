@@ -6,6 +6,7 @@ import {BudgetDTO} from "../../../generated";
 import {AddEntryComponent} from "../../entry/add-entry/add-entry.component";
 import {MatDialog} from "@angular/material/dialog";
 import {EntryListComponent} from "../../entry/entry-list/entry-list.component";
+import {RecentlyViewedBudgetsService} from "../recently-viewed-budgets.service";
 
 @Component({
   selector: 'app-single-budget-view',
@@ -19,7 +20,8 @@ export class SingleBudgetViewComponent {
   @ViewChild(EntryListComponent, { static: false })
   private entryListComponent?: EntryListComponent;
 
-  constructor(private route: ActivatedRoute, private location: Location,  private dialog: MatDialog) {
+  constructor(private recentlyViewedService: RecentlyViewedBudgetsService, private route: ActivatedRoute,
+              private location: Location, private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -31,6 +33,9 @@ export class SingleBudgetViewComponent {
     const budgetParam = this.route.snapshot.queryParams['budget'];
     if (budgetParam) {
       this.budget = JSON.parse(budgetParam);
+      if (this.budget) {
+        this.recentlyViewedService.addRecentlyViewed(this.budget);
+      }
     }
   }
 
