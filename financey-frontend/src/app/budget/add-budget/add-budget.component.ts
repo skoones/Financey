@@ -57,7 +57,6 @@ export class AddBudgetComponent {
 
   async addBudget(): Promise<[AddCategoryResult, string]> {
     const formGroupData = this.budgetFormGroup.value;
-    console.log(formGroupData.categoryForBudget)
     const budgetDto: BudgetDTO = {
       name: formGroupData.name,
       userId: this.userId,

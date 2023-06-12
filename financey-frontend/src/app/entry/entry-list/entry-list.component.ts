@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, Type} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {BudgetDTO, BudgetService, EntryDTO, EntryService, InvestmentEntryDTO} from "../../../generated";
 import {EntryDetailsComponent} from "../entry-details/entry-details.component";
@@ -60,8 +60,8 @@ export class EntryListComponent {
   }
 
   chooseEntry(entry: GeneralEntry) {
-    const dialogRef = this.isInvestmentEntry(entry) ? this.openComponentFromDialog(entry, InvestmentEntryDetailsComponent) :
-      this.openEntryComponentFromDialog<EntryDetailsComponent>(entry);
+    const dialogRef = this.isInvestmentEntry(entry) ? this.openEntryComponentFromDialog(entry, InvestmentEntryDetailsComponent) :
+      this.openEntryComponentFromDialog(entry, EntryDetailsComponent);
 
     dialogRef.componentInstance.updateEventEmitter.subscribe((hasUpdates) => {
       if (hasUpdates) {
@@ -69,17 +69,9 @@ export class EntryListComponent {
       }
     });
   }
-  private openComponentFromDialog<T>(entry: GeneralEntry, component: new () => T) {
-    const budget = this.budget;
 
-    return this.dialog.open(component, {
-      data: { entry, budget }
-    });
-  }
-
-  private openEntryComponentFromDialog<T>(entry: GeneralEntry) {
+  private openEntryComponentFromDialog<T>(entry: GeneralEntry, componentType: Type<T>) {
     const budget = this.budget;
-    const componentType: ComponentType<EntryDetailsComponent> = EntryDetailsComponent;
 
     return this.dialog.open(componentType, {
       data: { entry: entry, budget: budget }

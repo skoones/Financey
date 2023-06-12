@@ -13,6 +13,7 @@ import {
 } from "../../../generated";
 import {amountValidator, volumeValidator} from "../../validators/number-validators";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {mapIsBuyToEntryType} from "../../utils/entry-utils";
 
 enum AddEntryResult {
   Success,
@@ -89,7 +90,7 @@ export class AddEntryComponent {
       value: formGroupData.amount,
       currency: formGroupData.currency,
       name: formGroupData.name,
-      entryType: this.isInvestment ? this.mapIsBuyToEntryType(this.isBuyControl.value) : this.entryType,
+      entryType: this.isInvestment ? mapIsBuyToEntryType(this.isBuyControl.value) : this.entryType,
       userId: this.userId,
       budgetId: await this.findBudgetIdFromName(this.budgetListControl.value),
       date: formGroupData.entryDate
@@ -123,14 +124,6 @@ export class AddEntryComponent {
 
   private entryBudgetIsInvestment(investmentEntryDto: InvestmentEntryDTO): boolean {
     return this.budgets.filter(b => b.id == investmentEntryDto.entry.budgetId).every(b => b.investment);
-  }
-
-  private mapIsBuyToEntryType(isBuy: boolean): EntryType {
-    if (isBuy) {
-      return EntryType.EXPENSE;
-    } else {
-      return EntryType.INCOME;
-    }
   }
 
   private getMarketPriceAtOperation(amount: number, volume: number): number {

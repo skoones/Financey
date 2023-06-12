@@ -1,0 +1,51 @@
+mat-card {
+  width: 100%
+}
+
+mat-form-field {
+  width: 60%;
+  margin-left: 1em;
+  margin-top: 1em;
+}
+
+mat-checkbox {
+  margin-left: 0.5em;
+}
+
+.entry-amount-currency-input {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.amount-input {
+  width: 50%;
+}
+
+.currency-input {
+  width: 30%;
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+}
+
+.title-container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.flex-spacer {
+  flex-grow: 1;
+}
+
+.investment-details-container {
+  display: flex;
+  align-items: center;
+}
+
+.market-price-input {
+  display: flex;
+  align-items: center;
+}

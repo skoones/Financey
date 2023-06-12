@@ -42,7 +42,6 @@ export class BudgetDetailsComponent {
   ngOnInit(): void {
     const categoryId = this.budget?.categoryId || "";
     this.initializeBudgetForm(categoryId);
-    console.log(this.budget)
   }
 
   ngOnDestroy() {
@@ -51,7 +50,6 @@ export class BudgetDetailsComponent {
 
   async updateBudget(): Promise<AddCategoryResult> {
     const formGroupData = this.budgetFormGroup.value;
-    console.log(formGroupData.name)
     const budgetDto: BudgetDTO = {
       id: this.budget?.id,
       name: formGroupData.name,
