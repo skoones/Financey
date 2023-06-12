@@ -1,7 +1,9 @@
+// noinspection TypeScriptValidateJSTypes
+
 import {Component, EventEmitter, Inject, Input, Optional, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {firstValueFrom, map, Observable, startWith} from "rxjs";
+import {firstValueFrom, forkJoin, map, Observable, startWith} from "rxjs";
 import {
   BudgetDTO,
   BudgetService,
@@ -38,8 +40,11 @@ export class AddEntryComponent {
   isBuyControl: FormControl;
   entryType: EntryType = EntryType.EXPENSE;
   anyAdded: boolean = false;
-
   userId: string = "demo"; // todo placeholder userId
+  isFocused = false;
+
+  private readonly _amountControlName = 'amount';
+  private readonly _volumeControlName = 'volume';
 
 
   constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private entryService: EntryService,
@@ -56,6 +61,7 @@ export class AddEntryComponent {
       volume: [1, Validators.required, volumeValidator()],
       isBuy: this.isBuyControl,
       isSell: this.isSellControl,
+      marketPriceAtOperation: ['', Validators.required, amountValidator()]
     }))
     this.budget = data?.budget;
   }
@@ -68,6 +74,24 @@ export class AddEntryComponent {
     this.budgetService.getUncategorizedBudgets(this.userId).subscribe(data => {
       this.budgets = data;
     });
+    this.handleMarketPriceChanges('amount-volume');
+    this.handleMarketPriceChanges('volume-amount');
+  }
+
+  private handleMarketPriceChanges(argumentOrder: 'amount-volume' | 'volume-amount'): void {
+    const controlName = argumentOrder === 'amount-volume' ? this._amountControlName : this._volumeControlName;
+    const dependentControlName = controlName == this._amountControlName ? this._volumeControlName : this._amountControlName;
+
+    this.entryFormGroup?.get(controlName)?.valueChanges.subscribe((value: number) => {
+      const marketPrice = this.entryFormGroup?.get('marketPriceAtOperation');
+
+      const dependentValue = this.entryFormGroup?.get(dependentControlName)?.value;
+      const amount = argumentOrder === 'amount-volume' ? value : dependentValue;
+      const volume = argumentOrder === 'amount-volume' ? dependentValue : value;
+      if (!marketPrice?.dirty) {
+        marketPrice?.setValue(this.getMarketPriceAtOperation(amount, volume));
+      }
+    })
   }
 
   ngOnDestroy() {
@@ -100,7 +124,7 @@ export class AddEntryComponent {
       const investmentEntryDto: InvestmentEntryDTO = {
         entry: entryDto,
         volume: formGroupData.volume,
-        marketPriceAtOperation: this.getMarketPriceAtOperation(formGroupData.amount, formGroupData.volume)
+        marketPriceAtOperation: formGroupData.marketPriceAtOperation || this.getMarketPriceAtOperation(formGroupData.amount, formGroupData.volume)
       }
 
       if (this.entryBudgetIsInvestment(investmentEntryDto)) {

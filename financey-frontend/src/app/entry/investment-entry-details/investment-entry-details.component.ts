@@ -56,10 +56,6 @@ export class InvestmentEntryDetailsComponent {
       isBuy: [isBuyValue],
       isSell: [{value: !isBuyValue, disabled: isBuyValue || true}]
     })
-    // this.entryFormGroup.get('isBuy')?.valueChanges.subscribe((value: boolean) => {
-    //   this.entryFormGroup?.get('isSell')?.setValue(!value);
-    // })
-
   }
 
   ngOnDestroy() {
@@ -90,7 +86,7 @@ export class InvestmentEntryDetailsComponent {
       marketPriceAtOperation: formGroupData.marketPriceAtOperation
     };
 
-
+    // todo maybe check is market price/volume/value are make sense?
     let result: string = "";
     await new Promise<void>((resolve) => this.entryService.updateInvestmentEntry(investmentEntryDTO).pipe(
       tap((value: string) => {

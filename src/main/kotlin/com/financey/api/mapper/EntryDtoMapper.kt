@@ -16,8 +16,10 @@ abstract class EntryDtoMapper {
     @Mapping(target = "id", qualifiedByName = ["IdMapper", "objectIdToString"])
     abstract fun toDto(domain: Entry): EntryDTO
 
+    @Mapping(target = "id", qualifiedByName = ["IdMapper", "stringToObjectId"])
     abstract fun fromInvestmentDto(dto: InvestmentEntryDTO): InvestmentEntry
 
+    @Mapping(target = "id", qualifiedByName = ["IdMapper", "objectIdToString"])
     abstract fun toInvestmentDto(domain: InvestmentEntry): InvestmentEntryDTO
 
 }
