@@ -23,7 +23,7 @@ class BudgetCategoryService(
         categories
     }
 
-    suspend fun save(category: BudgetCategory): Either<Nothing, BudgetCategory> = either {
+    suspend fun save(category: BudgetCategory): Either<PersistenceError, BudgetCategory> = either {
         val savedCategory = budgetCategoryRepository.save(category).bind()
         logger.debug ("Saved $savedCategory to database")
         savedCategory
@@ -34,5 +34,22 @@ class BudgetCategoryService(
         logger.debug { "Removed budget categories with ids $categoryIds from database" }
     }
 
+    suspend fun getByName(name: String): Either<PersistenceError, BudgetCategory> = either {
+        val budget = budgetCategoryRepository.getByName(name).bind()
+        logger.debug { "Retrieved budget with name ${name}." }
+        budget
+    }
+
+    suspend fun getAllByParentId(parentId: String): Either<PersistenceError, List<BudgetCategory>> = either {
+        val categories = budgetCategoryRepository.getAllByParentId(parentId).bind()
+        logger.debug { "Retrieved budget categories with parent id $parentId"}
+        categories
+    }
+
+    suspend fun getById(id: String): Either<PersistenceError, BudgetCategory> = either {
+        val budgetCategory = budgetCategoryRepository.getById(id).bind()
+        logger.debug { "Retrieved budget category with id ${id}." }
+        budgetCategory
+    }
 
 }

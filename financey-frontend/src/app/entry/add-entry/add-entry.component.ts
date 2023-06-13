@@ -1,7 +1,9 @@
+// noinspection TypeScriptValidateJSTypes
+
 import {Component, EventEmitter, Inject, Input, Optional, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {firstValueFrom, map, Observable, startWith} from "rxjs";
+import {firstValueFrom, forkJoin, map, Observable, startWith} from "rxjs";
 import {
   BudgetDTO,
   BudgetService,
@@ -13,6 +15,7 @@ import {
 } from "../../../generated";
 import {amountValidator, volumeValidator} from "../../validators/number-validators";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {mapIsBuyToEntryType} from "../../utils/entry-utils";
 
 enum AddEntryResult {
   Success,
@@ -29,7 +32,7 @@ export class AddEntryComponent {
   budgetListControl = new FormControl();
   @Input() budget?: BudgetDTO;
   @Output() addEntryEventEmitter = new EventEmitter<boolean>();
-  filteredBudgets: Observable<BudgetDTO[]>;
+  filteredBudgets: Observable<BudgetDTO[]> = new Observable<BudgetDTO[]>();
   budgets: BudgetDTO[] = []
   currencyEnum = EntryCurrency;
   isInvestment: Boolean = false;
@@ -37,8 +40,11 @@ export class AddEntryComponent {
   isBuyControl: FormControl;
   entryType: EntryType = EntryType.EXPENSE;
   anyAdded: boolean = false;
-
   userId: string = "demo"; // todo placeholder userId
+  isFocused = false;
+
+  private readonly _amountControlName = 'amount';
+  private readonly _volumeControlName = 'volume';
 
 
   constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private entryService: EntryService,
@@ -55,8 +61,8 @@ export class AddEntryComponent {
       volume: [1, Validators.required, volumeValidator()],
       isBuy: this.isBuyControl,
       isSell: this.isSellControl,
+      marketPriceAtOperation: ['', Validators.required, amountValidator()]
     }))
-    this.filteredBudgets = new Observable<BudgetDTO[]>()
     this.budget = data?.budget;
   }
 
@@ -68,6 +74,24 @@ export class AddEntryComponent {
     this.budgetService.getUncategorizedBudgets(this.userId).subscribe(data => {
       this.budgets = data;
     });
+    this.handleMarketPriceChanges('amount-volume');
+    this.handleMarketPriceChanges('volume-amount');
+  }
+
+  private handleMarketPriceChanges(argumentOrder: 'amount-volume' | 'volume-amount'): void {
+    const controlName = argumentOrder === 'amount-volume' ? this._amountControlName : this._volumeControlName;
+    const dependentControlName = controlName == this._amountControlName ? this._volumeControlName : this._amountControlName;
+
+    this.entryFormGroup?.get(controlName)?.valueChanges.subscribe((value: number) => {
+      const marketPrice = this.entryFormGroup?.get('marketPriceAtOperation');
+
+      const dependentValue = this.entryFormGroup?.get(dependentControlName)?.value;
+      const amount = argumentOrder === 'amount-volume' ? value : dependentValue;
+      const volume = argumentOrder === 'amount-volume' ? dependentValue : value;
+      if (!marketPrice?.dirty) {
+        marketPrice?.setValue(this.getMarketPriceAtOperation(amount, volume));
+      }
+    })
   }
 
   ngOnDestroy() {
@@ -90,7 +114,7 @@ export class AddEntryComponent {
       value: formGroupData.amount,
       currency: formGroupData.currency,
       name: formGroupData.name,
-      entryType: this.isInvestment ? this.mapIsBuyToEntryType(this.isBuyControl.value) : this.entryType,
+      entryType: this.isInvestment ? mapIsBuyToEntryType(this.isBuyControl.value) : this.entryType,
       userId: this.userId,
       budgetId: await this.findBudgetIdFromName(this.budgetListControl.value),
       date: formGroupData.entryDate
@@ -100,7 +124,7 @@ export class AddEntryComponent {
       const investmentEntryDto: InvestmentEntryDTO = {
         entry: entryDto,
         volume: formGroupData.volume,
-        marketPriceAtOperation: this.getMarketPriceAtOperation(formGroupData.amount, formGroupData.volume)
+        marketPriceAtOperation: formGroupData.marketPriceAtOperation || this.getMarketPriceAtOperation(formGroupData.amount, formGroupData.volume)
       }
 
       if (this.entryBudgetIsInvestment(investmentEntryDto)) {
@@ -124,14 +148,6 @@ export class AddEntryComponent {
 
   private entryBudgetIsInvestment(investmentEntryDto: InvestmentEntryDTO): boolean {
     return this.budgets.filter(b => b.id == investmentEntryDto.entry.budgetId).every(b => b.investment);
-  }
-
-  private mapIsBuyToEntryType(isBuy: boolean): EntryType {
-    if (isBuy) {
-      return EntryType.EXPENSE;
-    } else {
-      return EntryType.INCOME;
-    }
   }
 
   private getMarketPriceAtOperation(amount: number, volume: number): number {
@@ -187,7 +203,8 @@ export class AddEntryComponent {
     const name: string = budgetName || this.budget?.name || "";
 
     return new Promise<string>((resolve) => {
-      this.budgetService.getByName(name)
+      // todo placeholder userId
+      this.budgetService.getByName(name, "demo")
         .subscribe((budget: BudgetDTO) => {
           resolve(<string>budget.id);
         })

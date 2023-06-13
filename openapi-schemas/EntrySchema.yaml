@@ -67,6 +67,26 @@ paths:
             text/plain:
               schema:
                 type: string
+  /investment/update:
+    post:
+      operationId: updateInvestmentEntry
+      description: "Update given investment entry."
+      tags:
+        - entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/InvestmentEntryDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /delete/{ids}:
     delete:
       operationId: deleteEntriesByIds
@@ -196,6 +216,8 @@ components:
         - volume
         - marketPriceAtOperation
       properties:
+        id:
+          type: string
         entry:
           $ref: "#/components/schemas/EntryDTO"
         volume:

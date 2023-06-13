@@ -20,10 +20,10 @@ class BudgetService(
 ) {
     private val logger = KotlinLogging.logger {}
 
-    suspend fun save(budget: Budget): Either<Nothing, Budget> = either {
-       val savedBudget = budgetRepository.save(budget).bind()
-       logger.debug { "Saved $savedBudget to database" }
-       savedBudget
+    suspend fun save(budget: Budget): Either<PersistenceError, Budget> = either {
+        val savedBudget = budgetRepository.save(budget).bind()
+        logger.debug { "Saved $savedBudget to database" }
+        savedBudget
     }
 
     suspend fun delete(ids: List<String>): Either<PersistenceError, Unit> = either {
@@ -34,6 +34,12 @@ class BudgetService(
     suspend fun getAllByUserId(userId: String): Either<PersistenceError, List<Budget>> = either {
         val budgets = budgetRepository.getAllByUserId(userId).bind()
         logger.debug { "Retrieved budgets for user with id $userId" }
+        budgets
+    }
+
+    suspend fun getAllUncategorizedByUserId(userId: String): Either<PersistenceError, List<Budget>> = either {
+        val budgets = budgetRepository.getAllUncategorizedByUserId(userId).bind()
+        logger.debug { "Retrieved uncategorized budgets for user with id $userId" }
         budgets
     }
 
@@ -57,9 +63,15 @@ class BudgetService(
         sum
     }
 
-    suspend fun getByName(name: String): Either<PersistenceError, Budget> = either {
-        val budget = budgetRepository.getByName(name).bind()
+    suspend fun getByName(name: String, userId: String): Either<PersistenceError, Budget> = either {
+        val budget = budgetRepository.getByName(name, userId).bind()
         logger.debug { "Retrieved budget with name ${name}." }
+        budget
+    }
+
+    suspend fun getAllByCategoryId(categoryId: String): Either<PersistenceError, List<Budget>> = either  {
+        val budget = budgetRepository.getAllByCategoryId(categoryId).bind()
+        logger.debug { "Retrieved budgets with category id ${categoryId}." }
         budget
     }
 

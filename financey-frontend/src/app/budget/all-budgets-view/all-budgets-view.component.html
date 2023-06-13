@@ -1,3 +1,21 @@
 <div class="full-screen-container">
-
+  <div class="container">
+    <app-budget-category-list></app-budget-category-list>
+    <span class="flex-spacer"></span>
+    <div class="vertical-container">
+      <button mat-button class="add-button" style="color:white" (click)="openAddCategoryPopup()">
+        <mat-icon>add</mat-icon>
+        Add budget category
+      </button>
+      <button mat-button class="add-button" style="color:white" (click)="openAddBudgetPopup()">
+        <mat-icon>add</mat-icon>
+        Add budget
+      </button>
+      <button mat-button *ngIf="this.budgetCategoryListComponent?.currentCategoryName?.length !== 0" class="add-button" style="color:white"
+              (click)="openCategoryDetailsPopup()">
+        <mat-icon>edit</mat-icon>
+        Edit category
+      </button>
+    </div>
+  </div>
 </div>

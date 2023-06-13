@@ -36,7 +36,7 @@ paths:
             text/plain:
               schema:
                 type: string
-  /budget/budget/{name}:
+  /budget/{userId}/budget/{name}:
     get:
       operationId: getByName
       description: "Get budget by name for given user."
@@ -44,6 +44,12 @@ paths:
         - name: name
           in: path
           description: "Budget name."
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
           required: true
           schema:
             type: string
@@ -62,6 +68,34 @@ paths:
             text/plain:
               schema:
                 type: string
+  /budget/budgets/{categoryId}:
+    get:
+      operationId: getAllByCategoryId
+      description: "Get budgets by parent category id."
+      parameters:
+        - name: categoryId
+          in: path
+          description: "Parent category id."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /budget/{userId}/categories:
     get:
       operationId: getCategories
@@ -70,6 +104,92 @@ paths:
         - name: userId
           in: path
           description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetCategoryDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /budget/{userId}/category/{name}:
+    get:
+      operationId: getCategoryByName
+      description: "Get budget category by name."
+      parameters:
+        - name: name
+          in: path
+          description: "Budget category name."
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetCategoryDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /budget/category/{id}:
+    get:
+      operationId: getCategoryById
+      description: "Get budget category by id."
+      parameters:
+        - name: id
+          in: path
+          description: "Budget category d."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetCategoryDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: strin
+  /budget/categories/{parentId}:
+    get:
+      operationId: getCategoriesByParentId
+      description: "Get categories by parent id."
+      parameters:
+        - name: parentId
+          in: path
+          description: "Id of the parent category."
           required: true
           schema:
             type: string
@@ -172,6 +292,12 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Bad Request
           content:
             text/plain:
               schema:
@@ -334,6 +460,26 @@ paths:
             text/plain:
               schema:
                 type: string
+  /entry/investment/update:
+    post:
+      operationId: updateInvestmentEntry
+      description: "Update given investment entry."
+      tags:
+        - entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/InvestmentEntryDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /entry/delete/{ids}:
     delete:
       operationId: deleteEntriesByIds
@@ -454,6 +600,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/BudgetDTO"
+        parentCategoryId:
+          type: string
     BudgetDTO:
       required:
         - name
@@ -467,10 +615,12 @@ components:
         budgetEntries:
           type: array
           items:
-            $ref: "#/components/schemas/EntryDTO"
+            $ref: "./EntrySchema.yaml#/components/schemas/EntryDTO"
         investment:
           type: boolean
         userId:
+          type: string
+        categoryId:
           type: string
     EntryDTO:
       required:
@@ -523,6 +673,8 @@ components:
         - volume
         - marketPriceAtOperation
       properties:
+        id:
+          type: string
         entry:
           $ref: "#/components/schemas/EntryDTO"
         volume:

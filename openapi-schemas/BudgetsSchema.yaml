@@ -67,7 +67,121 @@ paths:
             text/plain:
               schema:
                 type: string
-  /budget/{name}:
+  /budgets/{categoryId}:
+    get:
+      operationId: getAllByCategoryId
+      description: "Get budgets by parent category id."
+      parameters:
+        - name: categoryId
+          in: path
+          description: "Parent category id."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /categories/{parentId}:
+    get:
+      operationId: getCategoriesByParentId
+      description: "Get categories by parent id."
+      parameters:
+        - name: parentId
+          in: path
+          description: "Id of the parent category."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetCategoryDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /{userId}/category/{name}:
+    get:
+      operationId: getCategoryByName
+      description: "Get budget category by name."
+      parameters:
+        - name: name
+          in: path
+          description: "Budget category name."
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetCategoryDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /category/{id}:
+    get:
+      operationId: getCategoryById
+      description: "Get budget category by id."
+      parameters:
+        - name: id
+          in: path
+          description: "Budget category d."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetCategoryDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /{userId}/budget/{name}:
     get:
       operationId: getByName
       description: "Get budget by name for given user."
@@ -75,6 +189,12 @@ paths:
         - name: name
           in: path
           description: "Budget name."
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
           required: true
           schema:
             type: string
@@ -175,6 +295,12 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Bad Request
           content:
             text/plain:
               schema:
@@ -300,6 +426,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/BudgetDTO"
+        parentCategoryId:
+          type: string
     BudgetDTO:
       required:
         - name

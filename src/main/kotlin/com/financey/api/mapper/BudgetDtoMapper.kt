@@ -20,6 +20,8 @@ abstract class BudgetDtoMapper {
     abstract fun fromCategoryDto(dto: BudgetCategoryDTO): BudgetCategory
 
     @Mapping(target = "id", qualifiedByName = ["IdMapper", "objectIdToString"])
+    @Mapping(target = "subcategories", ignore = true)
+    @Mapping(target = "budgets", ignore = true)
     abstract fun toCategoryDto(domain: BudgetCategory): BudgetCategoryDTO
 
 }

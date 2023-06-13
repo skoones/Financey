@@ -1,12 +1,10 @@
 package com.financey.api.controller
 
-import arrow.core.Either.Right
 import com.financey.api.mapper.BudgetDtoMapper
 import com.financey.domain.context.BudgetSumContext
 import com.financey.domain.service.BudgetCategoryService
 import com.financey.domain.service.BudgetService
 import kotlinx.coroutines.runBlocking
-import org.apache.coyote.Response
 import org.openapitools.api.BudgetApi
 import org.openapitools.model.BudgetCategoryDTO
 import org.openapitools.model.BudgetDTO
@@ -27,11 +25,14 @@ class BudgetController(
 
     override fun addBudget(budgetDTO: BudgetDTO): ResponseEntity<String> {
         val budget = budgetDtoMapper.fromDto(budgetDTO)
-        val savedBudget = runBlocking {
+        val budgetResult = runBlocking {
             budgetService.save(budget)
-        } as Right
+        }
 
-        return ResponseEntity.ok("Budget saved with id ${savedBudget.value.id}.")
+        return budgetResult.fold(
+            { throw it },
+            { ResponseEntity.ok("Budget saved with id ${it.id}.")  }
+        )
     }
 
     override fun deleteBudgetsByIds(budgetIds: List<String>): ResponseEntity<String> {
@@ -56,7 +57,7 @@ class BudgetController(
 
     override fun getUncategorizedBudgets(userId: String): ResponseEntity<List<BudgetDTO>> {
         val budgetsResult = runBlocking {
-            budgetService.getAllByUserId(userId)
+            budgetService.getAllUncategorizedByUserId(userId)
         }
 
         return budgetsResult.fold(
@@ -76,9 +77,9 @@ class BudgetController(
         )
     }
 
-    override fun getByName(name: String): ResponseEntity<BudgetDTO> {
+    override fun getByName(name: String, userId: String): ResponseEntity<BudgetDTO> {
         val budgetResult = runBlocking {
-            budgetService.getByName(name)
+            budgetService.getByName(name, userId)
         }
 
         return budgetResult.fold(
@@ -112,11 +113,25 @@ class BudgetController(
 
     override fun addCategory(budgetCategoryDTO: BudgetCategoryDTO): ResponseEntity<String> {
         val category = budgetDtoMapper.fromCategoryDto(budgetCategoryDTO)
-        val savedCategory = runBlocking {
+        val categoryResult = runBlocking {
             budgetCategoryService.save(category)
-        } as Right
+        }
 
-        return ResponseEntity.ok("Budget category saved with id ${savedCategory.value.id}.")
+        return categoryResult.fold(
+            { throw it },
+            { ResponseEntity.ok("Budget category saved with id ${it.id}.")  }
+        )
+    }
+
+    override fun getCategoryByName(name: String, userId: String): ResponseEntity<BudgetCategoryDTO> {
+        val categoryResult = runBlocking {
+            budgetCategoryService.getByName(name)
+        }
+
+        return categoryResult.fold(
+            { throw it },
+            { ResponseEntity.ok(budgetDtoMapper.toCategoryDto(it)) }
+        )
     }
 
     override fun updateBudgetCategory(budgetCategoryDTO: BudgetCategoryDTO): ResponseEntity<String> {
@@ -136,6 +151,39 @@ class BudgetController(
         return deletionResult.fold(
             { throw it },
             { ResponseEntity.ok("Budget categories with given ids have been deleted") }
+        )
+    }
+
+    override fun getAllByCategoryId(categoryId: String): ResponseEntity<List<BudgetDTO>> {
+        val budgetsResult = runBlocking {
+            budgetService.getAllByCategoryId(categoryId)
+        }
+
+        return budgetsResult.fold(
+            { throw it },
+            { budgets -> ResponseEntity.ok(budgets.map { budgetDtoMapper.toDto(it) }) }
+        )
+    }
+
+    override fun getCategoriesByParentId(parentId: String): ResponseEntity<List<BudgetCategoryDTO>> {
+        val categoryResult = runBlocking {
+            budgetCategoryService.getAllByParentId(parentId)
+        }
+
+        return categoryResult.fold(
+            { throw it },
+            { categories -> ResponseEntity.ok(categories.map { budgetDtoMapper.toCategoryDto(it) }) }
+        )
+    }
+
+    override fun getCategoryById(id: String): ResponseEntity<BudgetCategoryDTO> {
+        val categoryResult = runBlocking {
+            budgetCategoryService.getById(id)
+        }
+
+        return categoryResult.fold(
+            { throw it },
+            { ResponseEntity.ok(budgetDtoMapper.toCategoryDto(it)) }
         )
     }
 

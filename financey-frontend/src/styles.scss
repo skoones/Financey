@@ -30,5 +30,8 @@ $my-theme: mat.define-light-theme((
   &.error-snackbar {
     --mat-mdc-snack-bar-button-color: #f44336;
   }
+}
 
+.flex-spacer {
+  margin: 10px;
 }

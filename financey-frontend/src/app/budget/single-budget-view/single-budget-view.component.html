@@ -1,10 +1,18 @@
 <div class="full-screen-container">
   <app-investment-budget-info *ngIf="this.budget?.investment" message="This is an investment budget." icon="info" class="investment-info"></app-investment-budget-info>
+  <div class="budget-name-container">
+    <mat-card class="budget-name">
+      <mat-card-content>
+        <span>{{ this.budget?.name }}</span>
+      </mat-card-content>
+    </mat-card>
+  </div>
   <div class="container">
+    <app-entry-list [budget]="this.budget"></app-entry-list>
+    <div class="flex-spacer"></div>
     <button mat-button class="add-entry-button" style="color:white" (click)="openAddEntryPopup()">
       <mat-icon>add</mat-icon>
       Add entry
     </button>
-    <app-entry-list [budget]="this.budget"></app-entry-list>
   </div>
 </div>

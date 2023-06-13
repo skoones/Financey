@@ -33,6 +33,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { EntryDetailsComponent } from './entry/entry-details/entry-details.component';
 import { InvestmentBudgetInfoComponent } from './budget/investment-budget-info/investment-budget-info.component';
 import { InvestmentEntryDetailsComponent } from './entry/investment-entry-details/investment-entry-details.component';
+import {BudgetCategoryListComponent} from "./budget/budget-category-list/budget-category-list.component";
+import {AddBudgetCategoryComponent} from "./budget/add-budget-category/add-budget-category.component";
+import {AddBudgetComponent} from "./budget/add-budget/add-budget.component";
+import {BudgetDetailsComponent} from "./budget/budget-details/budget-details.component";
+import { BudgetCategoryDetailsComponent } from './budget/budget-category-details/budget-category-details.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +52,13 @@ import { InvestmentEntryDetailsComponent } from './entry/investment-entry-detail
     EntryListComponent,
     EntryDetailsComponent,
     InvestmentBudgetInfoComponent,
-    InvestmentEntryDetailsComponent
+    InvestmentEntryDetailsComponent,
+    BudgetCategoryListComponent,
+    AddBudgetCategoryComponent,
+    AllBudgetsViewComponent,
+    AddBudgetComponent,
+    BudgetDetailsComponent,
+    BudgetCategoryDetailsComponent
   ],
   imports: [
     BrowserModule,

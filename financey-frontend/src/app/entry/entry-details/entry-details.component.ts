@@ -29,7 +29,7 @@ export class EntryDetailsComponent {
   constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private entryService: EntryService,
               private formSnackBar: MatSnackBar, @Inject(MAT_DIALOG_DATA) private data: any) {
     this.entry = data.entry;
-    this.budget = data.budget
+    this.budget = data.budget;
   }
 
   ngOnInit(): void {
