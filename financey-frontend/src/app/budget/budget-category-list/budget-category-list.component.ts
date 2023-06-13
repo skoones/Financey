@@ -28,11 +28,6 @@ export class BudgetCategoryListComponent implements OnInit {
     this.initializeTopLevelBudgetList().then(() => {});
   }
 
-
-  chooseBudget(budget: BudgetDTO) {
-    this.router.navigate([`/budgets/single/${budget.id}`],  { queryParams: { budget: JSON.stringify(budget) } });
-  }
-
   async chooseTopLevelBudget(topLevelBudget: TopLevelBudget) {
     if (!this.isBudgetDto(topLevelBudget)) {
       const category = topLevelBudget as BudgetCategoryDTO;
@@ -81,6 +76,10 @@ export class BudgetCategoryListComponent implements OnInit {
 
   isBudgetDto(topLevelBudget: TopLevelBudget) {
     return (topLevelBudget as BudgetDTO).budgetEntries !== undefined;
+  }
+
+  getParentCategoryName(): string {
+    return this.levelToCategoryName.get(this.currentLevel - 1) || "";
   }
 
   private findFullCategories(categories: BudgetCategoryDTO[] | undefined): Promise<BudgetCategoryDTO[]> | undefined {

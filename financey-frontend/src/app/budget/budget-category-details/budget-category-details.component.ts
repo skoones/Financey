@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Inject, Output} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {firstValueFrom, map, Observable, startWith} from "rxjs";
 import {BudgetCategoryDTO, BudgetService} from "../../../generated";
+import {BudgetCategoryListComponent} from "../budget-category-list/budget-category-list.component";
 
 enum AddCategoryResult {
   Success,
@@ -11,14 +12,15 @@ enum AddCategoryResult {
 }
 
 @Component({
-  selector: 'app-add-budget-category',
-  templateUrl: './add-budget-category.component.html',
-  styleUrls: ['./add-budget-category.component.scss']
+  selector: 'app-budget-category-details',
+  templateUrl: './budget-category-details.component.html',
+  styleUrls: ['./budget-category-details.component.scss']
 })
-export class AddBudgetCategoryComponent {
+export class BudgetCategoryDetailsComponent {
   categoryFormGroup: FormGroup;
-
   categoryListControl: FormControl;
+
+  @Input() categoryName = "";
   @Output() addCategoryEventEmitter = new EventEmitter<boolean>();
   anyAdded: boolean = false;
   userId: string = "demo"; // todo placeholder userId
@@ -28,10 +30,11 @@ export class AddBudgetCategoryComponent {
 
   constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private formSnackBar: MatSnackBar,
               @Inject(MAT_DIALOG_DATA) private data: any) {
+    this.categoryName = data.categoryName;
     this.categoryListControl = new FormControl(data.parentCategoryName);
 
     this.categoryFormGroup = this.formBuilder.group(({
-      name: ['', Validators.required],
+      name: [this.categoryName, Validators.required],
     }))
   }
 
@@ -50,6 +53,7 @@ export class AddBudgetCategoryComponent {
   }
 
   async addCategory(): Promise<AddCategoryResult> {
+    // todo update/delete instead
     const formGroupData = this.categoryFormGroup.value;
     const categoryName = this.categoryListControl.value;
 
@@ -111,4 +115,7 @@ export class AddBudgetCategoryComponent {
     })
   }
 
+  deleteCategory() {
+    // todo implement
+  }
 }

@@ -11,7 +11,11 @@
         <mat-icon>add</mat-icon>
         Add budget
       </button>
+      <button mat-button *ngIf="this.budgetCategoryListComponent?.currentCategoryName?.length !== 0" class="add-button" style="color:white"
+              (click)="openCategoryDetailsPopup()">
+        <mat-icon>edit</mat-icon>
+        Edit category
+      </button>
     </div>
-<!--    todo "Edit category" button -->
   </div>
 </div>

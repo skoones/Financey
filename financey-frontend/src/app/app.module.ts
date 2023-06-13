@@ -37,6 +37,7 @@ import {BudgetCategoryListComponent} from "./budget/budget-category-list/budget-
 import {AddBudgetCategoryComponent} from "./budget/add-budget-category/add-budget-category.component";
 import {AddBudgetComponent} from "./budget/add-budget/add-budget.component";
 import {BudgetDetailsComponent} from "./budget/budget-details/budget-details.component";
+import { BudgetCategoryDetailsComponent } from './budget/budget-category-details/budget-category-details.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import {BudgetDetailsComponent} from "./budget/budget-details/budget-details.com
     AddBudgetCategoryComponent,
     AllBudgetsViewComponent,
     AddBudgetComponent,
-    BudgetDetailsComponent
+    BudgetDetailsComponent,
+    BudgetCategoryDetailsComponent
   ],
   imports: [
     BrowserModule,

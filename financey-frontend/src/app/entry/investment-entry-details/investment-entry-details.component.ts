@@ -37,6 +37,7 @@ export class InvestmentEntryDetailsComponent {
 
   constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private entryService: EntryService,
               private formSnackBar: MatSnackBar, @Inject(MAT_DIALOG_DATA) private data: any) {
+    // todo update/delete
     this.investmentEntry = data.entry;
     this.budget = data.budget
   }
