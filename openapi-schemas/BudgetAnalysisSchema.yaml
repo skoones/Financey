@@ -1,0 +1,61 @@
+openapi: 3.0.3
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8980/analysis'
+paths:
+  /monthly/sum/{date}/{budgetId}:
+    get:
+      operationId: getMonthlyExpenseBalanceByDateAndId
+      description: "Get expenses sum for a given month and budget."
+      parameters:
+        - name: date
+          in: path
+          description: "Date of the expenses to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetId
+          in: path
+          description: "Id of the given budget."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
+#  /period/sum/{monthList}/{budgetId}:
+#    get:
+#      operationId: getExpenseBalanceByMonthsAndId
+#      description: "Get expenses sum for a given month and budget."
+#      parameters:
+#        - name: month
+#          in: path
+#          description: "Month of the expenses to be analyzed."
+#          required: true
+#          schema:
+#            type: number
+#        - name: budgetId
+#          in: path
+#          description: "Id of the given budget."
+#          required: true
+#          schema:
+#            type: string
+#      tags:
+#        - budget-analysis
+#      responses:
+#        "200":
+#          description: OK
+#          content:
+#            application/json:
+#              schema:
+#                type: number

@@ -23,6 +23,8 @@ interface CustomBudgetRepository {
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
     fun getAllByUserId(userId: String): Either<PersistenceError, List<Budget>>
     fun getAllByIds(ids: List<String>): Either<PersistenceError, List<Budget>>
+
+    fun getById(id: String): Either<PersistenceError, Budget>
     fun getAllUncategorizedByUserId(userId: String): Either<PersistenceError, List<Budget>>
     fun getAllByCategoryId(categoryId: String): Either<PersistenceError, List<Budget>>
     fun getByName(name: String, userId: String): Either<PersistenceError, Budget>
@@ -71,6 +73,21 @@ open class CustomBudgetRepositoryImpl(
 
         return try {
             Right(mongoTemplate.find(query, Budget::class.java))
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
+        }
+    }
+
+    override fun getById(id: String): Either<PersistenceError, Budget> {
+        val query = Query().addCriteria(Budget::id isEqualTo id)
+
+        return try {
+            val existingBudgets = mongoTemplate.find(query, Budget::class.java)
+            when (existingBudgets.size) {
+                0 -> Left(ElementDoesNotExistError("There is no budget with the given id in the database."))
+                1 -> Right(existingBudgets.first())
+                else -> Left(MultipleElementsError("Multiple budgets with given id have been found."))
+            }
         } catch (e: DataAccessException) {
             Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
         }

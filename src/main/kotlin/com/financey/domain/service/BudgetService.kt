@@ -49,20 +49,6 @@ class BudgetService(
         budgetRepository.getAllByIds(user.favoriteBudgetIds).bind()
     }
 
-    suspend fun findBudgetSum(userId: String, budgetSumContext: BudgetSumContext): Either<FinanceyError, BigDecimal> = either {
-        val budgets = getAllByUserId(userId).bind()
-        // todo convert currency, right now this will only work if all entries are in the same currency as requested
-        val sum = budgets
-            .map { budget ->
-                budget.budgetEntries
-                    ?.map { it.value }
-                    ?.reduceOrNull { a, b -> a + b }
-                    ?: BigDecimal.ZERO
-            }
-            .reduceOrNull { a, b -> a + b } ?: BigDecimal.ZERO
-        sum
-    }
-
     suspend fun getByName(name: String, userId: String): Either<PersistenceError, Budget> = either {
         val budget = budgetRepository.getByName(name, userId).bind()
         logger.debug { "Retrieved budget with name ${name}." }

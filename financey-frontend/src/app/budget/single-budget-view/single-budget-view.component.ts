@@ -2,7 +2,7 @@ import {Component, EventEmitter, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
 import {SINGLE_BUDGET_PATH} from "../../constants/path-constants";
-import {BudgetDTO} from "../../../generated";
+import {BudgetAnalysisService, BudgetDTO} from "../../../generated";
 import {AddEntryComponent} from "../../entry/add-entry/add-entry.component";
 import {MatDialog} from "@angular/material/dialog";
 import {EntryListComponent} from "../../entry/entry-list/entry-list.component";
@@ -19,14 +19,24 @@ export class SingleBudgetViewComponent {
 
   @ViewChild(EntryListComponent, { static: false })
   private entryListComponent?: EntryListComponent;
+  monthlyExpenses?: number;
 
-  constructor(private recentlyViewedService: RecentlyViewedBudgetsService, private route: ActivatedRoute,
-              private location: Location, private dialog: MatDialog) {
+  constructor(private recentlyViewedService: RecentlyViewedBudgetsService, private budgetAnalysisService: BudgetAnalysisService,
+              private route: ActivatedRoute, private location: Location, private dialog: MatDialog) {
   }
 
   ngOnInit() {
     this.location.replaceState(SINGLE_BUDGET_PATH);
     this.initBudget();
+    this.initializeMonthlyExpenses();
+  }
+
+  ngAfterViewInit() {
+    if (this.entryListComponent) {
+      this.entryListComponent.entryListChangeEmitter.subscribe((value: boolean) => {
+        this.initializeMonthlyExpenses()
+      });
+    }
   }
 
   initBudget() {
@@ -47,9 +57,19 @@ export class SingleBudgetViewComponent {
 
     dialogRef.componentInstance.addEntryEventEmitter.subscribe((anyAdded) => {
       if (anyAdded) {
+        this.initializeMonthlyExpenses()
         this.entryListComponent?.initializeEntryList();
       }
     });
+  }
+
+  async getMonthlyExpenses(): Promise<number | undefined> {
+    const date = new Date().toISOString().substring(0, 10);
+    return this.budgetAnalysisService.getMonthlyExpenseBalanceByDateAndId(date, this.budget?.id || "").toPromise();
+  }
+
+  private initializeMonthlyExpenses() {
+    this.getMonthlyExpenses().then(sum => this.monthlyExpenses = sum || 0)
   }
 
 }

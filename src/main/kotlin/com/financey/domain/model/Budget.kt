@@ -9,7 +9,6 @@ data class Budget(
     @Id val id: ObjectId? = ObjectId.get(),
     val name: String,
     val investment: Boolean,
-    val budgetEntries: List<Entry>?,
     val userId: String,
     val categoryId: String?
 )

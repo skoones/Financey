@@ -88,18 +88,6 @@ class BudgetController(
         )
     }
 
-    override fun getBudgetSum(userId: String, budgetId: String, currency: EntryCurrency): ResponseEntity<BigDecimal> {
-        val budgetSumContext = BudgetSumContext(budgetId, currency)
-        val sumResult = runBlocking {
-            budgetService.findBudgetSum(userId, budgetSumContext)
-        }
-
-        return sumResult.fold(
-            { throw it },
-            { ResponseEntity.ok(it) }
-        )
-    }
-
     override fun getCategories(userId: String): ResponseEntity<List<BudgetCategoryDTO>> {
        val categoriesResult = runBlocking {
            budgetCategoryService.getAllCategoriesByUserId(userId)

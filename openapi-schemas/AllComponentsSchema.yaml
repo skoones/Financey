@@ -370,36 +370,6 @@ paths:
             text/plain:
               schema:
                 type: string
-  /budget/{userId}/budgetSum:
-    post:
-      operationId: getBudgetSum
-      description: "Get the total sum of budget entry values in a given currency."
-      parameters:
-        - name: userId
-          in: path
-          description: "Id of the currently logged in user"
-          required: true
-          schema:
-            type: string
-        - name: budgetId
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: currency
-          in: query
-          required: true
-          schema:
-            $ref: "./EntrySchema.yaml#/components/schemas/EntryCurrency"
-      tags:
-        - budget
-      responses:
-        "200":
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: number
   /entry/add:
     post:
       operationId: addEntry
@@ -577,6 +547,33 @@ paths:
             text/plain:
               schema:
                 type: string
+  /analysis/monthly/sum/{date}/{budgetId}:
+    get:
+      operationId: getMonthlyExpenseBalanceByDateAndId
+      description: "Get expenses sum for a given month and budget."
+      parameters:
+        - name: date
+          in: path
+          description: "Date of the expenses to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetId
+          in: path
+          description: "Id of the given budget."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
 
 components:
   schemas:
