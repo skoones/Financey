@@ -38,6 +38,8 @@ import {AddBudgetCategoryComponent} from "./budget/add-budget-category/add-budge
 import {AddBudgetComponent} from "./budget/add-budget/add-budget.component";
 import {BudgetDetailsComponent} from "./budget/budget-details/budget-details.component";
 import { BudgetCategoryDetailsComponent } from './budget/budget-category-details/budget-category-details.component';
+import { SingleBudgetAnalysisMainViewComponent } from './single-budget-analysis-main-view/single-budget-analysis-main-view.component';
+import {NgxChartsModule} from "@swimlane/ngx-charts";
 
 @NgModule({
   declarations: [
@@ -58,11 +60,13 @@ import { BudgetCategoryDetailsComponent } from './budget/budget-category-details
     AllBudgetsViewComponent,
     AddBudgetComponent,
     BudgetDetailsComponent,
-    BudgetCategoryDetailsComponent
+    BudgetCategoryDetailsComponent,
+    SingleBudgetAnalysisMainViewComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    NgxChartsModule,
     BrowserAnimationsModule,
     MatTableModule,
     HttpClientModule,
