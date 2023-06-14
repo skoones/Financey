@@ -2,6 +2,7 @@ package com.financey.domain.service
 
 import arrow.core.Either
 import arrow.core.continuations.either
+import arrow.core.plus
 import com.financey.domain.error.FinanceyError
 import com.financey.repository.EntryRepository
 import org.openapitools.model.EntryType
@@ -23,15 +24,8 @@ class BudgetAnalysisService(
             .filter { (it.date?.month ?: Month.JANUARY) == date.month &&
                     (it.date?.year ?: Year.MIN_VALUE) == date.year }
             // todo take currency into consideration
-            .map { Pair(it.entryType, it.value) }
-            .reduceOrNull { a, b ->
-                if (b.first == EntryType.EXPENSE) {
-                    Pair(EntryType.EXPENSE, a.second.plus(b.second))
-                } else {
-                    Pair(EntryType.INCOME, a.second.minus(b.second))
-                }
-            }
-            ?.second ?: BigDecimal.ZERO
+            .map { if (it.entryType == EntryType.INCOME) it.value.negate() else it.value }
+            .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO // todo unit test
     }
 
 }
