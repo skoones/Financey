@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@angular/material": "^16.1.0",
+    "@angular/platform-browser-dynamic": "^16.1.0",
+    "@angular/router": "^16.1.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^16.1.0"
+  }
+}
