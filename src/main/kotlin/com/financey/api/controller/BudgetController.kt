@@ -36,6 +36,7 @@ class BudgetController(
     }
 
     override fun deleteBudgetsByIds(budgetIds: List<String>): ResponseEntity<String> {
+        // todo delete associated entries
         val deletionResult = runBlocking {
             budgetService.delete(budgetIds)
         }
