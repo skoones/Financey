@@ -47,6 +47,7 @@
       </mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
+    <expense-checkbox *ngIf="!isInvestment" (valueChangeEvent) = "changeEntryType($event)"></expense-checkbox>
     <income-checkbox *ngIf="!isInvestment" (valueChangeEvent) = "changeEntryType($event)"></income-checkbox>
     <mat-form-field *ngIf="this.budget == undefined" appearance="fill">
       <mat-label>Budget</mat-label>
