@@ -43,6 +43,8 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation ("io.mockk:mockk:1.13.5")
+    implementation("org.jetbrains.kotlin:kotlin-test:1.8.22")
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     implementation("org.mapstruct:mapstruct-processor:1.5.3.Final")
     implementation("io.arrow-kt:arrow-core:1.1.2")

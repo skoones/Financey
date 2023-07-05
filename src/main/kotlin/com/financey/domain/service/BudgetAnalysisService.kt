@@ -2,7 +2,6 @@ package com.financey.domain.service
 
 import arrow.core.Either
 import arrow.core.continuations.either
-import arrow.core.plus
 import com.financey.domain.error.FinanceyError
 import com.financey.repository.EntryRepository
 import org.openapitools.model.EntryType
@@ -18,14 +17,15 @@ class BudgetAnalysisService(
     @Autowired private val entryRepository: EntryRepository
 ) {
     // todo more descriptive error type?
-    suspend fun getMonthlyExpenseBalanceByDateAndId(date: LocalDate, budgetId: String): Either<FinanceyError, BigDecimal> = either {
+    suspend fun getMonthlyExpenseBalanceByDateAndId(date: LocalDate, budgetId: String):
+            Either<FinanceyError, BigDecimal> = either {
         val entries = entryRepository.getAllByBudgetId(budgetId).bind()
         entries
             .filter { (it.date?.month ?: Month.JANUARY) == date.month &&
                     (it.date?.year ?: Year.MIN_VALUE) == date.year }
             // todo take currency into consideration
             .map { if (it.entryType == EntryType.INCOME) it.value.negate() else it.value }
-            .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO // todo unit test
+            .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
     }
 
 }
