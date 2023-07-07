@@ -107,6 +107,7 @@ export class AddEntryComponent {
     this.addEntryEventEmitter.emit(this.anyAdded)
   }
 
+  // todo mixin?
   private _filter(value: string): BudgetDTO[] {
     const filterValue = value.toLowerCase();
 

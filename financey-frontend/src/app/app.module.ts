@@ -41,6 +41,7 @@ import { BudgetCategoryDetailsComponent } from './budget/budget-category-details
 import { SingleBudgetAnalysisMainViewComponent } from './single-budget-analysis-main-view/single-budget-analysis-main-view.component';
 import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {ExpenseCheckboxComponent} from "./entry/add-entry/expense-checkbox/expense-checkbox.component";
+import { SingleBudgetAnalysisComponent } from './single-budget-analysis/single-budget-analysis.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import {ExpenseCheckboxComponent} from "./entry/add-entry/expense-checkbox/expen
     AddBudgetComponent,
     BudgetDetailsComponent,
     BudgetCategoryDetailsComponent,
-    SingleBudgetAnalysisMainViewComponent
+    SingleBudgetAnalysisMainViewComponent,
+    SingleBudgetAnalysisComponent
   ],
   imports: [
     BrowserModule,

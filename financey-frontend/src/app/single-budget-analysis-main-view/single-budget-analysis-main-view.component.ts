@@ -1,6 +1,7 @@
-import {Component} from '@angular/core';
-import {BudgetAnalysisService} from "../../generated";
+import {Component, Input} from '@angular/core';
+import {BudgetAnalysisService, BudgetDTO} from "../../generated";
 import {forkJoin, tap} from "rxjs";
+import {ActivatedRoute} from "@angular/router";
 
 type BalanceHistoryEntry = {
   name: string,
@@ -12,12 +13,16 @@ type BalanceHistoryEntry = {
   styleUrls: ['./single-budget-analysis-main-view.component.scss']
 })
 export class SingleBudgetAnalysisMainViewComponent {
-  expenseBalanceHistory?: BalanceHistoryEntry[]
+  expenseBalanceHistory?: BalanceHistoryEntry[];
 
-  constructor(private budgetAnalysisService: BudgetAnalysisService) {}
+  budgetId = "";
+
+  constructor(private budgetAnalysisService: BudgetAnalysisService, private route: ActivatedRoute) {}
 
   ngOnInit() {
     // todo choosing dates by user
+    console.log(this.route.snapshot.queryParamMap)
+    this.budgetId = this.route.snapshot.queryParamMap.get('budgetId') || ""
     this.initializeExpenseBalanceHistory(this.findDatesForAnalysis()).subscribe(() => {
       console.log(this.expenseBalanceHistory);
     });
@@ -34,14 +39,13 @@ export class SingleBudgetAnalysisMainViewComponent {
 
   private initializeExpenseBalanceHistory(sampleDates: string[]) {
     const requests = sampleDates.map(date =>
-      this.budgetAnalysisService.getMonthlyExpenseBalanceByDateAndId(date, "648970cdd8695652f3922328") // todo pass in the id from parent
+      this.budgetAnalysisService.getMonthlyExpenseBalanceByDateAndId(date, this.budgetId)
     );
 
     return forkJoin(requests)
       .pipe(tap((balances: number[]) => {
         const balanceHistory: BalanceHistoryEntry[] = []
         balances.forEach((balance: number, index: number) => {
-          console.log("balance with index 0: " + index + " " + balance)
           balanceHistory.push({
             name: this.findMonthAndYearFromDate(sampleDates[index]),
             value: balance
