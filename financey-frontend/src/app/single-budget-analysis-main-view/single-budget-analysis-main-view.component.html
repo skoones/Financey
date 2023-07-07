@@ -1,4 +1,4 @@
-<div class="full-screen-container">
+<div class="full-screen-container" *ngIf="expenseBalanceHistory">
   <div class="container">
     <ngx-charts-bar-vertical
       [results]="expenseBalanceHistory"

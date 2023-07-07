@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {BudgetAnalysisService} from "../../generated";
 import {forkJoin, tap} from "rxjs";
 
@@ -12,37 +12,58 @@ type BalanceHistoryEntry = {
   styleUrls: ['./single-budget-analysis-main-view.component.scss']
 })
 export class SingleBudgetAnalysisMainViewComponent {
-  expenseBalanceHistory: BalanceHistoryEntry[] = []
+  expenseBalanceHistory?: BalanceHistoryEntry[]
 
   constructor(private budgetAnalysisService: BudgetAnalysisService) {}
 
   ngOnInit() {
-    this.expenseBalanceHistory = [{name: "Jan", value: 10}, {name: "Feb", value: 100}, {name: "Mar", value: 2000}]
-    const sampleDates = [new Date(new Date().setMonth(6)).toISOString().substring(0, 10),
-      new Date(new Date().setMonth(5)).toISOString().substring(0, 10),
-      new Date(new Date().setMonth(4)).toISOString().substring(0, 10)]
-
-    this.initializeExpenseBalanceHistory(sampleDates).subscribe(() => {
+    // todo choosing dates by user
+    this.initializeExpenseBalanceHistory(this.findDatesForAnalysis()).subscribe(() => {
       console.log(this.expenseBalanceHistory);
     });
   }
 
+  private findDatesForAnalysis() {
+    return Array.from(
+      { length: new Date().getMonth() + 1 },
+      (_, index) => {
+        return new Date(new Date().setMonth(index)).toISOString().substring(0, 10);
+      }
+    )
+  }
+
   private initializeExpenseBalanceHistory(sampleDates: string[]) {
     const requests = sampleDates.map(date =>
-      this.budgetAnalysisService.getMonthlyExpenseBalanceByDateAndId(date, "648957e2d360a34a57cc95c6")
+      this.budgetAnalysisService.getMonthlyExpenseBalanceByDateAndId(date, "648970cdd8695652f3922328") // todo pass in the id from parent
     );
 
-    return forkJoin(requests).pipe(
-      tap((balances: number[]) => {
+    return forkJoin(requests)
+      .pipe(tap((balances: number[]) => {
+        const balanceHistory: BalanceHistoryEntry[] = []
         balances.forEach((balance: number, index: number) => {
-          this.expenseBalanceHistory.push({
-            name: sampleDates[index],
+          console.log("balance with index 0: " + index + " " + balance)
+          balanceHistory.push({
+            name: this.findMonthAndYearFromDate(sampleDates[index]),
             value: balance
           });
-          console.log(this.expenseBalanceHistory)
         });
+        this.expenseBalanceHistory = balanceHistory;
       })
     );
+  }
+
+  private findMonthAndYearFromDate(dateString: string) {
+    const date = new Date(dateString);
+    const monthIndex = date.getMonth();
+    const year = date.getFullYear();
+    const currentMonth = new Date().getMonth();
+
+    const monthNames = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"
+    ].slice(0, currentMonth + 1);
+
+    return `${monthNames[monthIndex]} ${year}`
   }
 
 }
