@@ -36,8 +36,9 @@ class BudgetAnalysisServiceTests {
             every { entryRepository.getAllByBudgetId(budgetId) } returns Either.Right(entries)
 
             // when
-            val result = budgetAnalysisService.getMonthlyExpenseBalanceByDateAndId(
-                date = LocalDate.of(2023, Month.JULY, 5),
+            val result = budgetAnalysisService.getExpenseBalanceByPeriodAndId(
+                startDate = LocalDate.of(2023, Month.JULY, 1),
+                endDate = LocalDate.of(2923, Month.JULY, 5),
                 budgetId = budgetId
             )
 

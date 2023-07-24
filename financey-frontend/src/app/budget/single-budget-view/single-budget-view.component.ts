@@ -7,6 +7,7 @@ import {AddEntryComponent} from "../../entry/add-entry/add-entry.component";
 import {MatDialog} from "@angular/material/dialog";
 import {EntryListComponent} from "../../entry/entry-list/entry-list.component";
 import {RecentlyViewedBudgetsService} from "../recently-viewed-budgets.service";
+import {getFirstDayOfMonth} from "../../utils/date-utils";
 
 @Component({
   selector: 'app-single-budget-view',
@@ -64,8 +65,10 @@ export class SingleBudgetViewComponent {
   }
 
   async getMonthlyExpenses(): Promise<number | undefined> {
-    const date = new Date().toISOString().substring(0, 10);
-    return this.budgetAnalysisService.getMonthlyExpenseBalanceByDateAndId(date, this.budget?.id || "").toPromise();
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().substring(0, 10);
+    const startOfMonth = getFirstDayOfMonth(currentDate).toISOString().substring(0, 10);
+    return this.budgetAnalysisService.getExpenseBalanceByPeriodAndId(startOfMonth, currentDateString, this.budget?.id || "").toPromise();
   }
 
   private initializeMonthlyExpenses() {

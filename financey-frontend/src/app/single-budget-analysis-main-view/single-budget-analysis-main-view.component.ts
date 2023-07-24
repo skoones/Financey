@@ -2,6 +2,7 @@ import {Component, Input} from '@angular/core';
 import {BudgetAnalysisService, BudgetDTO} from "../../generated";
 import {forkJoin, tap} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
+import {getFirstDayOfMonth, groupIntoStartEndDates} from "../utils/date-utils";
 
 type BalanceHistoryEntry = {
   name: string,
@@ -40,15 +41,21 @@ export class SingleBudgetAnalysisMainViewComponent {
     return Array.from(
       { length: new Date().getMonth() + 1 },
       (_, index) => {
-        return this.dateToString(new Date(new Date().setMonth(index)));
+        return new Date(new Date().setMonth(index));
       }
     )
   }
 
-  private initializeExpenseBalanceHistory(sampleDates: string[]) {
-    const requests = sampleDates.map(date =>
+  private initializeExpenseBalanceHistory(dates: Date[]) {
+    console.log("original dates: ")
+    console.log(dates)
+    const startEndDatePairs = groupIntoStartEndDates(dates)
+    console.log("paired dates: ") // todo remove
+    console.log(startEndDatePairs)
+    const requests = startEndDatePairs.map(startEndDates =>
       // todo does this consider this start date? check on backend
-      this.budgetAnalysisService.getMonthlyExpenseBalanceByDateAndId(date, this.budgetId)
+      this.budgetAnalysisService.getExpenseBalanceByPeriodAndId(this.dateToString(startEndDates[0]),
+        this.dateToString(startEndDates[1]), this.budgetId)
     );
 
     return forkJoin(requests)
@@ -56,7 +63,7 @@ export class SingleBudgetAnalysisMainViewComponent {
         const balanceHistory: BalanceHistoryEntry[] = []
         balances.forEach((balance: number, index: number) => {
           balanceHistory.push({
-            name: this.findMonthAndYearFromDate(sampleDates[index]),
+            name: this.findMonthAndYearFromDate(this.dateToString(startEndDatePairs[index][0])),
             value: balance
           });
         });
@@ -71,7 +78,6 @@ export class SingleBudgetAnalysisMainViewComponent {
     const year = date.getFullYear();
     const currentMonth = new Date().getMonth();
 
-    console.log(dateString)
     const monthNames = [
       "Jan", "Feb", "Mar", "Apr", "May", "Jun",
       "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"
@@ -80,14 +86,14 @@ export class SingleBudgetAnalysisMainViewComponent {
     return `${monthNames[monthIndex]} ${year}`
   }
 
-  private dateToString(date: Date) {
-    // Specify the options for formatting the date and time
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  private dateToString(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
 
-// Get the formatted date and time in the local time zone
-    const localDateTimeString = date.toLocaleString(undefined, options);
-    console.log(localDateTimeString)
-    return date.toLocaleString().substring(0, 10);
+    const formattedDate = `${year}-${month}-${day}`;
+
+    return formattedDate;
   }
 
   private addMonths(date: Date, months: number): Date {
@@ -96,20 +102,20 @@ export class SingleBudgetAnalysisMainViewComponent {
     return newDate;
   }
 
-  private getFirstDayOfMonth(date: Date): Date {
-    return new Date(date.getFullYear(), date.getMonth(), 1);
-  }
 
-  private generateDatesForEveryMonth(start: Date, end: Date): string[] {
+
+  private generateDatesForEveryMonth(start: Date, end: Date): Date[] {
     // todo validation - start date must be before end date
     const numberOfMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) - 1;
     const monthsInBetween = Array.from({ length: numberOfMonths },
-      (_, index) => this.getFirstDayOfMonth(this.addMonths(start, index + 1)));
-    console.log(monthsInBetween)
+      (_, index) => getFirstDayOfMonth(this.addMonths(start, index + 1)));
 
-    const temp = [start, ...monthsInBetween, end].map(date => this.dateToString(date));
+    const temp = [start, ...monthsInBetween, end]; // todo remove
     console.log(temp)
     return temp;
   }
+
+  // todo utils?
+
 
 }

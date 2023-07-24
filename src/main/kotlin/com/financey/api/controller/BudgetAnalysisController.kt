@@ -15,9 +15,13 @@ import java.time.LocalDate
 class BudgetAnalysisController(
     @Autowired private val budgetAnalysisService: BudgetAnalysisService
 ) : BudgetAnalysisApi {
-    override fun getMonthlyExpenseBalanceByDateAndId(date: LocalDate, budgetId: String): ResponseEntity<BigDecimal> {
+    override fun getExpenseBalanceByPeriodAndId(
+        startDate: LocalDate,
+        endDate: LocalDate,
+        budgetId: String
+    ): ResponseEntity<BigDecimal> {
         val result = runBlocking {
-            budgetAnalysisService.getMonthlyExpenseBalanceByDateAndId(date, budgetId)
+            budgetAnalysisService.getExpenseBalanceByPeriodAndId(startDate, endDate, budgetId)
         }
 
         return result.fold(

@@ -547,14 +547,21 @@ paths:
             text/plain:
               schema:
                 type: string
-  /analysis/monthly/sum/{date}/{budgetId}:
+  /analysis/monthly/sum/{startDate}/{endDate}/{budgetId}:
     get:
-      operationId: getMonthlyExpenseBalanceByDateAndId
+      operationId: getExpenseBalanceByPeriodAndId
       description: "Get expenses sum for a given month and budget."
       parameters:
-        - name: date
+        - name: startDate
           in: path
-          description: "Date of the expenses to be analyzed."
+          description: "Start date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: path
+          description: "End date of the period to be analyzed."
           required: true
           schema:
             type: string
