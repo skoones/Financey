@@ -1,5 +1,3 @@
-// noinspection TypeScriptValidateJSTypes
-
 import {Component, EventEmitter, Inject, Input, Optional, Output, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatSnackBar} from '@angular/material/snack-bar';

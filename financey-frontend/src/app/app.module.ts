@@ -42,6 +42,7 @@ import { SingleBudgetAnalysisMainViewComponent } from './single-budget-analysis-
 import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {ExpenseCheckboxComponent} from "./entry/add-entry/expense-checkbox/expense-checkbox.component";
 import { SingleBudgetAnalysisComponent } from './single-budget-analysis/single-budget-analysis.component';
+import { BudgetHistoryDatePickerComponent } from './budget/budget-history-date-picker/budget-history-date-picker.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { SingleBudgetAnalysisComponent } from './single-budget-analysis/single-b
     BudgetDetailsComponent,
     BudgetCategoryDetailsComponent,
     SingleBudgetAnalysisMainViewComponent,
-    SingleBudgetAnalysisComponent
+    SingleBudgetAnalysisComponent,
+    BudgetHistoryDatePickerComponent
   ],
   imports: [
     BrowserModule,

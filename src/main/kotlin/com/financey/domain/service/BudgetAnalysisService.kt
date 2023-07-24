@@ -4,6 +4,7 @@ import arrow.core.Either
 import arrow.core.continuations.either
 import com.financey.domain.error.FinanceyError
 import com.financey.repository.EntryRepository
+import mu.KotlinLogging
 import org.openapitools.model.EntryType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -16,9 +17,13 @@ import java.time.Year
 class BudgetAnalysisService(
     @Autowired private val entryRepository: EntryRepository
 ) {
+
+    private val logger = KotlinLogging.logger {}
+
     // todo more descriptive error type?
     suspend fun getMonthlyExpenseBalanceByDateAndId(date: LocalDate, budgetId: String):
             Either<FinanceyError, BigDecimal> = either {
+        logger.debug { "date: $date" }
         val entries = entryRepository.getAllByBudgetId(budgetId).bind()
         entries
             .filter { (it.date?.month ?: Month.JANUARY) == date.month &&

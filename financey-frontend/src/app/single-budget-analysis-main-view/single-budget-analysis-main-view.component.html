@@ -1,5 +1,6 @@
-<div class="full-screen-container" *ngIf="expenseBalanceHistory">
-  <div class="container">
+<div class="full-screen-container">
+  <app-budget-history-date-picker (chooseDatesEvent)="chooseDatesToAnalyze($event)"></app-budget-history-date-picker>
+  <div class="container" *ngIf="expenseBalanceHistory">
     <ngx-charts-bar-vertical
       [results]="expenseBalanceHistory"
       [xAxis]="true"
