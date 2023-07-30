@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {getStartOfYear} from "../../utils/date-utils";
 
 @Component({
   selector: 'app-budget-history-date-picker',
@@ -13,8 +14,8 @@ export class BudgetHistoryDatePickerComponent {
 
   constructor(private formBuilder: FormBuilder) {
     this.budgetHistoryFormGroup = this.formBuilder.group({
-        startDate: [this.findStartOfYear()],
-        endDate: [this.findEndOfYear()]
+        startDate: [getStartOfYear(new Date())],
+        endDate: [new Date()]
       }
     )
   }
@@ -22,16 +23,6 @@ export class BudgetHistoryDatePickerComponent {
   chooseDates() {
     const formGroupData = this.budgetHistoryFormGroup.value
     this.chooseDatesEvent.emit([formGroupData.startDate, formGroupData.endDate])
-  }
-
-  private findStartOfYear() {
-    const currentYear = new Date().getFullYear();
-    return new Date(currentYear, 0, 1);
-  }
-
-  private findEndOfYear() {
-    const currentYear = new Date().getFullYear();
-    return new Date(currentYear, 11, 31);
   }
 
 }
