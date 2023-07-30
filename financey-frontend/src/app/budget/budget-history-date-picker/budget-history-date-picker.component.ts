@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {getStartOfYear} from "../../utils/date-utils";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-budget-history-date-picker',
@@ -12,7 +13,7 @@ export class BudgetHistoryDatePickerComponent {
 
   @Output() chooseDatesEvent = new EventEmitter<[Date, Date]>()
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private formSnackBar: MatSnackBar) {
     this.budgetHistoryFormGroup = this.formBuilder.group({
         startDate: [getStartOfYear(new Date())],
         endDate: [new Date()]
@@ -22,7 +23,21 @@ export class BudgetHistoryDatePickerComponent {
 
   chooseDates() {
     const formGroupData = this.budgetHistoryFormGroup.value
-    this.chooseDatesEvent.emit([formGroupData.startDate, formGroupData.endDate])
+    const startDate = formGroupData.startDate;
+    const endDate = formGroupData.endDate;
+
+    if (startDate > endDate) {
+      this.openErrorSnackbar("Start date should be earlier than the end date.")
+    } else {
+      this.chooseDatesEvent.emit([startDate, endDate])
+    }
+  }
+
+  private openErrorSnackbar(message: string) {
+    this.formSnackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: 'error-snackbar'
+    });
   }
 
 }

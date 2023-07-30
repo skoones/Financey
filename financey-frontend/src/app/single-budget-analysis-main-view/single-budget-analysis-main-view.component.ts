@@ -16,7 +16,6 @@ type BalanceHistoryEntry = {
 export class SingleBudgetAnalysisMainViewComponent {
   expenseBalanceHistory?: BalanceHistoryEntry[];
 
-
   budgetId = "";
 
   constructor(private budgetAnalysisService: BudgetAnalysisService, private route: ActivatedRoute) {}
@@ -84,7 +83,6 @@ export class SingleBudgetAnalysisMainViewComponent {
   }
 
   private generateDatesForEveryMonth(start: Date, end: Date): Date[] {
-    // todo validation - start date must be before end date
     const numberOfMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) - 1;
     const monthsInBetween = this.generateMonthBeginningsFromDate(numberOfMonths, getFirstDayOfMonth(addMonths(start, 1)));
 
