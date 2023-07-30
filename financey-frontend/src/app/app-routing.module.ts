@@ -15,14 +15,14 @@ import {
 import {
   SingleBudgetAnalysisMainViewComponent
 } from "./single-budget-analysis-main-view/single-budget-analysis-main-view.component";
-import {SingleBudgetAnalysisComponent} from "./single-budget-analysis/single-budget-analysis.component";
+import {SingleBudgetAnalysisPicker} from "./single-budget-analysis/single-budget-analysis-picker.component";
 
 const routes: Routes = [
   { path: BUDGETS_PATH, component: AllBudgetsViewComponent },
   { path: HOME_PATH, component: HomeComponent },
   { path: SINGLE_BUDGET_PATH, component: SingleBudgetMainViewComponent },
   { path: SINGLE_BUDGET_ID_PATH, component: SingleBudgetViewComponent },
-  { path: SINGLE_BUDGET_ANALYSIS, component: SingleBudgetAnalysisComponent },
+  { path: SINGLE_BUDGET_ANALYSIS, component: SingleBudgetAnalysisPicker },
   { path: SINGLE_BUDGET_ANALYSIS_MAIN_VIEW, component: SingleBudgetAnalysisMainViewComponent },
 ];
 

@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl} from "@angular/forms";
 import {BudgetDTO, BudgetService} from "../../generated";
 import {map, Observable, startWith} from "rxjs";
 import {Router} from "@angular/router";
 import {SINGLE_BUDGET_ANALYSIS_MAIN_VIEW} from "../constants/path-constants";
 
 @Component({
-  selector: 'app-single-budget-analysis',
-  templateUrl: './single-budget-analysis.component.html',
-  styleUrls: ['./single-budget-analysis.component.scss']
+  selector: 'app-single-budget-analysis-picker',
+  templateUrl: './single-budget-analysis-picker.component.html',
+  styleUrls: ['./single-budget-analysis-picker.component.scss']
 })
-export class SingleBudgetAnalysisComponent implements OnInit {
+export class SingleBudgetAnalysisPicker implements OnInit {
 
   budgetListControl = new FormControl();
   budget?: BudgetDTO;
