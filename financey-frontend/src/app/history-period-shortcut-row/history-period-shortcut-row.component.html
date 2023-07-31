@@ -1,0 +1,6 @@
+<mat-button-toggle-group class="button-row">
+  <mat-button-toggle (click)="emitNewPeriod(HistoryPeriod.MONTH)">This month</mat-button-toggle>
+  <mat-button-toggle (click)="emitNewPeriod(HistoryPeriod.THREE_MONTHS)">Last 3 months</mat-button-toggle>
+  <mat-button-toggle (click)="emitNewPeriod(HistoryPeriod.SIX_MONTHS)">Last 6 months</mat-button-toggle>
+  <mat-button-toggle (click)="emitNewPeriod(HistoryPeriod.YEAR)">Last year</mat-button-toggle>
+</mat-button-toggle-group>

@@ -1,0 +1,12 @@
+.button-row {
+  display: flex;
+  justify-content: center; /* Align buttons to the center of the container */
+}
+
+.mat-button-toggle-group {
+  width: 80%;
+}
+
+.mat-button-toggle {
+  flex: 1;
+}

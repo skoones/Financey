@@ -44,6 +44,8 @@ import {ExpenseCheckboxComponent} from "./entry/add-entry/expense-checkbox/expen
 import { SingleBudgetAnalysisPicker } from './single-budget-analysis/single-budget-analysis-picker.component';
 import { BudgetHistoryDatePickerComponent } from './budget/budget-history-date-picker/budget-history-date-picker.component';
 import { ExpenseHistoryChartComponent } from './charts/expense-history-chart/expense-history-chart.component';
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import { HistoryPeriodShortcutRowComponent } from './history-period-shortcut-row/history-period-shortcut-row.component';
 
 @NgModule({
   declarations: [
@@ -69,33 +71,35 @@ import { ExpenseHistoryChartComponent } from './charts/expense-history-chart/exp
     SingleBudgetAnalysisMainViewComponent,
     SingleBudgetAnalysisPicker,
     BudgetHistoryDatePickerComponent,
-    ExpenseHistoryChartComponent
+    ExpenseHistoryChartComponent,
+    HistoryPeriodShortcutRowComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    NgxChartsModule,
-    BrowserAnimationsModule,
-    MatTableModule,
-    HttpClientModule,
-    MatCardModule,
-    MatButtonModule,
-    MatInputModule,
-    MatGridListModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatIconModule,
-    MatCheckboxModule,
-    MatSnackBarModule,
-    ReactiveFormsModule,
-    MatAutocompleteModule,
-    MatToolbarModule,
-    FormsModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatListModule,
-    MatDialogModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        NgxChartsModule,
+        BrowserAnimationsModule,
+        MatTableModule,
+        HttpClientModule,
+        MatCardModule,
+        MatButtonModule,
+        MatInputModule,
+        MatGridListModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatSnackBarModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule,
+        MatToolbarModule,
+        FormsModule,
+        MatSelectModule,
+        MatSidenavModule,
+        MatListModule,
+        MatDialogModule,
+        MatButtonToggleModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })
