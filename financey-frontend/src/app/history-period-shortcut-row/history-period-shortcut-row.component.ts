@@ -25,13 +25,13 @@ export class HistoryPeriodShortcutRowComponent implements OnInit {
         this.periodChange.emit([getFirstDayOfMonth(new Date()), new Date()]);
         break;
       case HistoryPeriod.THREE_MONTHS:
-        this.periodChange.emit([getFirstDayOfMonth(this.getDateMinusMonths(new Date(), 2)), new Date()]);
+        this.periodChange.emit([getFirstDayOfMonth(this.getDateMinusMonths(new Date(), 3)), new Date()]);
         break;
       case HistoryPeriod.SIX_MONTHS:
-        this.periodChange.emit([getFirstDayOfMonth(this.getDateMinusMonths(new Date(), 5)), new Date()]);
+        this.periodChange.emit([getFirstDayOfMonth(this.getDateMinusMonths(new Date(), 6)), new Date()]);
         break;
       case HistoryPeriod.YEAR:
-        this.periodChange.emit([getFirstDayOfMonth(this.getDateMinusMonths(new Date(), 11)), new Date()]);
+        this.periodChange.emit([getFirstDayOfMonth(this.getDateMinusMonths(new Date(), 12)), new Date()]);
         break;
       default:
         break;
@@ -42,8 +42,15 @@ export class HistoryPeriodShortcutRowComponent implements OnInit {
 
   private getDateMinusMonths(date: Date, numberOfMonths: number) {
     const currentDate = new Date(date);
-    currentDate.setMonth(currentDate.getMonth() - numberOfMonths);
-    return currentDate;
+
+    const lastThreeMonthsIndices = Array.from({ length: numberOfMonths }, (_, index) => index);
+    const lastThreeMonthsFirstDays = lastThreeMonthsIndices.map((i) => {
+      const date = new Date(currentDate);
+      date.setMonth(currentDate.getMonth() - i);
+      return getFirstDayOfMonth(date);
+    });
+
+    return lastThreeMonthsFirstDays[numberOfMonths - 1];
   }
 
 }
