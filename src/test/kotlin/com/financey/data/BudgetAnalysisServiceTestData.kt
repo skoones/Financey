@@ -1,6 +1,6 @@
 package com.financey.data
 
-import com.financey.domain.model.Entry
+import com.financey.domain.db.model.Entry
 import org.openapitools.model.EntryCurrency
 import org.openapitools.model.EntryType
 import java.math.BigDecimal

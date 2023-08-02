@@ -2,6 +2,7 @@ package com.financey.domain.service
 
 import arrow.core.Either.Right
 import com.financey.TestDataLoader
+import com.financey.domain.mapper.*
 import com.financey.repository.EntryRepository
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -11,20 +12,36 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.MockitoAnnotations
+import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Month
 
+@ExtendWith(MockitoExtension::class)
+@SpringBootTest(classes = [EntryDomainMapperImpl::class, BudgetDomainMapperImpl::class, IdMapper::class])
 class BudgetAnalysisServiceTests {
 
     @MockK
     lateinit var entryRepository: EntryRepository
 
+    @Autowired
+    lateinit var entryDomainMapper: EntryDomainMapperImpl
+
+    @Autowired
+    lateinit var budgetDomainMapper: BudgetDomainMapperImpl
+
     @InjectMockKs
     lateinit var budgetAnalysisService: BudgetAnalysisService
 
     @BeforeEach
-    fun setup(): Unit = MockKAnnotations.init(this)
+    fun setup(): Unit {
+        MockitoAnnotations.openMocks(this)
+        MockKAnnotations.init(this)
+    }
 
     @Test
     fun `calculates monthly expenses correctly`() = runBlocking {

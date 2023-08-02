@@ -1,25 +1,20 @@
 package com.financey.api.mapper
 
-import com.financey.domain.model.Entry
-import com.financey.domain.model.InvestmentEntry
+import com.financey.domain.model.EntryDomain
+import com.financey.domain.model.InvestmentEntryDomain
 import org.mapstruct.Mapper
-import org.mapstruct.Mapping
 import org.openapitools.model.EntryDTO
 import org.openapitools.model.InvestmentEntryDTO
 
-@Mapper(componentModel = "spring", uses = [IdMapper::class])
+@Mapper(componentModel = "spring")
 abstract class EntryDtoMapper {
 
-    @Mapping(target = "id", qualifiedByName = ["IdMapper", "stringToObjectId"])
-    abstract fun fromDto(dto: EntryDTO): Entry
+    abstract fun fromDto(dto: EntryDTO): EntryDomain
 
-    @Mapping(target = "id", qualifiedByName = ["IdMapper", "objectIdToString"])
-    abstract fun toDto(domain: Entry): EntryDTO
+    abstract fun toDto(domain: EntryDomain): EntryDTO
 
-    @Mapping(target = "id", qualifiedByName = ["IdMapper", "stringToObjectId"])
-    abstract fun fromInvestmentDto(dto: InvestmentEntryDTO): InvestmentEntry
+    abstract fun fromInvestmentDto(dto: InvestmentEntryDTO): InvestmentEntryDomain
 
-    @Mapping(target = "id", qualifiedByName = ["IdMapper", "objectIdToString"])
-    abstract fun toInvestmentDto(domain: InvestmentEntry): InvestmentEntryDTO
+    abstract fun toInvestmentDto(domain: InvestmentEntryDomain): InvestmentEntryDTO
 
 }

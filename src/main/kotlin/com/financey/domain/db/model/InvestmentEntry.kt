@@ -1,4 +1,4 @@
-package com.financey.domain.model
+package com.financey.domain.db.model
 
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id

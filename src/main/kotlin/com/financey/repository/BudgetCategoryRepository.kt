@@ -3,12 +3,12 @@ package com.financey.repository
 import arrow.core.Either
 import arrow.core.Either.Left
 import arrow.core.Either.Right
+import com.financey.domain.db.model.Budget
+import com.financey.domain.db.model.BudgetCategory
 import com.financey.domain.error.DataAccessError
 import com.financey.domain.error.ElementDoesNotExistError
 import com.financey.domain.error.MultipleElementsError
 import com.financey.domain.error.PersistenceError
-import com.financey.domain.model.Budget
-import com.financey.domain.model.BudgetCategory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -16,7 +16,6 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.inValues
 import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.data.mongodb.repository.MongoRepository
-import org.springframework.transaction.annotation.Transactional
 
 interface BudgetCategoryRepository : MongoRepository<Budget, String>, CustomBudgetCategoryRepository
 

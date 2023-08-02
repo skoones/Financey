@@ -1,7 +1,7 @@
 package com.financey
 
 import com.financey.data.BudgetAnalysisServiceTestData
-import com.financey.domain.model.Entry
+import com.financey.domain.db.model.Entry
 
 object TestDataLoader {
 
