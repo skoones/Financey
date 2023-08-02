@@ -21,7 +21,7 @@ class BudgetAnalysisController(
         budgetId: String
     ): ResponseEntity<BigDecimal> {
         val result = runBlocking {
-            budgetAnalysisService.getExpenseBalanceByPeriodAndId(startDate, endDate, budgetId)
+            budgetAnalysisService.getBalanceByPeriodAndId(startDate, endDate, budgetId)
         }
 
         return result.fold(

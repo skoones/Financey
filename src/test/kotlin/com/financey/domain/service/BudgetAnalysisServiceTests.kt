@@ -1,7 +1,6 @@
 package com.financey.domain.service
 
-import arrow.core.Either
-import arrow.core.right
+import arrow.core.Either.Right
 import com.financey.TestDataLoader
 import com.financey.repository.EntryRepository
 import io.mockk.MockKAnnotations
@@ -12,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Month
 
@@ -30,20 +30,21 @@ class BudgetAnalysisServiceTests {
     fun `calculates monthly expenses correctly`() = runBlocking {
         // given
         val testData = TestDataLoader.loadMonthlyExpenseTestData()
+        val expectedResults: List<BigDecimal> = listOf(BigDecimal(-40), BigDecimal(40), BigDecimal(50), BigDecimal(0))
 
-        testData.forEach { (entries, expectedExpenses) ->
+        testData.zip(expectedResults).forEach { (entries, expectedResult)->
             val budgetId = "budgetId"
-            every { entryRepository.getAllByBudgetId(budgetId) } returns Either.Right(entries)
+            every { entryRepository.getAllByBudgetId(budgetId) } returns Right(entries)
 
             // when
-            val result = budgetAnalysisService.getExpenseBalanceByPeriodAndId(
+            val result = budgetAnalysisService.getBalanceByPeriodAndId(
                 startDate = LocalDate.of(2023, Month.JULY, 1),
-                endDate = LocalDate.of(2923, Month.JULY, 5),
+                endDate = LocalDate.of(2023, Month.JULY, 5),
                 budgetId = budgetId
             )
 
             // then
-            assertEquals(expectedExpenses.right(), result)
+            assertEquals(Right(expectedResult), result)
         }
     }
 

@@ -9,7 +9,7 @@ paths:
   /monthly/sum/{startDate}/{endDate}/{budgetId}:
     get:
       operationId: getExpenseBalanceByPeriodAndId
-      description: "Get expenses sum for a given month and budget."
+      description: "Get expense/income balance for a given month and budget."
       parameters:
         - name: startDate
           in: path

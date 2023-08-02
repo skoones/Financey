@@ -8,107 +8,94 @@ import java.time.LocalDate
 import java.time.Month
 
 object BudgetAnalysisServiceTestData {
-    val monthlyExpenseData: List<Pair<List<Entry>, BigDecimal>> = listOf(
-            Pair(
-                listOf(
-                    Entry(
-                        date = LocalDate.of(2023, Month.JULY, 1),
-                        entryType = EntryType.INCOME,
-                        value = BigDecimal(10),
-                        currency = EntryCurrency.PLN,
-                        name = "test",
-                        userId = "test"
-                    ),
-                    Entry(
-                        date = LocalDate.of(2023, Month.JULY, 1),
-                        entryType = EntryType.EXPENSE,
-                        value = BigDecimal(50),
-                        currency = EntryCurrency.PLN,
-                        name = "test",
-                        userId = "test"
-                    ),
-                    Entry(
-                        date = LocalDate.of(2023, Month.JUNE, 1),
-                        entryType = EntryType.EXPENSE,
-                        value = BigDecimal(20),
-                        currency = EntryCurrency.PLN,
-                        name = "test",
-                        userId = "test"
-                    ),
-                    Entry(
-                        date = LocalDate.of(2022, Month.JULY, 1),
-                        entryType = EntryType.INCOME,
-                        value = BigDecimal(20),
-                        currency = EntryCurrency.PLN,
-                        name = "test",
-                        userId = "test"
-                    )
+    val monthlyExpenseData: List<List<Entry>> = listOf(
+            listOf(
+                Entry(
+                    date = LocalDate.of(2023, Month.JULY, 1),
+                    entryType = EntryType.INCOME,
+                    value = BigDecimal(10),
+                    currency = EntryCurrency.PLN,
+                    name = "test",
+                    userId = "test"
                 ),
-                BigDecimal(40)
+                Entry(
+                    date = LocalDate.of(2023, Month.JULY, 1),
+                    entryType = EntryType.EXPENSE,
+                    value = BigDecimal(50),
+                    currency = EntryCurrency.PLN,
+                    name = "test",
+                    userId = "test"
+                ),
+                Entry(
+                    date = LocalDate.of(2023, Month.JUNE, 1),
+                    entryType = EntryType.EXPENSE,
+                    value = BigDecimal(20),
+                    currency = EntryCurrency.PLN,
+                    name = "test",
+                    userId = "test"
+                ),
+                Entry(
+                    date = LocalDate.of(2022, Month.JULY, 1),
+                    entryType = EntryType.INCOME,
+                    value = BigDecimal(20),
+                    currency = EntryCurrency.PLN,
+                    name = "test",
+                    userId = "test"
+                )
             ),
-            Pair(
-                listOf(
-                    Entry(
-                        date = LocalDate.of(2023, Month.JULY, 1),
-                        entryType = EntryType.EXPENSE,
-                        value = BigDecimal(10),
-                        currency = EntryCurrency.PLN,
-                        name = "test",
-                        userId = "test"
-                    ),
-                    Entry(
-                        date = LocalDate.of(2023, Month.JULY, 1),
-                        entryType = EntryType.INCOME,
-                        value = BigDecimal(50),
-                        currency = EntryCurrency.PLN,
-                        name = "test",
-                        userId = "test"
-                    )
+            listOf(
+                Entry(
+                    date = LocalDate.of(2023, Month.JULY, 1),
+                    entryType = EntryType.EXPENSE,
+                    value = BigDecimal(10),
+                    currency = EntryCurrency.PLN,
+                    name = "test",
+                    userId = "test"
                 ),
-                BigDecimal(-40)
+                Entry(
+                    date = LocalDate.of(2023, Month.JULY, 1),
+                    entryType = EntryType.INCOME,
+                    value = BigDecimal(50),
+                    currency = EntryCurrency.PLN,
+                    name = "test",
+                    userId = "test"
+                )
             ),
-            Pair(
-                listOf(
-                    Entry(
-                        date = LocalDate.of(2022, Month.JULY, 1),
-                        entryType = EntryType.EXPENSE,
-                        value = BigDecimal(10),
-                        currency = EntryCurrency.PLN,
-                        name = "test",
-                        userId = "test"
-                    ),
-                    Entry(
-                        date = LocalDate.of(2023, Month.JULY, 1),
-                        entryType = EntryType.INCOME,
-                        value = BigDecimal(50),
-                        currency = EntryCurrency.PLN,
-                        name = "test",
-                        userId = "test"
-                    )
+            listOf(
+                Entry(
+                    date = LocalDate.of(2022, Month.JULY, 1),
+                    entryType = EntryType.EXPENSE,
+                    value = BigDecimal(10),
+                    currency = EntryCurrency.PLN,
+                    name = "test",
+                    userId = "test"
                 ),
-                BigDecimal(-50)
+                Entry(
+                    date = LocalDate.of(2023, Month.JULY, 1),
+                    entryType = EntryType.INCOME,
+                    value = BigDecimal(50),
+                    currency = EntryCurrency.PLN,
+                    name = "test",
+                    userId = "test"
+                )
             ),
-            Pair(
-                listOf(
-                    Entry(
-                        date = LocalDate.of(2023, Month.JUNE, 30),
-                        entryType = EntryType.EXPENSE,
-                        value = BigDecimal(10),
-                        currency = EntryCurrency.PLN,
-                        name = "test",
-                        userId = "test"
-                    ),
-                    Entry(
-                        date = LocalDate.of(2022, Month.JULY, 1),
-                        entryType = EntryType.INCOME,
-                        value = BigDecimal(50),
-                        currency = EntryCurrency.PLN,
-                        name = "test",
-                        userId = "test"
-                    )
+            listOf(
+                Entry(
+                    date = LocalDate.of(2023, Month.JUNE, 30),
+                    entryType = EntryType.EXPENSE,
+                    value = BigDecimal(10),
+                    currency = EntryCurrency.PLN,
+                    name = "test",
+                    userId = "test"
                 ),
-                BigDecimal(0)
+                Entry(
+                    date = LocalDate.of(2022, Month.JULY, 1),
+                    entryType = EntryType.INCOME,
+                    value = BigDecimal(50),
+                    currency = EntryCurrency.PLN,
+                    name = "test",
+                    userId = "test"
+                )
             )
-            // Add more test cases with different entry lists and expected balances
         )
 }
