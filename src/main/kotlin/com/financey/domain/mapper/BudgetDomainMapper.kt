@@ -14,12 +14,14 @@ abstract class BudgetDomainMapper {
     abstract fun toDomain(document: Budget): BudgetDomain
 
     @Mapping(target = "id", qualifiedByName = ["IdMapper", "stringToObjectId"])
+    @Mapping(target = "ancestorCategoryIds", ignore = true)
     abstract fun fromDomain(domain: BudgetDomain): Budget
 
     @Mapping(target = "id", qualifiedByName = ["IdMapper", "objectIdToString"])
     abstract fun toCategoryDomain(document: BudgetCategory): BudgetCategoryDomain
 
     @Mapping(target = "id", qualifiedByName = ["IdMapper", "stringToObjectId"])
+    @Mapping(target = "ancestorCategoryIds", ignore = true)
     abstract fun fromCategoryDomain(domain: BudgetCategoryDomain): BudgetCategory
 
 }

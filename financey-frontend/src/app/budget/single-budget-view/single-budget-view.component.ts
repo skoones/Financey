@@ -21,6 +21,7 @@ export class SingleBudgetViewComponent {
   @ViewChild(EntryListComponent, { static: false })
   private entryListComponent?: EntryListComponent;
   monthlyExpenses?: number;
+  monthlyBalance?: number;
 
   constructor(private recentlyViewedService: RecentlyViewedBudgetsService, private budgetAnalysisService: BudgetAnalysisService,
               private route: ActivatedRoute, private location: Location, private dialog: MatDialog) {
@@ -30,12 +31,14 @@ export class SingleBudgetViewComponent {
     this.location.replaceState(SINGLE_BUDGET_PATH);
     this.initBudget();
     this.initializeMonthlyExpenses();
+    this.initializeMonthlyBalance();
   }
 
   ngAfterViewInit() {
     if (this.entryListComponent) {
       this.entryListComponent.entryListChangeEmitter.subscribe((value: boolean) => {
         this.initializeMonthlyExpenses()
+        this.initializeMonthlyBalance();
       });
     }
   }
@@ -59,12 +62,20 @@ export class SingleBudgetViewComponent {
     dialogRef.componentInstance.addEntryEventEmitter.subscribe((anyAdded) => {
       if (anyAdded) {
         this.initializeMonthlyExpenses()
+        this.initializeMonthlyBalance();
         this.entryListComponent?.initializeEntryList();
       }
     });
   }
 
-  async getMonthlyExpenses(): Promise<number | undefined> {
+  private async getMonthlyExpenses(): Promise<number | undefined> {
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().substring(0, 10);
+    const startOfMonth = getFirstDayOfMonth(currentDate).toISOString().substring(0, 10);
+    return this.budgetAnalysisService.getExpenseSumByPeriodAndId(startOfMonth, currentDateString, this.budget?.id || "").toPromise();
+  }
+
+  private async getMonthlyBalance(): Promise<number | undefined> {
     const currentDate = new Date();
     const currentDateString = currentDate.toISOString().substring(0, 10);
     const startOfMonth = getFirstDayOfMonth(currentDate).toISOString().substring(0, 10);
@@ -73,6 +84,10 @@ export class SingleBudgetViewComponent {
 
   private initializeMonthlyExpenses() {
     this.getMonthlyExpenses().then(sum => this.monthlyExpenses = sum || 0)
+  }
+
+  private initializeMonthlyBalance() {
+    this.getMonthlyBalance().then(balance => this.monthlyBalance = balance || 0)
   }
 
 }

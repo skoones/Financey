@@ -39,7 +39,7 @@ open class CustomBudgetCategoryRepositoryImpl(
 
         return parentCategory?.fold(
             { Left(it) },
-            { Right(mongoTemplate.save(budgetCategory)) }
+            { parent -> saveCategoryWithAncestors(budgetCategory, parent) }
         ) ?: Right(mongoTemplate.save(budgetCategory))
     }
 
@@ -102,6 +102,22 @@ open class CustomBudgetCategoryRepositoryImpl(
         } catch (e: DataAccessException) {
             Left(DataAccessError("There was an issue with accessing database data. Budget categories could not be found."))
         }
+    }
+
+    private fun saveCategoryWithAncestors(
+        budgetCategory: BudgetCategory,
+        parent: BudgetCategory
+    ): Right<BudgetCategory> {
+        val parentId = parent.id?.toHexString() ?: ""
+
+        return Right(
+            mongoTemplate.save(
+                budgetCategory.copy(
+                    ancestorCategoryIds =
+                    parent.ancestorCategoryIds?.plus(parentId) ?: listOf(parentId)
+                )
+            )
+        )
     }
 
 }

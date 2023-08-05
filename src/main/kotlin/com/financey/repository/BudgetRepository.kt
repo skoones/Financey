@@ -4,6 +4,7 @@ import arrow.core.Either
 import arrow.core.Either.Left
 import arrow.core.Either.Right
 import com.financey.domain.db.model.Budget
+import com.financey.domain.db.model.BudgetCategory
 import com.financey.domain.error.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
@@ -40,7 +41,7 @@ open class CustomBudgetRepositoryImpl(
 
         return category?.fold(
             { Left(it) },
-            { saveWithUniqueName(budget) }
+            { saveWithUniqueName(getBudgetWithCategoryAncestors(budget, it)) }
         ) ?: saveWithUniqueName(budget)
     }
 
@@ -141,5 +142,14 @@ open class CustomBudgetRepositoryImpl(
                 if (it.id != budget.id) Left(UniqueElementExistsError("Budget with given name already exists for this user."))
                 else Right(mongoTemplate.save(budget))
             })
+
+    private fun getBudgetWithCategoryAncestors(
+        budget: Budget,
+        budgetCategory: BudgetCategory
+    ): Budget {
+        val budgetCategoryId = budgetCategory.id?.toHexString() ?: ""
+        return budget.copy(ancestorCategoryIds = budgetCategory.ancestorCategoryIds?.plus(budgetCategoryId) ?:
+            listOf(budgetCategoryId))
+    }
 
 }
