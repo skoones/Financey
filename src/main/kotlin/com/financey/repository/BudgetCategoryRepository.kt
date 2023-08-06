@@ -9,6 +9,7 @@ import com.financey.domain.error.DataAccessError
 import com.financey.domain.error.ElementDoesNotExistError
 import com.financey.domain.error.MultipleElementsError
 import com.financey.domain.error.PersistenceError
+import com.financey.utils.CommonUtils.objectIdToString
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -108,7 +109,7 @@ open class CustomBudgetCategoryRepositoryImpl(
         budgetCategory: BudgetCategory,
         parent: BudgetCategory
     ): Right<BudgetCategory> {
-        val parentId = parent.id?.toHexString() ?: ""
+        val parentId = objectIdToString(parent.id)
 
         return Right(
             mongoTemplate.save(

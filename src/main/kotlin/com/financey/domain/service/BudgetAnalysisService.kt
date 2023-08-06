@@ -7,7 +7,9 @@ import com.financey.domain.error.FinanceyError
 import com.financey.domain.mapper.BudgetDomainMapper
 import com.financey.domain.mapper.EntryDomainMapper
 import com.financey.repository.BudgetCategoryRepository
+import com.financey.repository.BudgetRepository
 import com.financey.repository.EntryRepository
+import com.financey.utils.CommonUtils.objectIdToString
 import mu.KotlinLogging
 import org.openapitools.model.EntryType
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +21,7 @@ import java.time.LocalDate
 class BudgetAnalysisService(
     @Autowired private val entryRepository: EntryRepository,
     @Autowired val budgetCategoryRepository: BudgetCategoryRepository,
+    @Autowired val budgetRepository: BudgetRepository,
     @Autowired private val budgetDomainMapper: BudgetDomainMapper,
     @Autowired private val entryDomainMapper: EntryDomainMapper
 ) {
@@ -39,11 +42,36 @@ class BudgetAnalysisService(
             .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
     }
 
-    fun getTotalExpensesForSubcategoriesByCategoryId(budgetCategoryId: String):
-            Either<FinanceyError, List<SubcategoryExpenseSumContext>> {
-//        val allSubcategoriesToExpenses = budgetCategoryRepository.
-//        TODO("Not yet implemented")
-        return Either.Right(listOf())
+    suspend fun getTotalExpensesForSubcategoriesByCategoryId(budgetCategoryId: String):
+            Either<FinanceyError, List<SubcategoryExpenseSumContext>> = either {
+        val childrenSubcategories = budgetCategoryRepository.getAllByParentId(budgetCategoryId).bind()
+        val idsToSubcategories = childrenSubcategories
+            .map { objectIdToString(it.id) to it }
+            .associate { it.first to it.second  }
+
+        val subcategoryToBudgets = budgetRepository.getAllByAncestorCategoryIds(idsToSubcategories.keys).bind()
+            .flatMap { it.ancestorCategoryIds?.map { categoryId -> categoryId to it } ?: listOf() }
+            .map { idsToSubcategories[it.first] to budgetDomainMapper.toDomain(it.second) }
+            .groupBy({ it.first }, { it.second })
+            .filterKeys { objectIdToString(it?.id) in idsToSubcategories.keys }
+
+        subcategoryToBudgets
+            .mapValues { entryRepository.getAllByBudgetIds(it.value.map { budget -> budget.id }).bind()
+                .filter { entry -> entry.entryType == EntryType.EXPENSE }
+                .map { entry -> entry.value } }
+            .mapValues { it.value.fold(BigDecimal.ZERO, BigDecimal::add) }
+            .map { (subcategory, expenseSum) ->
+                subcategory?.let { category ->
+                    SubcategoryExpenseSumContext(
+                        subcategoryId = objectIdToString(category.id),
+                        subcategoryName = category.name,
+                        expenseSum = expenseSum
+                    )
+                } ?: SubcategoryExpenseSumContext(
+                    subcategoryId = "",
+                    subcategoryName = ""
+                )
+            }
     }
 
     suspend fun getExpenseSumByPeriodAndId(startDate: LocalDate, endDate: LocalDate, budgetId: String):

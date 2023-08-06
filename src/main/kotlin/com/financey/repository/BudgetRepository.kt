@@ -6,6 +6,7 @@ import arrow.core.Either.Right
 import com.financey.domain.db.model.Budget
 import com.financey.domain.db.model.BudgetCategory
 import com.financey.domain.error.*
+import com.financey.utils.CommonUtils.objectIdToString
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -27,6 +28,7 @@ interface CustomBudgetRepository {
     fun getAllUncategorizedByUserId(userId: String): Either<PersistenceError, List<Budget>>
     fun getAllByCategoryId(categoryId: String): Either<PersistenceError, List<Budget>>
     fun getByName(name: String, userId: String): Either<PersistenceError, Budget>
+    fun getAllByAncestorCategoryIds(categoryIds: Set<String>): Either<PersistenceError, List<Budget>>
 }
 
 open class CustomBudgetRepositoryImpl(
@@ -109,6 +111,17 @@ open class CustomBudgetRepositoryImpl(
         }
     }
 
+    override fun getAllByAncestorCategoryIds(categoryIds: Set<String>): Either<PersistenceError, List<Budget>> {
+        val query = Query().addCriteria(Criteria.where("ancestorCategoryIds").`in`(categoryIds))
+
+        return try {
+            Right(mongoTemplate.find(query, Budget::class.java))
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
+
+        }
+    }
+
     override fun getAllUncategorizedByUserId(userId: String): Either<PersistenceError, List<Budget>> {
         val query = Query()
             .addCriteria(Budget::userId isEqualTo userId)
@@ -147,7 +160,7 @@ open class CustomBudgetRepositoryImpl(
         budget: Budget,
         budgetCategory: BudgetCategory
     ): Budget {
-        val budgetCategoryId = budgetCategory.id?.toHexString() ?: ""
+        val budgetCategoryId = objectIdToString(budgetCategory.id)
         return budget.copy(ancestorCategoryIds = budgetCategory.ancestorCategoryIds?.plus(budgetCategoryId) ?:
             listOf(budgetCategoryId))
     }

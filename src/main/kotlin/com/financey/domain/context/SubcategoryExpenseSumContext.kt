@@ -5,5 +5,5 @@ import java.math.BigDecimal
 data class SubcategoryExpenseSumContext(
     val subcategoryId: String?,
     val subcategoryName: String,
-    val expenseSum: BigDecimal
+    val expenseSum: BigDecimal = BigDecimal.ZERO
 )

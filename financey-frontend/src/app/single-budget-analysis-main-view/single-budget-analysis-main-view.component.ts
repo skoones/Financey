@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {BudgetAnalysisService} from "../../generated";
-import {forkJoin, tap} from "rxjs";
+import {BudgetAnalysisService, SubcategoryExpenseSumDTO} from "../../generated";
+import {firstValueFrom, forkJoin, tap} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {addMonths, findEndOfDay, getFirstDayOfMonth, getStartOfYear, groupIntoStartEndDates} from "../utils/date-utils";
 
@@ -30,6 +30,9 @@ export class SingleBudgetAnalysisMainViewComponent {
    const startDate = dates[0];
    const endDate = findEndOfDay(dates[1]);
    this.initializeExpenseBalanceHistory(this.generateDatesForEveryMonth(startDate, endDate)).subscribe();
+   firstValueFrom(this.budgetAnalysisService.getTotalExpensesForSubcategoriesByCategoryId("64ce34655727d45b23d5ea49")).then(expenses =>
+    console.log(expenses))
+    // todo remove
   }
 
   private findDatesForAnalysis() {
