@@ -15,7 +15,7 @@ import {
 import {
   SingleBudgetAnalysisMainViewComponent
 } from "./single-budget-analysis-main-view/single-budget-analysis-main-view.component";
-import {SingleBudgetAnalysisPicker} from "./single-budget-analysis/single-budget-analysis-picker.component";
+import {SingleBudgetAnalysisPicker} from "./single-budget-analysis-picker/single-budget-analysis-picker.component";
 
 const routes: Routes = [
   { path: BUDGETS_PATH, component: AllBudgetsViewComponent },

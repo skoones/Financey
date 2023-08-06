@@ -41,7 +41,7 @@ import { BudgetCategoryDetailsComponent } from './budget/budget-category-details
 import { SingleBudgetAnalysisMainViewComponent } from './single-budget-analysis-main-view/single-budget-analysis-main-view.component';
 import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {ExpenseCheckboxComponent} from "./entry/add-entry/expense-checkbox/expense-checkbox.component";
-import { SingleBudgetAnalysisPicker } from './single-budget-analysis/single-budget-analysis-picker.component';
+import { SingleBudgetAnalysisPicker } from './single-budget-analysis-picker/single-budget-analysis-picker.component';
 import { BudgetHistoryDatePickerComponent } from './budget/budget-history-date-picker/budget-history-date-picker.component';
 import { ExpenseHistoryChartComponent } from './charts/expense-history-chart/expense-history-chart.component';
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
