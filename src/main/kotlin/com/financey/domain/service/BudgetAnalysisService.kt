@@ -10,7 +10,6 @@ import com.financey.repository.BudgetCategoryRepository
 import com.financey.repository.BudgetRepository
 import com.financey.repository.EntryRepository
 import com.financey.utils.CommonUtils.objectIdToString
-import mu.KotlinLogging
 import org.openapitools.model.EntryType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -19,27 +18,21 @@ import java.time.LocalDate
 
 @Service
 class BudgetAnalysisService(
+    @Autowired private val expenseCalculatorService: ExpenseCalculatorService,
     @Autowired private val entryRepository: EntryRepository,
-    @Autowired val budgetCategoryRepository: BudgetCategoryRepository,
-    @Autowired val budgetRepository: BudgetRepository,
+    @Autowired private val budgetCategoryRepository: BudgetCategoryRepository,
+    @Autowired private val budgetRepository: BudgetRepository,
     @Autowired private val budgetDomainMapper: BudgetDomainMapper,
     @Autowired private val entryDomainMapper: EntryDomainMapper
 ) {
-
-    private val logger = KotlinLogging.logger {}
 
     // todo more descriptive error type?
     suspend fun getBalanceByPeriodAndId(startDate: LocalDate, endDate: LocalDate, budgetId: String):
             Either<FinanceyError, BigDecimal> = either {
         val entries = entryRepository.getAllByBudgetId(budgetId).bind()
-        entries
             .map { entryDomainMapper.toDomain(it) }
-            .filter {
-                (it.date ?: LocalDate.MIN) >= startDate && (it.date ?: LocalDate.MAX) <= endDate
-            }
-            // todo take currency into consideration
-            .map { if (it.entryType == EntryType.EXPENSE) it.value.negate() else it.value }
-            .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
+
+        expenseCalculatorService.findBalanceForPeriodFromEntries(entries, startDate, endDate)
     }
 
     suspend fun getTotalExpensesForSubcategoriesByCategoryId(budgetCategoryId: String):
@@ -55,38 +48,20 @@ class BudgetAnalysisService(
             .groupBy({ it.first }, { it.second })
             .filterKeys { objectIdToString(it?.id) in idsToSubcategories.keys }
 
-        subcategoryToBudgets
+        val subcategoryToExpenseSum = subcategoryToBudgets
             .mapValues { entryRepository.getAllByBudgetIds(it.value.map { budget -> budget.id }).bind()
                 .filter { entry -> entry.entryType == EntryType.EXPENSE }
                 .map { entry -> entry.value } }
-            .mapValues { it.value.fold(BigDecimal.ZERO, BigDecimal::add) }
-            .map { (subcategory, expenseSum) ->
-                subcategory?.let { category ->
-                    SubcategoryExpenseSumContext(
-                        subcategoryId = objectIdToString(category.id),
-                        subcategoryName = category.name,
-                        expenseSum = expenseSum
-                    )
-                } ?: SubcategoryExpenseSumContext(
-                    subcategoryId = "",
-                    subcategoryName = ""
-                )
-            }
+
+        expenseCalculatorService.findExpenseSumContexts(subcategoryToExpenseSum)
     }
 
     suspend fun getExpenseSumByPeriodAndId(startDate: LocalDate, endDate: LocalDate, budgetId: String):
             Either<FinanceyError, BigDecimal> = either {
         val entries = entryRepository.getAllByBudgetId(budgetId).bind()
-        entries
-            .asSequence()
             .map { entryDomainMapper.toDomain(it) }
-            .filter {
-                (it.date ?: LocalDate.MIN) >= startDate && (it.date ?: LocalDate.MAX) <= endDate
-            }
-            .filter { it.entryType == EntryType.EXPENSE }
-            // todo take currency into consideration
-            .map { it.value }
-            .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
+
+        expenseCalculatorService.findExpenseSumForPeriodFromEntries(entries, startDate, endDate)
     }
 
 }
