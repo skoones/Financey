@@ -35,7 +35,11 @@ class BudgetAnalysisService(
         expenseCalculatorService.findBalanceForPeriodFromEntries(entries, startDate, endDate)
     }
 
-    suspend fun getTotalExpensesForSubcategoriesByCategoryId(budgetCategoryId: String):
+    suspend fun getTotalExpensesForSubcategoriesAndPeriodByCategoryId(
+        startDate: LocalDate,
+        endDate: LocalDate,
+        budgetCategoryId: String
+    ):
             Either<FinanceyError, List<SubcategoryExpenseSumContext>> = either {
         val childrenSubcategories = budgetCategoryRepository.getAllByParentId(budgetCategoryId).bind()
         val idsToSubcategories = childrenSubcategories
@@ -49,7 +53,8 @@ class BudgetAnalysisService(
             .filterKeys { objectIdToString(it?.id) in idsToSubcategories.keys }
 
         val subcategoryToExpenseSum = subcategoryToBudgets
-            .mapValues { entryRepository.getAllByBudgetIds(it.value.map { budget -> budget.id }).bind()
+            .mapValues { entryRepository.getAllByBudgetIdsAndPeriod(startDate, endDate,
+                it.value.map { budget -> budget.id }).bind()
                 .filter { entry -> entry.entryType == EntryType.EXPENSE }
                 .map { entry -> entry.value } }
 

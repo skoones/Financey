@@ -46,6 +46,7 @@ import { BudgetHistoryDatePickerComponent } from './budget/budget-history-date-p
 import { ExpenseHistoryChartComponent } from './charts/expense-history-chart/expense-history-chart.component';
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import { HistoryPeriodShortcutRowComponent } from './history-period-shortcut-row/history-period-shortcut-row.component';
+import { ExpenseSumPieChartComponent } from './charts/expense-sum-pie-chart/expense-sum-pie-chart.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { HistoryPeriodShortcutRowComponent } from './history-period-shortcut-row
     SingleBudgetAnalysisPicker,
     BudgetHistoryDatePickerComponent,
     ExpenseHistoryChartComponent,
-    HistoryPeriodShortcutRowComponent
+    HistoryPeriodShortcutRowComponent,
+    ExpenseSumPieChartComponent
   ],
     imports: [
         BrowserModule,

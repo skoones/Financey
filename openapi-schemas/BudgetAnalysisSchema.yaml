@@ -40,11 +40,25 @@ paths:
             application/json:
               schema:
                 type: number
-  /sum/expenses/subcategories/{budgetCategoryId}:
+  /sum/expenses/subcategories/{startDate}/{endDate}/{budgetCategoryId}:
     get:
-      operationId: getTotalExpensesForSubcategoriesByCategoryId
+      operationId: getTotalExpensesForSubcategoriesAndPeriodByCategoryId
       description: "Get total expenses for direct subcategories of a category with given id."
       parameters:
+        - name: startDate
+          in: path
+          description: "Start date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: path
+          description: "End date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
         - name: budgetCategoryId
           in: path
           description: "Id of the given budget category."
