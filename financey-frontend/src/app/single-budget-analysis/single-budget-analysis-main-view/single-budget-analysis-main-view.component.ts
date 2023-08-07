@@ -1,8 +1,14 @@
 import {Component} from '@angular/core';
-import {BudgetAnalysisService, SubcategoryExpenseSumDTO} from "../../generated";
+import {BudgetAnalysisService, SubcategoryExpenseSumDTO} from "../../../generated";
 import {firstValueFrom, forkJoin, tap} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
-import {addMonths, findEndOfDay, getFirstDayOfMonth, getStartOfYear, groupIntoStartEndDates} from "../utils/date-utils";
+import {addMonths,
+  dateToString,
+  findEndOfDay,
+  getFirstDayOfMonth,
+  getStartOfYear,
+  groupIntoStartEndDates
+} from "../../utils/date-utils";
 
 type BalanceHistoryEntry = {
   name: string,
@@ -30,7 +36,8 @@ export class SingleBudgetAnalysisMainViewComponent {
    const startDate = dates[0];
    const endDate = findEndOfDay(dates[1]);
    this.initializeExpenseBalanceHistory(this.generateDatesForEveryMonth(startDate, endDate)).subscribe();
-   firstValueFrom(this.budgetAnalysisService.getTotalExpensesForSubcategoriesByCategoryId("64ce34655727d45b23d5ea49")).then(expenses =>
+   firstValueFrom(this.budgetAnalysisService
+     .getTotalExpensesForSubcategoriesAndPeriodByCategoryId(dateToString(startDate), dateToString(endDate), "64ce34655727d45b23d5ea49")).then(expenses =>
     console.log(expenses))
     // todo remove
   }
@@ -46,8 +53,8 @@ export class SingleBudgetAnalysisMainViewComponent {
     const startEndDatePairs = groupIntoStartEndDates(dates)
 
     const requests = startEndDatePairs.map(startEndDates =>
-      this.budgetAnalysisService.getExpenseBalanceByPeriodAndId(this.dateToString(startEndDates[0]),
-        this.dateToString(startEndDates[1]), this.budgetId)
+      this.budgetAnalysisService.getExpenseBalanceByPeriodAndId(dateToString(startEndDates[0]),
+        dateToString(startEndDates[1]), this.budgetId)
     );
 
     return forkJoin(requests)
@@ -55,7 +62,7 @@ export class SingleBudgetAnalysisMainViewComponent {
         const balanceHistory: BalanceHistoryEntry[] = []
         balances.forEach((balance: number, index: number) => {
           balanceHistory.push({
-            name: this.findMonthAndYearFromDate(this.dateToString(startEndDatePairs[index][0])),
+            name: this.findMonthAndYearFromDate(dateToString(startEndDatePairs[index][0])),
             value: balance
           });
         });
@@ -75,14 +82,6 @@ export class SingleBudgetAnalysisMainViewComponent {
     ];
 
     return `${monthNames[monthIndex]} ${year}`
-  }
-
-  private dateToString(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
   }
 
   private generateDatesForEveryMonth(start: Date, end: Date): Date[] {

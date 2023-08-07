@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {BudgetDTO, BudgetService} from "../../generated";
+import {BudgetDTO, BudgetService} from "../../../generated";
 import {map, Observable, startWith} from "rxjs";
 import {Router} from "@angular/router";
-import {SINGLE_BUDGET_ANALYSIS_MAIN_VIEW} from "../constants/path-constants";
+import {SINGLE_BUDGET_ANALYSIS_MAIN_VIEW} from "../../constants/path-constants";
 
 @Component({
   selector: 'app-single-budget-analysis-picker',

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {HistoryPeriod} from "./history-period";
-import {getFirstDayOfMonth} from "../utils/date-utils";
+import {getFirstDayOfMonth} from "../../utils/date-utils";
 
 @Component({
   selector: 'app-history-period-shortcut-row',
