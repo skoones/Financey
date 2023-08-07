@@ -36,6 +36,37 @@ paths:
             text/plain:
               schema:
                 type: string
+  /budget/{userId}/budgets/all:
+    get:
+      operationId: getBudgets
+      description: "Get all budgets for a given user."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetDTO"
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /budget/{userId}/budget/{name}:
     get:
       operationId: getByName
@@ -181,7 +212,7 @@ paths:
           content:
             text/plain:
               schema:
-                type: strin
+                type: string
   /budget/categories/{parentId}:
     get:
       operationId: getCategoriesByParentId

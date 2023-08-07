@@ -78,7 +78,7 @@ export class AddEntryComponent {
       startWith(''),
       map(value => this._filter(value || '')),
     );
-    this.budgetService.getUncategorizedBudgets(this.userId).subscribe(data => {
+    this.budgetService.getBudgets(this.userId).subscribe(data => {
       this.budgets = data;
     });
     this.handleMarketPriceChanges('amount-volume');

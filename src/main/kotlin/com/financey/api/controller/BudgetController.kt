@@ -1,19 +1,16 @@
 package com.financey.api.controller
 
 import com.financey.api.mapper.BudgetDtoMapper
-import com.financey.domain.context.BudgetSumContext
 import com.financey.domain.service.BudgetCategoryService
 import com.financey.domain.service.BudgetService
 import kotlinx.coroutines.runBlocking
 import org.openapitools.api.BudgetApi
 import org.openapitools.model.BudgetCategoryDTO
 import org.openapitools.model.BudgetDTO
-import org.openapitools.model.EntryCurrency
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.RestController
-import java.math.BigDecimal
 
 @RestController
 @CrossOrigin
@@ -173,6 +170,17 @@ class BudgetController(
         return categoryResult.fold(
             { throw it },
             { ResponseEntity.ok(budgetDtoMapper.toCategoryDto(it)) }
+        )
+    }
+
+    override fun getBudgets(userId: String): ResponseEntity<List<BudgetDTO>> {
+        val budgetsResult = runBlocking {
+            budgetService.getAllByUserId(userId)
+        }
+
+        return budgetsResult.fold(
+            { throw it },
+            { budgets -> ResponseEntity.ok(budgets.map { budgetDtoMapper.toDto(it) })}
         )
     }
 

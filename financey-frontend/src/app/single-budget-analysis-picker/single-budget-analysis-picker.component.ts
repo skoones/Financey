@@ -20,7 +20,7 @@ export class SingleBudgetAnalysisPicker implements OnInit {
   constructor(private budgetService: BudgetService, private router: Router) {}
 
   ngOnInit(): void {
-    this.budgetService.getUncategorizedBudgets(this.userId).subscribe(data => {
+    this.budgetService.getBudgets(this.userId).subscribe(data => {
       this.budgetsToChoose = data;
     });
 
