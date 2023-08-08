@@ -9,20 +9,21 @@ import {
   HOME_PATH,
   SINGLE_BUDGET_PATH,
   SINGLE_BUDGET_ID_PATH,
-  SINGLE_BUDGET_ANALYSIS,
+  BUDGET_ANALYSIS_MAIN,
   SINGLE_BUDGET_ANALYSIS_MAIN_VIEW
 } from "./constants/path-constants";
 import {
   SingleBudgetAnalysisMainViewComponent
 } from "./budget-analysis/single-budget-analysis/single-budget-analysis-main-view/single-budget-analysis-main-view.component";
 import {SingleBudgetAnalysisPicker} from "./budget-analysis/single-budget-analysis/single-budget-analysis-picker/single-budget-analysis-picker.component";
+import {AnalysisMainViewComponent} from "./budget-analysis/analysis-main-view/analysis-main-view.component";
 
 const routes: Routes = [
   { path: BUDGETS_PATH, component: AllBudgetsViewComponent },
   { path: HOME_PATH, component: HomeComponent },
   { path: SINGLE_BUDGET_PATH, component: SingleBudgetMainViewComponent },
   { path: SINGLE_BUDGET_ID_PATH, component: SingleBudgetViewComponent },
-  { path: SINGLE_BUDGET_ANALYSIS, component: SingleBudgetAnalysisPicker },
+  { path: BUDGET_ANALYSIS_MAIN, component: AnalysisMainViewComponent },
   { path: SINGLE_BUDGET_ANALYSIS_MAIN_VIEW, component: SingleBudgetAnalysisMainViewComponent },
 ];
 

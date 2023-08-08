@@ -1,20 +1,20 @@
 <mat-card class="mat-elevation-z8 centered-card">
   <mat-card-header>
-    <mat-card-title>Pick budget for analysis</mat-card-title>
+    <mat-card-title>Pick budget category for analysis</mat-card-title>
   </mat-card-header>
   <form>
     <div class="form-field-container">
-      <mat-form-field *ngIf="this.budget == undefined" appearance="fill" class="budget-form-field">
-        <mat-label>Budget</mat-label>
+      <mat-form-field *ngIf="this.category == undefined" appearance="fill" class="budget-form-field">
+        <mat-label>Budget category</mat-label>
         <input type="text"
-               placeholder="Pick a budget"
+               placeholder="Pick a category"
                matInput
-               formControlName="budgetForEntry"
-               [formControl]="budgetListControl"
+               formControlName="categoryForAnalysis"
+               [formControl]="categoryListControl"
                [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let budget of filteredBudgets | async" [value]="budget.name">
-            {{budget.name}}
+          <mat-option *ngFor="let category of filteredCategories | async" [value]="category.name">
+            {{category.name}}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>

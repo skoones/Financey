@@ -47,6 +47,11 @@ import { ExpenseHistoryChartComponent } from './charts/expense-history-chart/exp
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import { HistoryPeriodShortcutRowComponent } from './budget-analysis/analysis-history/history-period-shortcut-row/history-period-shortcut-row.component';
 import { ExpenseSumPieChartComponent } from './charts/expense-sum-pie-chart/expense-sum-pie-chart.component';
+import { BudgetCategoryAnalysisToggleComponent } from './budget-analysis/budget-category-analysis-toggle/budget-category-analysis-toggle.component';
+import { AnalysisMainViewComponent } from './budget-analysis/analysis-main-view/analysis-main-view.component';
+import {
+  BudgetCategoryAnalysisPicker
+} from "./budget-analysis/budget-category-analysis/budget-category-analysis-picker/budget-category-analysis-picker.component";
 
 @NgModule({
   declarations: [
@@ -74,7 +79,10 @@ import { ExpenseSumPieChartComponent } from './charts/expense-sum-pie-chart/expe
     BudgetHistoryDatePickerComponent,
     ExpenseHistoryChartComponent,
     HistoryPeriodShortcutRowComponent,
-    ExpenseSumPieChartComponent
+    ExpenseSumPieChartComponent,
+    BudgetCategoryAnalysisToggleComponent,
+    AnalysisMainViewComponent,
+    BudgetCategoryAnalysisPicker
   ],
     imports: [
         BrowserModule,
