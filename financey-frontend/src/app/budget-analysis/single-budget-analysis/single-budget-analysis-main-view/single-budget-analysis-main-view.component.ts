@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {BudgetAnalysisService, SubcategoryExpenseSumDTO} from "../../../generated";
+import {BudgetAnalysisService, SubcategoryExpenseSumDTO} from "../../../../generated";
 import {firstValueFrom, forkJoin, tap} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {addMonths,
@@ -8,7 +8,7 @@ import {addMonths,
   getFirstDayOfMonth,
   getStartOfYear,
   groupIntoStartEndDates
-} from "../../utils/date-utils";
+} from "../../../utils/date-utils";
 
 type BalanceHistoryEntry = {
   name: string,

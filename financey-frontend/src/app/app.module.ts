@@ -38,14 +38,14 @@ import {AddBudgetCategoryComponent} from "./budget/add-budget-category/add-budge
 import {AddBudgetComponent} from "./budget/add-budget/add-budget.component";
 import {BudgetDetailsComponent} from "./budget/budget-details/budget-details.component";
 import { BudgetCategoryDetailsComponent } from './budget/budget-category-details/budget-category-details.component';
-import { SingleBudgetAnalysisMainViewComponent } from './single-budget-analysis/single-budget-analysis-main-view/single-budget-analysis-main-view.component';
+import { SingleBudgetAnalysisMainViewComponent } from './budget-analysis/single-budget-analysis/single-budget-analysis-main-view/single-budget-analysis-main-view.component';
 import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {ExpenseCheckboxComponent} from "./entry/add-entry/expense-checkbox/expense-checkbox.component";
-import { SingleBudgetAnalysisPicker } from './single-budget-analysis/single-budget-analysis-picker/single-budget-analysis-picker.component';
-import { BudgetHistoryDatePickerComponent } from './analysis-history/budget-history-date-picker/budget-history-date-picker.component';
+import { SingleBudgetAnalysisPicker } from './budget-analysis/single-budget-analysis/single-budget-analysis-picker/single-budget-analysis-picker.component';
+import { BudgetHistoryDatePickerComponent } from './budget-analysis/analysis-history/budget-history-date-picker/budget-history-date-picker.component';
 import { ExpenseHistoryChartComponent } from './charts/expense-history-chart/expense-history-chart.component';
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
-import { HistoryPeriodShortcutRowComponent } from './analysis-history/history-period-shortcut-row/history-period-shortcut-row.component';
+import { HistoryPeriodShortcutRowComponent } from './budget-analysis/analysis-history/history-period-shortcut-row/history-period-shortcut-row.component';
 import { ExpenseSumPieChartComponent } from './charts/expense-sum-pie-chart/expense-sum-pie-chart.component';
 
 @NgModule({
