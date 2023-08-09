@@ -117,6 +117,7 @@ export class BudgetDetailsComponent {
     }
   }
 
+  // todo mixin?
   openFullBudgetView() {
     if (this.budget !== undefined) {
       this.closePopup.emit();

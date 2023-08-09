@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
-import {BudgetAnalysisService} from "../../../../generated";
+import {BudgetAnalysisService, BudgetService} from "../../../../generated";
 import {forkJoin, tap} from "rxjs";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {
   addMonths,
   dateToString,
@@ -26,7 +26,8 @@ export class SingleBudgetAnalysisMainViewComponent {
 
   budgetId = "";
 
-  constructor(private budgetAnalysisService: BudgetAnalysisService, private route: ActivatedRoute) {
+  constructor(private budgetService: BudgetService, private budgetAnalysisService: BudgetAnalysisService,
+              private router: Router, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -93,6 +94,14 @@ export class SingleBudgetAnalysisMainViewComponent {
   private generateMonthBeginningsFromDate(numberOfMonths: number, start: Date): Date[] {
     return Array.from({length: numberOfMonths},
       (_, index) => getFirstDayOfMonth(addMonths(start, index)));
+  }
+
+  openFullBudgetView() {
+    console.log("budgetId: " + this.budgetId)
+    this.budgetService.getById(this.budgetId).subscribe(budget => {
+      this.router.navigate([`/budgets/single/${this.budgetId}`],  { queryParams: { budget: JSON.stringify(budget) } });
+    })
+
   }
 
 }

@@ -66,4 +66,11 @@ class BudgetService(
         budgets
     }
 
+    suspend fun getById(budgetId: String): Either<PersistenceError, BudgetDomain> = either {
+        val budget = budgetRepository.getById(budgetId).bind()
+        val budgetDomain = budgetDomainMapper.toDomain(budget)
+        logger.debug { "Retrieved budget with id ${budgetId}." }
+        budgetDomain
+    }
+
 }

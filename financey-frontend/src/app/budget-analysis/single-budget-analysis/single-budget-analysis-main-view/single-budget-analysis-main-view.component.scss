@@ -1,7 +1,17 @@
-.expense-history-container {
+.expense-history-chart-container {
   display: flex;
   width: 700px;
   height: 500px;
+}
+
+.expense-history-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.budget-view-button {
+  width: 30%
 }
 
 .period-choosing-container {
