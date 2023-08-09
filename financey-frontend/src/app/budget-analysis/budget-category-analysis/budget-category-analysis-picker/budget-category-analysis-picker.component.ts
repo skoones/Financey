@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {BudgetCategoryDTO, BudgetDTO, BudgetService} from "../../../../generated";
+import {BudgetCategoryDTO, BudgetService} from "../../../../generated";
 import {map, Observable, startWith} from "rxjs";
 import {Router} from "@angular/router";
-import {BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW, SINGLE_BUDGET_ANALYSIS_MAIN_VIEW} from "../../../constants/path-constants";
+import {BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW} from "../../../constants/path-constants";
 
 @Component({
   selector: 'app-budget-category-analysis-picker',
@@ -17,7 +17,8 @@ export class BudgetCategoryAnalysisPicker implements OnInit {
   categoriesToChoose: BudgetCategoryDTO[] = []
   filteredCategories = new Observable<BudgetCategoryDTO[]>();
   userId = "demo" // todo
-  constructor(private budgetService: BudgetService, private router: Router) {}
+  constructor(private budgetService: BudgetService, private router: Router) {
+  }
 
   ngOnInit(): void {
     this.budgetService.getCategories(this.userId).subscribe(data => {
@@ -32,9 +33,8 @@ export class BudgetCategoryAnalysisPicker implements OnInit {
 
   public async routeToAnalysisMainView() {
     const categoryId = await this.findCategoryIdFromName(this.categoryListControl.value);
-    console.log(categoryId)
 
-    await this.router.navigate([BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW], { queryParams: { categoryId: categoryId } })
+    await this.router.navigate([BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW], {queryParams: {categoryId: categoryId}})
   }
 
   private _filter(value: string): BudgetCategoryDTO[] {
@@ -45,7 +45,7 @@ export class BudgetCategoryAnalysisPicker implements OnInit {
 
   // todo mixin/utils
   async findCategoryIdFromName(categoryName: string): Promise<string> {
-      const name: string = categoryName || this.category?.name || "";
+    const name: string = categoryName || this.category?.name || "";
 
     return new Promise<string>((resolve) => {
       // todo placeholder userId

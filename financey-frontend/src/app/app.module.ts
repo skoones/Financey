@@ -52,6 +52,7 @@ import { AnalysisMainViewComponent } from './budget-analysis/analysis-main-view/
 import {
   BudgetCategoryAnalysisPicker
 } from "./budget-analysis/budget-category-analysis/budget-category-analysis-picker/budget-category-analysis-picker.component";
+import { BudgetCategoryAnalysisMainViewComponent } from './budget-analysis/budget-category-analysis/budget-category-analysis-main-view/budget-category-analysis-main-view.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import {
     ExpenseSumPieChartComponent,
     BudgetCategoryAnalysisToggleComponent,
     AnalysisMainViewComponent,
-    BudgetCategoryAnalysisPicker
+    BudgetCategoryAnalysisPicker,
+    BudgetCategoryAnalysisMainViewComponent
   ],
     imports: [
         BrowserModule,

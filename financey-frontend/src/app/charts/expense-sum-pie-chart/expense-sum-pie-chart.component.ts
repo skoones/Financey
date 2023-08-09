@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {BudgetAnalysisService, SubcategoryExpenseSumDTO} from "../../../generated";
+import {dateToString, getFirstDayOfMonth} from "../../utils/date-utils";
 
 @Component({
   selector: 'app-expense-sum-pie-chart',
@@ -14,17 +15,19 @@ export class ExpenseSumPieChartComponent implements OnInit {
   explodeSlices = false;
   doughnut = false;
 
+  @Input() expenseDates: [Date, Date] = [getFirstDayOfMonth(new Date()), new Date()]
+
+  @Input() categoryId?: string
+
   constructor(private budgetAnalysisService: BudgetAnalysisService) {}
 
   ngOnInit() {
-    this.initializeSubcategoryData().then(result => {
-      this.subcategoryData = result
-      this.calculateChartData();
-    })
+    this.initializeChart(this.expenseDates)
   }
 
-  private async initializeSubcategoryData() {
-    return await this.budgetAnalysisService.getTotalExpensesForSubcategoriesAndPeriodByCategoryId("2023-07-10", "2023-08-07", "64ce34655727d45b23d5ea49").toPromise(); // todo placeholder
+  changeExpenseDates(dates: [Date, Date]) {
+    this.expenseDates = dates
+    this.initializeChart(this.expenseDates)
   }
 
   calculateChartData() {
@@ -32,13 +35,25 @@ export class ExpenseSumPieChartComponent implements OnInit {
     const totalSum = expenseSumData.reduce((sum, subcategory) => sum + subcategory.expenseSum, 0);
     this.pieChartData = expenseSumData.map((subcategory) => ({
       name: subcategory.subcategoryName,
-      value: (subcategory.expenseSum / totalSum) * 100,
+      value: Math.round((subcategory.expenseSum / totalSum) * 100)
     }));
   }
 
   tooltipText(pieChartData: {data: { name: string, value: number, label: string}}) {
     return `${pieChartData.data.name}
     ${pieChartData.data.value}%`;
+  }
+
+  private async getSubcategoryData(dates: [Date, Date]) {
+    return await this.budgetAnalysisService.getTotalExpensesForSubcategoriesAndPeriodByCategoryId(dateToString(dates[0]),
+      dateToString(dates[1]), this.categoryId || "").toPromise();
+  }
+
+  private initializeChart(dates: [Date, Date]) {
+    this.getSubcategoryData(dates).then(result => {
+      this.subcategoryData = result
+      this.calculateChartData();
+    })
   }
 
 }

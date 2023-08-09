@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
-import {BudgetAnalysisService, SubcategoryExpenseSumDTO} from "../../../../generated";
-import {firstValueFrom, forkJoin, tap} from "rxjs";
+import {BudgetAnalysisService} from "../../../../generated";
+import {forkJoin, tap} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
-import {addMonths,
+import {
+  addMonths,
   dateToString,
   findEndOfDay,
   getFirstDayOfMonth,
@@ -14,6 +15,7 @@ type BalanceHistoryEntry = {
   name: string,
   value: any
 }
+
 @Component({
   selector: 'app-single-budget-analysis-main-view',
   templateUrl: './single-budget-analysis-main-view.component.html',
@@ -24,7 +26,8 @@ export class SingleBudgetAnalysisMainViewComponent {
 
   budgetId = "";
 
-  constructor(private budgetAnalysisService: BudgetAnalysisService, private route: ActivatedRoute) {}
+  constructor(private budgetAnalysisService: BudgetAnalysisService, private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
     this.budgetId = this.route.snapshot.queryParamMap.get('budgetId') || ""
@@ -33,13 +36,9 @@ export class SingleBudgetAnalysisMainViewComponent {
   }
 
   chooseDatesToAnalyze(dates: [Date, Date]) {
-   const startDate = dates[0];
-   const endDate = findEndOfDay(dates[1]);
-   this.initializeExpenseBalanceHistory(this.generateDatesForEveryMonth(startDate, endDate)).subscribe();
-   firstValueFrom(this.budgetAnalysisService
-     .getTotalExpensesForSubcategoriesAndPeriodByCategoryId(dateToString(startDate), dateToString(endDate), "64ce34655727d45b23d5ea49")).then(expenses =>
-    console.log(expenses))
-    // todo remove
+    const startDate = dates[0];
+    const endDate = findEndOfDay(dates[1]);
+    this.initializeExpenseBalanceHistory(this.generateDatesForEveryMonth(startDate, endDate)).subscribe();
   }
 
   private findDatesForAnalysis() {
@@ -59,16 +58,16 @@ export class SingleBudgetAnalysisMainViewComponent {
 
     return forkJoin(requests)
       .pipe(tap((balances: number[]) => {
-        const balanceHistory: BalanceHistoryEntry[] = []
-        balances.forEach((balance: number, index: number) => {
-          balanceHistory.push({
-            name: this.findMonthAndYearFromDate(dateToString(startEndDatePairs[index][0])),
-            value: balance
+          const balanceHistory: BalanceHistoryEntry[] = []
+          balances.forEach((balance: number, index: number) => {
+            balanceHistory.push({
+              name: this.findMonthAndYearFromDate(dateToString(startEndDatePairs[index][0])),
+              value: balance
+            });
           });
-        });
-        this.expenseBalanceHistory = balanceHistory;
-      })
-    );
+          this.expenseBalanceHistory = balanceHistory;
+        })
+      );
   }
 
   private findMonthAndYearFromDate(dateString: string) {
