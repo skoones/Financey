@@ -1,9 +1,7 @@
-// noinspection TypeScriptValidateJSTypes
-
-import {Component, EventEmitter, Inject, Input, Optional, Output} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, Optional, Output, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {firstValueFrom, forkJoin, map, Observable, startWith} from "rxjs";
+import {firstValueFrom, map, Observable, startWith} from "rxjs";
 import {
   BudgetDTO,
   BudgetService,
@@ -16,6 +14,8 @@ import {
 import {amountValidator, volumeValidator} from "../../validators/number-validators";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {mapIsBuyToEntryType} from "../../utils/entry-utils";
+import {IncomeCheckboxComponent} from "./income-checkbox/income-checkbox.component";
+import {ExpenseCheckboxComponent} from "./expense-checkbox/expense-checkbox.component";
 
 enum AddEntryResult {
   Success,
@@ -32,6 +32,13 @@ export class AddEntryComponent {
   budgetListControl = new FormControl();
   @Input() budget?: BudgetDTO;
   @Output() addEntryEventEmitter = new EventEmitter<boolean>();
+
+  @ViewChild(IncomeCheckboxComponent, { static: false })
+  private incomeCheckbox?: IncomeCheckboxComponent
+
+  @ViewChild(ExpenseCheckboxComponent, { static: false })
+  private expenseCheckbox?: ExpenseCheckboxComponent
+
   filteredBudgets: Observable<BudgetDTO[]> = new Observable<BudgetDTO[]>();
   budgets: BudgetDTO[] = []
   currencyEnum = EntryCurrency;
@@ -71,7 +78,7 @@ export class AddEntryComponent {
       startWith(''),
       map(value => this._filter(value || '')),
     );
-    this.budgetService.getUncategorizedBudgets(this.userId).subscribe(data => {
+    this.budgetService.getBudgets(this.userId).subscribe(data => {
       this.budgets = data;
     });
     this.handleMarketPriceChanges('amount-volume');
@@ -98,6 +105,7 @@ export class AddEntryComponent {
     this.addEntryEventEmitter.emit(this.anyAdded)
   }
 
+  // todo mixin?
   private _filter(value: string): BudgetDTO[] {
     const filterValue = value.toLowerCase();
 
@@ -105,6 +113,13 @@ export class AddEntryComponent {
   }
 
   changeEntryType(value: EntryType) {
+    if (this.incomeCheckbox != null) {
+      this.incomeCheckbox.isChecked = value == EntryType.INCOME
+    }
+    if (this.expenseCheckbox != null) {
+      this.expenseCheckbox.isChecked = value == EntryType.EXPENSE
+    }
+
     this.entryType = value
   }
 

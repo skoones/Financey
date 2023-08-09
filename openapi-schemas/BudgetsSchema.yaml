@@ -39,6 +39,37 @@ paths:
             text/plain:
               schema:
                 type: string
+  /{userId}/budgets/all:
+    get:
+      operationId: getBudgets
+      description: "Get all budgets for a given user."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetDTO"
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /{userId}/categories:
     get:
       operationId: getCategories
@@ -195,6 +226,32 @@ paths:
         - name: userId
           in: path
           description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /{budgetId}:
+    get:
+      operationId: getById
+      description: "Get budget by id."
+      parameters:
+        - name: budgetId
+          in: path
+          description: "Budget id."
           required: true
           schema:
             type: string
@@ -373,36 +430,6 @@ paths:
             text/plain:
               schema:
                 type: string
-  /{userId}/budgetSum:
-    post:
-      operationId: getBudgetSum
-      description: "Get the total sum of budget entry values in a given currency."
-      parameters:
-        - name: userId
-          in: path
-          description: "Id of the currently logged in user"
-          required: true
-          schema:
-            type: string
-        - name: budgetId
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: currency
-          in: query
-          required: true
-          schema:
-            $ref: "./EntrySchema.yaml#/components/schemas/EntryCurrency"
-      tags:
-        - budget
-      responses:
-        "200":
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: number
 
 components:
   schemas:

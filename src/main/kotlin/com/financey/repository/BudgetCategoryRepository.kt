@@ -3,12 +3,13 @@ package com.financey.repository
 import arrow.core.Either
 import arrow.core.Either.Left
 import arrow.core.Either.Right
+import com.financey.domain.db.model.Budget
+import com.financey.domain.db.model.BudgetCategory
 import com.financey.domain.error.DataAccessError
 import com.financey.domain.error.ElementDoesNotExistError
 import com.financey.domain.error.MultipleElementsError
 import com.financey.domain.error.PersistenceError
-import com.financey.domain.model.Budget
-import com.financey.domain.model.BudgetCategory
+import com.financey.utils.CommonUtils.objectIdToString
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -16,7 +17,6 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.inValues
 import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.data.mongodb.repository.MongoRepository
-import org.springframework.transaction.annotation.Transactional
 
 interface BudgetCategoryRepository : MongoRepository<Budget, String>, CustomBudgetCategoryRepository
 
@@ -40,7 +40,7 @@ open class CustomBudgetCategoryRepositoryImpl(
 
         return parentCategory?.fold(
             { Left(it) },
-            { Right(mongoTemplate.save(budgetCategory)) }
+            { parent -> saveCategoryWithAncestors(budgetCategory, parent) }
         ) ?: Right(mongoTemplate.save(budgetCategory))
     }
 
@@ -103,6 +103,22 @@ open class CustomBudgetCategoryRepositoryImpl(
         } catch (e: DataAccessException) {
             Left(DataAccessError("There was an issue with accessing database data. Budget categories could not be found."))
         }
+    }
+
+    private fun saveCategoryWithAncestors(
+        budgetCategory: BudgetCategory,
+        parent: BudgetCategory
+    ): Right<BudgetCategory> {
+        val parentId = objectIdToString(parent.id)
+
+        return Right(
+            mongoTemplate.save(
+                budgetCategory.copy(
+                    ancestorCategoryIds =
+                    parent.ancestorCategoryIds?.plus(parentId) ?: listOf(parentId)
+                )
+            )
+        )
     }
 
 }

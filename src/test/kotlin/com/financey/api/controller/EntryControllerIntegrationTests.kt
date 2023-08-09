@@ -1,7 +1,7 @@
 package com.financey.api.controller
 
 import com.financey.api.mapper.EntryDtoMapper
-import com.financey.domain.model.Entry
+import com.financey.domain.model.EntryDomain
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -27,7 +27,7 @@ class EntryControllerIntegrationTests(@Autowired val entryController: EntryContr
     @Test
     fun `creates, updates and deletes entry`(): Unit = runBlocking {
         val entry =
-                Entry(value = BigDecimal.valueOf(1), currency = EntryCurrency.EUR, name = "test entry", userId = "demo")
+                EntryDomain(value = BigDecimal.valueOf(1), currency = EntryCurrency.EUR, name = "test entry", userId = "demo")
         val entryDto = entryDtoMapper.toDto(entry)
         val response = entryController.addEntry(entryDto)
         assertEquals(HttpStatus.OK, response.statusCode)
@@ -36,7 +36,7 @@ class EntryControllerIntegrationTests(@Autowired val entryController: EntryContr
         val updatedEntry = entryDto.copy(name = "updated name")
         entryController.updateEntry(updatedEntry)
         assertEquals(
-            mongoTemplate.find(Query().addCriteria(Entry::name isEqualTo "updated name"), Entry::class.java),
+            mongoTemplate.find(Query().addCriteria(EntryDomain::name isEqualTo "updated name"), EntryDomain::class.java),
             listOf(entryDtoMapper.fromDto(updatedEntry)))
 
         val deleteResponse = entryController.deleteEntriesByIds(listOf(savedId))

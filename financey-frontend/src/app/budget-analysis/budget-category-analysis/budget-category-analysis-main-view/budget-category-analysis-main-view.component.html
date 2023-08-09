@@ -1,0 +1,8 @@
+<div class="full-screen-container">
+  <div class="period-choosing-container">
+    <app-budget-history-date-picker (chooseDatesEvent)="chooseDatesToAnalyze($event)"></app-budget-history-date-picker>
+    <span class="flex-spacer"></span>
+    <app-history-period-shortcut-row (periodChange)="chooseDatesToAnalyze($event)"></app-history-period-shortcut-row>
+  </div>
+  <app-expense-sum-pie-chart [categoryId]="categoryId"></app-expense-sum-pie-chart>
+</div>

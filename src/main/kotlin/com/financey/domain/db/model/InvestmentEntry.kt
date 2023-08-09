@@ -1,15 +1,14 @@
-package com.financey.domain.model
+package com.financey.domain.db.model
 
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import java.math.BigDecimal
 
 @Document
-data class Budget(
+data class InvestmentEntry(
     @Id val id: ObjectId? = ObjectId.get(),
-    val name: String,
-    val investment: Boolean,
-    val budgetEntries: List<Entry>?,
-    val userId: String,
-    val categoryId: String?
+    val entry: Entry,
+    val volume: Int,
+    val marketPriceAtOperation: BigDecimal
 )

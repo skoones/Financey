@@ -38,6 +38,21 @@ import {AddBudgetCategoryComponent} from "./budget/add-budget-category/add-budge
 import {AddBudgetComponent} from "./budget/add-budget/add-budget.component";
 import {BudgetDetailsComponent} from "./budget/budget-details/budget-details.component";
 import { BudgetCategoryDetailsComponent } from './budget/budget-category-details/budget-category-details.component';
+import { SingleBudgetAnalysisMainViewComponent } from './budget-analysis/single-budget-analysis/single-budget-analysis-main-view/single-budget-analysis-main-view.component';
+import {NgxChartsModule} from "@swimlane/ngx-charts";
+import {ExpenseCheckboxComponent} from "./entry/add-entry/expense-checkbox/expense-checkbox.component";
+import { SingleBudgetAnalysisPicker } from './budget-analysis/single-budget-analysis/single-budget-analysis-picker/single-budget-analysis-picker.component';
+import { BudgetHistoryDatePickerComponent } from './budget-analysis/analysis-history/budget-history-date-picker/budget-history-date-picker.component';
+import { ExpenseHistoryChartComponent } from './charts/expense-history-chart/expense-history-chart.component';
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import { HistoryPeriodShortcutRowComponent } from './budget-analysis/analysis-history/history-period-shortcut-row/history-period-shortcut-row.component';
+import { ExpenseSumPieChartComponent } from './charts/expense-sum-pie-chart/expense-sum-pie-chart.component';
+import { BudgetCategoryAnalysisToggleComponent } from './budget-analysis/budget-category-analysis-toggle/budget-category-analysis-toggle.component';
+import { AnalysisMainViewComponent } from './budget-analysis/analysis-main-view/analysis-main-view.component';
+import {
+  BudgetCategoryAnalysisPicker
+} from "./budget-analysis/budget-category-analysis/budget-category-analysis-picker/budget-category-analysis-picker.component";
+import { BudgetCategoryAnalysisMainViewComponent } from './budget-analysis/budget-category-analysis/budget-category-analysis-main-view/budget-category-analysis-main-view.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +60,7 @@ import { BudgetCategoryDetailsComponent } from './budget/budget-category-details
     BudgetListComponent,
     AddEntryComponent,
     IncomeCheckboxComponent,
+    ExpenseCheckboxComponent,
     AllBudgetsViewComponent,
     HomeComponent,
     SingleBudgetMainViewComponent,
@@ -58,32 +74,44 @@ import { BudgetCategoryDetailsComponent } from './budget/budget-category-details
     AllBudgetsViewComponent,
     AddBudgetComponent,
     BudgetDetailsComponent,
-    BudgetCategoryDetailsComponent
+    BudgetCategoryDetailsComponent,
+    SingleBudgetAnalysisMainViewComponent,
+    SingleBudgetAnalysisPicker,
+    BudgetHistoryDatePickerComponent,
+    ExpenseHistoryChartComponent,
+    HistoryPeriodShortcutRowComponent,
+    ExpenseSumPieChartComponent,
+    BudgetCategoryAnalysisToggleComponent,
+    AnalysisMainViewComponent,
+    BudgetCategoryAnalysisPicker,
+    BudgetCategoryAnalysisMainViewComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatTableModule,
-    HttpClientModule,
-    MatCardModule,
-    MatButtonModule,
-    MatInputModule,
-    MatGridListModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatIconModule,
-    MatCheckboxModule,
-    MatSnackBarModule,
-    ReactiveFormsModule,
-    MatAutocompleteModule,
-    MatToolbarModule,
-    FormsModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatListModule,
-    MatDialogModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        NgxChartsModule,
+        BrowserAnimationsModule,
+        MatTableModule,
+        HttpClientModule,
+        MatCardModule,
+        MatButtonModule,
+        MatInputModule,
+        MatGridListModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatSnackBarModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule,
+        MatToolbarModule,
+        FormsModule,
+        MatSelectModule,
+        MatSidenavModule,
+        MatListModule,
+        MatDialogModule,
+        MatButtonToggleModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

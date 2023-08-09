@@ -1,0 +1,9 @@
+<div class="full-screen-container">
+  <div class="analysis-option-container">
+    <app-budget-category-analysis-toggle (analysisOptionChange)="changeAnalysisOption($event)"></app-budget-category-analysis-toggle>
+    <span class="flex-spacer"></span>
+    <app-single-budget-analysis-picker *ngIf="analysisOption == AnalysisOption.SINGLE_BUDGET"></app-single-budget-analysis-picker>
+    <app-budget-category-analysis-picker *ngIf="analysisOption == AnalysisOption.BUDGET_CATEGORY"></app-budget-category-analysis-picker>
+  </div>
+</div>
+

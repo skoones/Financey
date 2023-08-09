@@ -1,4 +1,4 @@
-import {Component, Input, Type} from '@angular/core';
+import {Component, EventEmitter, Input, Output, Type} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {BudgetDTO, BudgetService, EntryDTO, EntryService, InvestmentEntryDTO} from "../../../generated";
 import {EntryDetailsComponent} from "../entry-details/entry-details.component";
@@ -19,6 +19,7 @@ export class EntryListComponent {
   @Input() title = "Entries"
   displayedColumns = ['name'];
   @Input() budget?: BudgetDTO;
+  @Output() entryListChangeEmitter = new EventEmitter<boolean>();
 
   constructor(private entryService: EntryService, private budgetService: BudgetService, private dialog: MatDialog,
               private formSnackBar: MatSnackBar, private formBuilder: FormBuilder) {
@@ -65,6 +66,7 @@ export class EntryListComponent {
 
     dialogRef.componentInstance.updateEventEmitter.subscribe((hasUpdates) => {
       if (hasUpdates) {
+        this.entryListChangeEmitter.emit(true)
         this.initializeEntryList().then(() => {});
       }
     });

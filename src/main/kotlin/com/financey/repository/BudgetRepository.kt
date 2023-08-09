@@ -3,9 +3,10 @@ package com.financey.repository
 import arrow.core.Either
 import arrow.core.Either.Left
 import arrow.core.Either.Right
+import com.financey.domain.db.model.Budget
+import com.financey.domain.db.model.BudgetCategory
 import com.financey.domain.error.*
-import com.financey.domain.model.Budget
-import com.financey.domain.model.BudgetCategory
+import com.financey.utils.CommonUtils.objectIdToString
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -14,7 +15,6 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.inValues
 import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.data.mongodb.repository.MongoRepository
-import org.springframework.transaction.annotation.Transactional
 
 interface BudgetRepository : MongoRepository<Budget, String>, CustomBudgetRepository
 
@@ -23,9 +23,12 @@ interface CustomBudgetRepository {
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
     fun getAllByUserId(userId: String): Either<PersistenceError, List<Budget>>
     fun getAllByIds(ids: List<String>): Either<PersistenceError, List<Budget>>
+
+    fun getById(id: String): Either<PersistenceError, Budget>
     fun getAllUncategorizedByUserId(userId: String): Either<PersistenceError, List<Budget>>
     fun getAllByCategoryId(categoryId: String): Either<PersistenceError, List<Budget>>
     fun getByName(name: String, userId: String): Either<PersistenceError, Budget>
+    fun getAllByAncestorCategoryIds(categoryIds: Set<String>): Either<PersistenceError, List<Budget>>
 }
 
 open class CustomBudgetRepositoryImpl(
@@ -40,7 +43,7 @@ open class CustomBudgetRepositoryImpl(
 
         return category?.fold(
             { Left(it) },
-            { saveWithUniqueName(budget) }
+            { saveWithUniqueName(getBudgetWithCategoryAncestors(budget, it)) }
         ) ?: saveWithUniqueName(budget)
     }
 
@@ -76,6 +79,21 @@ open class CustomBudgetRepositoryImpl(
         }
     }
 
+    override fun getById(id: String): Either<PersistenceError, Budget> {
+        val query = Query().addCriteria(Budget::id isEqualTo id)
+
+        return try {
+            val existingBudgets = mongoTemplate.find(query, Budget::class.java)
+            when (existingBudgets.size) {
+                0 -> Left(ElementDoesNotExistError("There is no budget with the given id in the database."))
+                1 -> Right(existingBudgets.first())
+                else -> Left(MultipleElementsError("Multiple budgets with given id have been found."))
+            }
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
+        }
+    }
+
     override fun getByName(name: String, userId: String): Either<PersistenceError, Budget> {
         val query = Query()
             .addCriteria(Budget::name isEqualTo name)
@@ -90,6 +108,17 @@ open class CustomBudgetRepositoryImpl(
             }
         } catch (e: DataAccessException) {
             Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
+        }
+    }
+
+    override fun getAllByAncestorCategoryIds(categoryIds: Set<String>): Either<PersistenceError, List<Budget>> {
+        val query = Query().addCriteria(Criteria.where("ancestorCategoryIds").`in`(categoryIds))
+
+        return try {
+            Right(mongoTemplate.find(query, Budget::class.java))
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
+
         }
     }
 
@@ -126,5 +155,14 @@ open class CustomBudgetRepositoryImpl(
                 if (it.id != budget.id) Left(UniqueElementExistsError("Budget with given name already exists for this user."))
                 else Right(mongoTemplate.save(budget))
             })
+
+    private fun getBudgetWithCategoryAncestors(
+        budget: Budget,
+        budgetCategory: BudgetCategory
+    ): Budget {
+        val budgetCategoryId = objectIdToString(budgetCategory.id)
+        return budget.copy(ancestorCategoryIds = budgetCategory.ancestorCategoryIds?.plus(budgetCategoryId) ?:
+            listOf(budgetCategoryId))
+    }
 
 }

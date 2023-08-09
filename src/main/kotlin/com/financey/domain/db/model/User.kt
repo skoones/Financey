@@ -1,4 +1,4 @@
-package com.financey.domain.model
+package com.financey.domain.db.model
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document

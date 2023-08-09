@@ -36,6 +36,37 @@ paths:
             text/plain:
               schema:
                 type: string
+  /budget/{userId}/budgets/all:
+    get:
+      operationId: getBudgets
+      description: "Get all budgets for a given user."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetDTO"
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /budget/{userId}/budget/{name}:
     get:
       operationId: getByName
@@ -50,6 +81,32 @@ paths:
         - name: userId
           in: path
           description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetDTO"
+        "500":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /budget/{budgetId}:
+    get:
+      operationId: getById
+      description: "Get budget by id."
+      parameters:
+        - name: budgetId
+          in: path
+          description: "Budget id."
           required: true
           schema:
             type: string
@@ -181,7 +238,7 @@ paths:
           content:
             text/plain:
               schema:
-                type: strin
+                type: string
   /budget/categories/{parentId}:
     get:
       operationId: getCategoriesByParentId
@@ -370,36 +427,6 @@ paths:
             text/plain:
               schema:
                 type: string
-  /budget/{userId}/budgetSum:
-    post:
-      operationId: getBudgetSum
-      description: "Get the total sum of budget entry values in a given currency."
-      parameters:
-        - name: userId
-          in: path
-          description: "Id of the currently logged in user"
-          required: true
-          schema:
-            type: string
-        - name: budgetId
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: currency
-          in: query
-          required: true
-          schema:
-            $ref: "./EntrySchema.yaml#/components/schemas/EntryCurrency"
-      tags:
-        - budget
-      responses:
-        "200":
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: number
   /entry/add:
     post:
       operationId: addEntry
@@ -577,6 +604,110 @@ paths:
             text/plain:
               schema:
                 type: string
+  /analysis/expenses/balance/{startDate}/{endDate}/{budgetId}:
+    get:
+      operationId: getExpenseBalanceByPeriodAndId
+      description: "Get expense/income balance for a given month and budget."
+      parameters:
+        - name: startDate
+          in: path
+          description: "Start date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: path
+          description: "End date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetId
+          in: path
+          description: "Id of the given budget."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
+  /analysis/sum/expenses/subcategories/{startDate}/{endDate}/{budgetCategoryId}:
+    get:
+      operationId: getTotalExpensesForSubcategoriesAndPeriodByCategoryId
+      description: "Get total expenses for direct subcategories of a category with given id."
+      parameters:
+        - name: startDate
+          in: path
+          description: "Start date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: path
+          description: "End date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetCategoryId
+          in: path
+          description: "Id of the given budget category."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubcategoryExpenseSumDTO'
+  /analysis/expenses/sum/{startDate}/{endDate}/{budgetId}:
+    get:
+      operationId: getExpenseSumByPeriodAndId
+      description: "Get expense sum for a given period and budget."
+      parameters:
+        - name: startDate
+          in: path
+          description: "Start date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: path
+          description: "End date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetId
+          in: path
+          description: "Id of the given budget."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
 
 components:
   schemas:
@@ -680,5 +811,17 @@ components:
         volume:
           type: integer
         marketPriceAtOperation:
+          type: number
+    SubcategoryExpenseSumDTO:
+      type: object
+      required:
+        - subcategoryName
+        - expenseSum
+      properties:
+        subcategoryId:
+          type: string
+        subcategoryName:
+          type: string
+        expenseSum:
           type: number
 

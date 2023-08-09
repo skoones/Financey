@@ -1,11 +1,11 @@
 package com.financey.repository
 
 import arrow.core.Either
+import com.financey.domain.db.model.User
 import com.financey.domain.error.DataAccessError
 import com.financey.domain.error.ElementDoesNotExistError
 import com.financey.domain.error.MultipleElementsError
 import com.financey.domain.error.PersistenceError
-import com.financey.domain.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.data.mongodb.core.MongoTemplate

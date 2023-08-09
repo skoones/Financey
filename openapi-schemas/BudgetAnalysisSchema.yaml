@@ -1,0 +1,127 @@
+openapi: 3.0.3
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8980/analysis'
+paths:
+  /expenses/balance/{startDate}/{endDate}/{budgetId}:
+    get:
+      operationId: getExpenseBalanceByPeriodAndId
+      description: "Get expense/income balance for a given period and budget."
+      parameters:
+        - name: startDate
+          in: path
+          description: "Start date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: path
+          description: "End date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetId
+          in: path
+          description: "Id of the given budget."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
+  /sum/expenses/subcategories/{startDate}/{endDate}/{budgetCategoryId}:
+    get:
+      operationId: getTotalExpensesForSubcategoriesAndPeriodByCategoryId
+      description: "Get total expenses for direct subcategories of a category with given id."
+      parameters:
+        - name: startDate
+          in: path
+          description: "Start date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: path
+          description: "End date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetCategoryId
+          in: path
+          description: "Id of the given budget category."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubcategoryExpenseSumDTO'
+  /expenses/sum/{startDate}/{endDate}/{budgetId}:
+    get:
+      operationId: getExpenseSumByPeriodAndId
+      description: "Get expense sum for a given period and budget."
+      parameters:
+        - name: startDate
+          in: path
+          description: "Start date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: path
+          description: "End date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetId
+          in: path
+          description: "Id of the given budget."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
+
+components:
+  schemas:
+    SubcategoryExpenseSumDTO:
+      type: object
+      required:
+        - subcategoryName
+        - expenseSum
+      properties:
+        subcategoryId:
+          type: string
+        subcategoryName:
+          type: string
+        expenseSum:
+          type: number
