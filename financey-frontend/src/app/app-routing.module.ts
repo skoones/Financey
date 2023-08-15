@@ -10,7 +10,10 @@ import {
   SINGLE_BUDGET_PATH,
   SINGLE_BUDGET_ID_PATH,
   BUDGET_ANALYSIS_MAIN,
-  SINGLE_BUDGET_ANALYSIS_MAIN_VIEW, BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW
+  SINGLE_BUDGET_ANALYSIS_MAIN_VIEW,
+  BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW,
+  INVESTMENT_SINGLE_BUDGET_MAIN_VIEW,
+  INVESTMENT_CATEGORY_MAIN_VIEW
 } from "./constants/path-constants";
 import {
   SingleBudgetAnalysisMainViewComponent
@@ -19,6 +22,12 @@ import {AnalysisMainViewComponent} from "./budget-analysis/analysis-main-view/an
 import {
   BudgetCategoryAnalysisMainViewComponent
 } from "./budget-analysis/budget-category-analysis/budget-category-analysis-main-view/budget-category-analysis-main-view.component";
+import {
+  InvestmentBudgetAnalysisMainViewComponent
+} from "./investment-analysis/investment-budget-analysis-main-view/investment-budget-analysis-main-view.component";
+import {
+  InvestmentCategoryAnalysisMainViewComponent
+} from "./investment-analysis/investment-category-analysis-main-view/investment-category-analysis-main-view.component";
 
 const routes: Routes = [
   { path: BUDGETS_PATH, component: AllBudgetsViewComponent },
@@ -27,7 +36,9 @@ const routes: Routes = [
   { path: SINGLE_BUDGET_ID_PATH, component: SingleBudgetViewComponent },
   { path: BUDGET_ANALYSIS_MAIN, component: AnalysisMainViewComponent },
   { path: SINGLE_BUDGET_ANALYSIS_MAIN_VIEW, component: SingleBudgetAnalysisMainViewComponent },
-  { path: BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW, component: BudgetCategoryAnalysisMainViewComponent }
+  { path: BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW, component: BudgetCategoryAnalysisMainViewComponent },
+  { path: INVESTMENT_SINGLE_BUDGET_MAIN_VIEW, component: InvestmentBudgetAnalysisMainViewComponent },
+  { path: INVESTMENT_CATEGORY_MAIN_VIEW, component: InvestmentCategoryAnalysisMainViewComponent }
 ];
 
 @NgModule({

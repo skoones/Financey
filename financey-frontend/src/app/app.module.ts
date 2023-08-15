@@ -53,6 +53,9 @@ import {
   BudgetCategoryAnalysisPicker
 } from "./budget-analysis/budget-category-analysis/budget-category-analysis-picker/budget-category-analysis-picker.component";
 import { BudgetCategoryAnalysisMainViewComponent } from './budget-analysis/budget-category-analysis/budget-category-analysis-main-view/budget-category-analysis-main-view.component';
+import { InvestmentAnalysisMainViewComponent } from './investment-analysis/investment-analysis-main-view/investment-analysis-main-view.component';
+import { InvestmentBudgetAnalysisMainViewComponent } from './investment-analysis/investment-budget-analysis-main-view/investment-budget-analysis-main-view.component';
+import { InvestmentCategoryAnalysisMainViewComponent } from './investment-analysis/investment-category-analysis-main-view/investment-category-analysis-main-view.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +87,10 @@ import { BudgetCategoryAnalysisMainViewComponent } from './budget-analysis/budge
     BudgetCategoryAnalysisToggleComponent,
     AnalysisMainViewComponent,
     BudgetCategoryAnalysisPicker,
-    BudgetCategoryAnalysisMainViewComponent
+    BudgetCategoryAnalysisMainViewComponent,
+    InvestmentAnalysisMainViewComponent,
+    InvestmentBudgetAnalysisMainViewComponent,
+    InvestmentCategoryAnalysisMainViewComponent
   ],
     imports: [
         BrowserModule,

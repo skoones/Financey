@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AnalysisOption} from "../analysis-option";
+import {BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW, SINGLE_BUDGET_ANALYSIS_MAIN_VIEW} from "../../constants/path-constants";
 
 @Component({
   selector: 'app-analysis-main-view',
@@ -7,6 +8,10 @@ import {AnalysisOption} from "../analysis-option";
   styleUrls: ['./analysis-main-view.component.scss']
 })
 export class AnalysisMainViewComponent implements OnInit {
+
+  singleBudgetRoute = SINGLE_BUDGET_ANALYSIS_MAIN_VIEW
+
+  categoryRoute = BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW
 
   analysisOption = AnalysisOption.SINGLE_BUDGET
 

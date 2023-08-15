@@ -759,6 +759,7 @@ components:
         - currency
         - name
         - userId
+        - date
       properties:
         id:
           type: string
