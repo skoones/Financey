@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import {BudgetCategoryDTO, BudgetDTO} from "../../../generated";
+import {BudgetCategoryDTO, BudgetDTO, FetchType} from "../../../generated";
 import {BudgetService} from "../../../generated";
 import {BudgetDetailsComponent} from "../budget-details/budget-details.component";
 
@@ -59,7 +59,7 @@ export class BudgetCategoryListComponent implements OnInit {
 
   async initializeTopLevelBudgetList() {
     // todo placeholder userId
-    const categories = await firstValueFrom(this.budgetService.getCategories("demo")).then(async categories => {
+    const categories = await firstValueFrom(this.budgetService.getCategories("demo", FetchType.ALL)).then(async categories => {
       return this.findFullCategories(categories.filter(category => category.parentCategoryId == undefined));
     });
 

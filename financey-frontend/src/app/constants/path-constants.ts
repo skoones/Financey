@@ -5,5 +5,6 @@ export const SINGLE_BUDGET_ID_PATH = 'budgets/single/:id';
 export const BUDGET_ANALYSIS_MAIN = 'analysis'
 export const SINGLE_BUDGET_ANALYSIS_MAIN_VIEW = 'analysis/single/main'
 export const BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW = 'analysis/category/main'
+export const INVESTMENT_ANALYSIS_MAIN = 'investments'
 export const INVESTMENT_SINGLE_BUDGET_MAIN_VIEW = 'investments/single/main'
 export const INVESTMENT_CATEGORY_MAIN_VIEW = 'investments/category/main'

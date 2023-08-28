@@ -12,20 +12,17 @@ import {SINGLE_BUDGET_ANALYSIS_MAIN_VIEW} from "../../../constants/path-constant
 })
 export class SingleBudgetAnalysisPicker implements OnInit {
 
+  @Input() mainCardTitle = "Pick budget for analysis"
   @Input() budgetRoute = "";
+  @Input() budgetsToChoose: BudgetDTO[] = []
 
   budgetListControl = new FormControl();
   budget?: BudgetDTO;
-  budgetsToChoose: BudgetDTO[] = []
   filteredBudgets: Observable<BudgetDTO[]> = new Observable<BudgetDTO[]>();
   userId = "demo" // todo
   constructor(private budgetService: BudgetService, private router: Router) {}
 
   ngOnInit(): void {
-    this.budgetService.getBudgets(this.userId).subscribe(data => {
-      this.budgetsToChoose = data;
-    });
-
     this.filteredBudgets = this.budgetListControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || '')),

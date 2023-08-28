@@ -2,6 +2,7 @@
   <mat-card-header>
     <mat-card-title>Add budget category</mat-card-title>
   </mat-card-header>
+  <mat-checkbox class="example-margin" [(ngModel)]="isInvestment">Investment category</mat-checkbox>
   <form [formGroup]="categoryFormGroup" (ngSubmit)="addCategory()">
     <mat-form-field>
       <mat-label>Name</mat-label>

@@ -8,6 +8,7 @@ import com.financey.domain.model.BudgetDomain
 import com.financey.repository.BudgetRepository
 import com.financey.repository.UserRepository
 import mu.KotlinLogging
+import org.openapitools.model.FetchType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -31,12 +32,30 @@ class BudgetService(
         logger.debug { "Removed budgets with ids $ids from database" }
     }
 
-    suspend fun getAllByUserId(userId: String): Either<PersistenceError, List<BudgetDomain>> = either {
-        val budgets = budgetRepository.getAllByUserId(userId).bind()
+    suspend fun getAllByUserIdAndFetchType(userId: String, fetchType: FetchType):
+            Either<PersistenceError, List<BudgetDomain>> = either {
+        val budgets = when (fetchType) {
+            FetchType.ALL -> budgetRepository.getAllByUserId(userId).bind()
+            FetchType.INVESTMENT_ONLY -> budgetRepository.getAllInvestmentByUserId(userId).bind()
+            FetchType.NON_INVESTMENT_ONLY -> budgetRepository.getAllNonInvestmentByUserId(userId).bind()
+        }
             .map { budgetDomainMapper.toDomain(it) }
         logger.debug { "Retrieved budgets for user with id $userId" }
         budgets
     }
+
+//    def example(input: Input): IO[Int] = {
+//        val x = IO(fun1("Hi!"))
+//        // ...
+//    }
+//
+//    def example(input: Input): IO[Int] = for {
+//        getPureX(input).flatMap(x =>
+//            IO(println("Hi!")).flatMap(_ =>
+//                x.combineMy(2 + 3)
+//            )
+//        )
+//    }
 
     suspend fun getAllUncategorizedByUserId(userId: String): Either<PersistenceError, List<BudgetDomain>> = either {
         val budgets = budgetRepository.getAllUncategorizedByUserId(userId).bind()

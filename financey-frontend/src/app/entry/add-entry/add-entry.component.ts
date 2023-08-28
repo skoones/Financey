@@ -8,7 +8,7 @@ import {
   EntryCurrency,
   EntryDTO,
   EntryService,
-  EntryType,
+  EntryType, FetchType,
   InvestmentEntryDTO
 } from "../../../generated";
 import {amountValidator, volumeValidator} from "../../validators/number-validators";
@@ -78,7 +78,7 @@ export class AddEntryComponent {
       startWith(''),
       map(value => this._filter(value || '')),
     );
-    this.budgetService.getBudgets(this.userId).subscribe(data => {
+    this.budgetService.getBudgets(this.userId, FetchType.ALL).subscribe(data => {
       this.budgets = data;
     });
     this.handleMarketPriceChanges('amount-volume');

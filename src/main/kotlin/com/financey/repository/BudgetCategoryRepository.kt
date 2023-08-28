@@ -24,6 +24,8 @@ interface CustomBudgetCategoryRepository {
     fun save(budgetCategory: BudgetCategory): Either<PersistenceError, BudgetCategory>
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
     fun getAllByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>>
+    fun getAllInvestmentByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>>
+    fun getAllNonInvestmentByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>>
     fun getById(id: String): Either<PersistenceError, BudgetCategory>
     fun getByName(name: String): Either<PersistenceError, BudgetCategory>
     fun getAllByParentId(parentId: String): Either<PersistenceError, List<BudgetCategory>>
@@ -58,6 +60,28 @@ open class CustomBudgetCategoryRepositoryImpl(
 
     override fun getAllByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>> {
         val query = Query().addCriteria(BudgetCategory::userId isEqualTo userId)
+
+        return try {
+            Right(mongoTemplate.find(query, BudgetCategory::class.java))
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budget categories could not be found."))
+        }
+    }
+
+    override fun getAllInvestmentByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>> {
+        val query = Query().addCriteria(BudgetCategory::userId isEqualTo userId)
+            .addCriteria(BudgetCategory::investment isEqualTo true)
+
+        return try {
+            Right(mongoTemplate.find(query, BudgetCategory::class.java))
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budget categories could not be found."))
+        }
+    }
+
+    override fun getAllNonInvestmentByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>> {
+        val query = Query().addCriteria(BudgetCategory::userId isEqualTo userId)
+            .addCriteria(BudgetCategory::investment isEqualTo false)
 
         return try {
             Right(mongoTemplate.find(query, BudgetCategory::class.java))

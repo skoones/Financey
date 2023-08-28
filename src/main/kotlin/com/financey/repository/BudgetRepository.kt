@@ -29,6 +29,8 @@ interface CustomBudgetRepository {
     fun getAllByCategoryId(categoryId: String): Either<PersistenceError, List<Budget>>
     fun getByName(name: String, userId: String): Either<PersistenceError, Budget>
     fun getAllByAncestorCategoryIds(categoryIds: Set<String>): Either<PersistenceError, List<Budget>>
+    fun getAllInvestmentByUserId(userId: String): Either<PersistenceError, List<Budget>>
+    fun getAllNonInvestmentByUserId(userId: String): Either<PersistenceError, List<Budget>>
 }
 
 open class CustomBudgetRepositoryImpl(
@@ -119,6 +121,28 @@ open class CustomBudgetRepositoryImpl(
         } catch (e: DataAccessException) {
             Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
 
+        }
+    }
+
+    override fun getAllInvestmentByUserId(userId: String): Either<PersistenceError, List<Budget>> {
+        val query = Query().addCriteria(Budget::userId isEqualTo userId)
+            .addCriteria(Budget::investment isEqualTo true)
+
+        return try {
+            Right(mongoTemplate.find(query, Budget::class.java))
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
+        }
+    }
+
+    override fun getAllNonInvestmentByUserId(userId: String): Either<PersistenceError, List<Budget>> {
+        val query = Query().addCriteria(Budget::userId isEqualTo userId)
+            .addCriteria(Budget::investment isEqualTo false)
+
+        return try {
+            Right(mongoTemplate.find(query, Budget::class.java))
+        } catch (e: DataAccessException) {
+            Left(DataAccessError("There was an issue with accessing database data. Budgets could not be found."))
         }
     }
 

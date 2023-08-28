@@ -13,7 +13,7 @@ import {
   SINGLE_BUDGET_ANALYSIS_MAIN_VIEW,
   BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW,
   INVESTMENT_SINGLE_BUDGET_MAIN_VIEW,
-  INVESTMENT_CATEGORY_MAIN_VIEW
+  INVESTMENT_CATEGORY_MAIN_VIEW, INVESTMENT_ANALYSIS_MAIN
 } from "./constants/path-constants";
 import {
   SingleBudgetAnalysisMainViewComponent
@@ -28,6 +28,9 @@ import {
 import {
   InvestmentCategoryAnalysisMainViewComponent
 } from "./investment-analysis/investment-category-analysis-main-view/investment-category-analysis-main-view.component";
+import {
+  InvestmentAnalysisMainViewComponent
+} from "./investment-analysis/investment-analysis-main-view/investment-analysis-main-view.component";
 
 const routes: Routes = [
   { path: BUDGETS_PATH, component: AllBudgetsViewComponent },
@@ -37,6 +40,7 @@ const routes: Routes = [
   { path: BUDGET_ANALYSIS_MAIN, component: AnalysisMainViewComponent },
   { path: SINGLE_BUDGET_ANALYSIS_MAIN_VIEW, component: SingleBudgetAnalysisMainViewComponent },
   { path: BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW, component: BudgetCategoryAnalysisMainViewComponent },
+  { path: INVESTMENT_ANALYSIS_MAIN, component: InvestmentAnalysisMainViewComponent },
   { path: INVESTMENT_SINGLE_BUDGET_MAIN_VIEW, component: InvestmentBudgetAnalysisMainViewComponent },
   { path: INVESTMENT_CATEGORY_MAIN_VIEW, component: InvestmentCategoryAnalysisMainViewComponent }
 ];

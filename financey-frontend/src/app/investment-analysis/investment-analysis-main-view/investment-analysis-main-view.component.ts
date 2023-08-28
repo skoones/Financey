@@ -1,11 +1,9 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {ExpenseSumPieChartComponent} from "../../charts/expense-sum-pie-chart/expense-sum-pie-chart.component";
 import {AnalysisOption} from "../../budget-analysis/analysis-option";
 import {
-  BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW,
-  INVESTMENT_CATEGORY_MAIN_VIEW, INVESTMENT_SINGLE_BUDGET_MAIN_VIEW,
-  SINGLE_BUDGET_ANALYSIS_MAIN_VIEW
+  INVESTMENT_CATEGORY_MAIN_VIEW, INVESTMENT_SINGLE_BUDGET_MAIN_VIEW
 } from "../../constants/path-constants";
+import {BudgetCategoryDTO, BudgetDTO, BudgetService, FetchType} from "../../../generated";
 
 @Component({
   selector: 'app-investment-analysis-main-view',
@@ -21,8 +19,20 @@ export class InvestmentAnalysisMainViewComponent implements OnInit {
   analysisOption = AnalysisOption.SINGLE_BUDGET
 
   AnalysisOption = AnalysisOption
+  investmentBudgetsToChoose: BudgetDTO[] = [];
+  investmentCategoriesToChoose: BudgetCategoryDTO[] = [];
 
-  constructor() { }
+  private userId = "demo"; // todo placeholder userId
+
+  constructor(private budgetService: BudgetService) {
+    this.budgetService.getBudgets(this.userId, FetchType.INVESTMENT_ONLY).subscribe(result => {
+      this.investmentBudgetsToChoose = result;
+    });
+
+    this.budgetService.getCategories(this.userId, FetchType.INVESTMENT_ONLY).subscribe(result => {
+      this.investmentCategoriesToChoose = result;
+    })
+  }
 
   ngOnInit(): void {
   }

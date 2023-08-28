@@ -42,7 +42,7 @@ paths:
   /{userId}/budgets/all:
     get:
       operationId: getBudgets
-      description: "Get all budgets for a given user."
+      description: "Get all budgets for a given user, filtered by investment type or not."
       parameters:
         - name: userId
           in: path
@@ -50,6 +50,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: fetchType
+          in: query
+          description: "Specifies whether all, investment or non-investment budgets should be fetched."
+          required: true
+          schema:
+            $ref: "#/components/schemas/FetchType"
       tags:
         - budget
       responses:
@@ -81,6 +87,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: fetchType
+          in: query
+          description: "Specifies whether all, investment or non-investment categories should be fetched."
+          required: true
+          schema:
+            $ref: "#/components/schemas/FetchType"
       tags:
         - budget
       responses:
@@ -438,6 +450,7 @@ components:
       required:
         - userId
         - name
+        - investment
       properties:
         id:
           type: string
@@ -455,6 +468,8 @@ components:
             $ref: "#/components/schemas/BudgetDTO"
         parentCategoryId:
           type: string
+        investment:
+          type: boolean
     BudgetDTO:
       required:
         - name
@@ -475,3 +490,10 @@ components:
           type: string
         categoryId:
           type: string
+
+    FetchType:
+      type: string
+      enum:
+        - all
+        - investmentOnly
+        - nonInvestmentOnly

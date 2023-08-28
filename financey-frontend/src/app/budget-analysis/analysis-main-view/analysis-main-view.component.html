@@ -2,8 +2,12 @@
   <div class="analysis-option-container">
     <app-budget-category-analysis-toggle (analysisOptionChange)="changeAnalysisOption($event)"></app-budget-category-analysis-toggle>
     <span class="flex-spacer"></span>
-    <app-single-budget-analysis-picker [budgetRoute]="singleBudgetRoute" *ngIf="analysisOption == AnalysisOption.SINGLE_BUDGET"></app-single-budget-analysis-picker>
-    <app-budget-category-analysis-picker [categoryRoute]="categoryRoute" *ngIf="analysisOption == AnalysisOption.BUDGET_CATEGORY"></app-budget-category-analysis-picker>
+    <app-single-budget-analysis-picker [budgetRoute]="singleBudgetRoute" [mainCardTitle]= "SINGLE_BUDGET_TITLE"
+                                       [budgetsToChoose]="budgetsToChoose"
+                                       *ngIf="analysisOption == AnalysisOption.SINGLE_BUDGET"></app-single-budget-analysis-picker>
+    <app-budget-category-analysis-picker [categoryRoute]="categoryRoute" [mainCardTitle]="BUDGET_CATEGORY_TITLE"
+                                         [categoriesToChoose]="categoriesToChoose"
+                                         *ngIf="analysisOption == AnalysisOption.BUDGET_CATEGORY"></app-budget-category-analysis-picker>
   </div>
 </div>
 
