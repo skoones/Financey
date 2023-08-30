@@ -48,8 +48,11 @@ class ExpenseCalculatorService(
             .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
     }
 
-    fun findExpenseSumContexts(subcategoryToExpenseSum: Map<BudgetCategory?, List<BigDecimal>>) =
+    suspend fun findExpenseSumContexts(subcategoryToExpenseSum: Map<BudgetCategory?, List<EntryDomain>>):
+            Either<ExchangeRateError, List<SubcategoryExpenseSumContext>> = either {
         subcategoryToExpenseSum
+            .mapValues { it.value.map { entry -> changeEntryToUseBaseCurrency(entry).bind() } }
+            .mapValues { it.value.map { entry -> entry.value } }
             .mapValues { it.value.fold(BigDecimal.ZERO, BigDecimal::add) }
             .map { (subcategory, expenseSum) ->
                 subcategory?.let { category ->
@@ -63,6 +66,7 @@ class ExpenseCalculatorService(
                     subcategoryName = ""
                 )
             }
+    }
 
     private suspend fun changeEntryToUseBaseCurrency(it: EntryDomain): Either<ExchangeRateError, EntryDomain> = either {
         if (it.currency == CurrencyConstants.BASE_CURRENCY) {

@@ -51,13 +51,13 @@ class BudgetAnalysisService(
             .groupBy({ it.first }, { it.second })
             .filterKeys { objectIdToString(it?.id) in idsToSubcategories.keys }
 
-        val subcategoryToExpenseSum = subcategoryToBudgets
+        val subcategoryToExpenses = subcategoryToBudgets
             .mapValues { entryRepository.getAllByBudgetIdsAndPeriod(startDate, endDate,
                 it.value.map { budget -> budget.id }).bind()
                 .filter { entry -> entry.entryType == EntryType.EXPENSE }
-                .map { entry -> entry.value } }
+                .map { entryDto -> entryDomainMapper.toDomain(entryDto) } }
 
-        expenseCalculatorService.findExpenseSumContexts(subcategoryToExpenseSum)
+        expenseCalculatorService.findExpenseSumContexts(subcategoryToExpenses).bind()
     }
 
     suspend fun getExpenseSumByPeriodAndId(startDate: LocalDate, endDate: LocalDate, budgetId: String):
