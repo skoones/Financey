@@ -16,6 +16,7 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {mapIsBuyToEntryType} from "../../utils/entry-utils";
 import {IncomeCheckboxComponent} from "./income-checkbox/income-checkbox.component";
 import {ExpenseCheckboxComponent} from "./expense-checkbox/expense-checkbox.component";
+import {dateToString} from "../../utils/date-utils";
 
 enum AddEntryResult {
   Success,
@@ -136,10 +137,18 @@ export class AddEntryComponent {
     }
 
     if (this.isInvestment) {
+      const marketPriceAtOperation = formGroupData.marketPriceAtOperation ||
+          this.getMarketPriceAtOperation(formGroupData.amount, formGroupData.volume);
+
+      const datesToMarketPrices: { [key: string]: number; } = {
+        [dateToString(formGroupData.entryDate)]: marketPriceAtOperation
+      };
+
       const investmentEntryDto: InvestmentEntryDTO = {
         entry: entryDto,
         volume: formGroupData.volume,
-        marketPriceAtOperation: formGroupData.marketPriceAtOperation || this.getMarketPriceAtOperation(formGroupData.amount, formGroupData.volume)
+        marketPriceAtOperation: marketPriceAtOperation,
+        datesToMarketPrices: datesToMarketPrices
       }
 
       if (this.entryBudgetIsInvestment(investmentEntryDto)) {

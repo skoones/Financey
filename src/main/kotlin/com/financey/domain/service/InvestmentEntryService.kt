@@ -3,7 +3,6 @@ package com.financey.domain.service
 import arrow.core.Either
 import arrow.core.continuations.either
 import com.financey.domain.error.PersistenceError
-import com.financey.domain.mapper.BudgetDomainMapper
 import com.financey.domain.mapper.EntryDomainMapper
 import com.financey.domain.model.InvestmentEntryDomain
 import com.financey.repository.InvestmentEntryRepository

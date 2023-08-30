@@ -828,6 +828,10 @@ components:
           type: integer
         marketPriceAtOperation:
           type: number
+        datesToMarketPrices:
+          type: object
+          additionalProperties:
+            type: number
     SubcategoryExpenseSumDTO:
       type: object
       required:

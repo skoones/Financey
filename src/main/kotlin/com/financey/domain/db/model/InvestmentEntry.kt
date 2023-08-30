@@ -12,5 +12,5 @@ data class InvestmentEntry(
     val entry: Entry,
     val volume: Int,
     val marketPriceAtOperation: BigDecimal,
-    val datesToMarketPrices: Map<LocalDate, BigDecimal> = mapOf(entry.date to marketPriceAtOperation)
+    val datesToMarketPrices: Map<LocalDate, BigDecimal>
 )
