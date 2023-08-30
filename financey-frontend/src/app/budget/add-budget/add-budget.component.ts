@@ -64,7 +64,7 @@ export class AddBudgetComponent {
       investment: this.isInvestment
     }
 
-    if (budgetDto.investment && this.budgetCategoryIsInvestment(budgetDto.categoryId)) {
+    if (!budgetDto.investment || this.budgetCategoryIsInvestment(budgetDto.categoryId)) {
       try {
         await firstValueFrom(this.budgetService.addBudget(budgetDto, 'response'));
         this.anyAdded = true;

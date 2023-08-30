@@ -17,7 +17,7 @@ import java.time.LocalDate
 @CrossOrigin
 class BudgetAnalysisController(
     @Autowired private val budgetAnalysisService: BudgetAnalysisService,
-    @Autowired private val budgetAnalysisDtoMapper: BudgetAnalysisDtoMapper
+    @Autowired private val budgetAnalysisDtoMapper: BudgetAnalysisDtoMapper,
 ) : BudgetAnalysisApi {
 
     val logger = KotlinLogging.logger {}
