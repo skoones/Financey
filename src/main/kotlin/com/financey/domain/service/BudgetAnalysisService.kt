@@ -39,8 +39,7 @@ class BudgetAnalysisService(
         startDate: LocalDate,
         endDate: LocalDate,
         budgetCategoryId: String
-    ):
-            Either<FinanceyError, List<SubcategoryExpenseSumContext>> = either {
+    ): Either<FinanceyError, List<SubcategoryExpenseSumContext>> = either {
         val childrenSubcategories = budgetCategoryRepository.getAllByParentId(budgetCategoryId).bind()
         val idsToSubcategories = childrenSubcategories
             .map { objectIdToString(it.id) to it }
@@ -66,7 +65,7 @@ class BudgetAnalysisService(
         val entries = entryRepository.getAllByBudgetId(budgetId).bind()
             .map { entryDomainMapper.toDomain(it) }
 
-        expenseCalculatorService.findExpenseSumForPeriodFromEntries(entries, startDate, endDate)
+        expenseCalculatorService.findExpenseSumForPeriodFromEntries(entries, startDate, endDate).bind()
     }
 
 }

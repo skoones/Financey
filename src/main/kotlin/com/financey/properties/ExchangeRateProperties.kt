@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 
 @Component
-@ConfigurationProperties(prefix = "exchangerate")
+@ConfigurationProperties(prefix = "exchange-rate")
 class ExchangeRateProperties {
     lateinit var baseUrl: String
 }
