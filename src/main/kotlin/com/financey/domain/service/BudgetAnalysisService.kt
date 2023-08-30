@@ -32,7 +32,7 @@ class BudgetAnalysisService(
         val entries = entryRepository.getAllByBudgetId(budgetId).bind()
             .map { entryDomainMapper.toDomain(it) }
 
-        expenseCalculatorService.findBalanceForPeriodFromEntries(entries, startDate, endDate)
+        expenseCalculatorService.findBalanceForPeriodFromEntries(entries, startDate, endDate).bind()
     }
 
     suspend fun getTotalExpensesForSubcategoriesAndPeriodByCategoryId(

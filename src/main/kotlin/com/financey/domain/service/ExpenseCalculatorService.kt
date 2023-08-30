@@ -29,36 +29,24 @@ class ExpenseCalculatorService(
                 it.date in startDate..endDate
             }
             .filter { it.entryType == EntryType.EXPENSE }
-            .map {
-                if (it.currency == CurrencyConstants.BASE_CURRENCY) {
-                    it
-                } else {
-                    it.copy(
-                        currency = CurrencyConstants.BASE_CURRENCY,
-                        value = exchangeRateApi.getConvertedAmountForDate(
-                            it.date,
-                            it.currency to CurrencyConstants.BASE_CURRENCY,
-                            it.value
-                        ).bind()
-                    )
-                }
-            }
+            .map { changeEntryToUseBaseCurrency(it).bind() }
             .map { it.value }
             .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
     }
 
-
-    fun findBalanceForPeriodFromEntries(
+    suspend fun findBalanceForPeriodFromEntries(
         entries: List<EntryDomain>,
         startDate: LocalDate,
         endDate: LocalDate
-    ): BigDecimal = entries
-        .filter {
-            it.date in startDate..endDate
-        }
-        // todo take currency into consideration
-        .map { if (it.entryType == EntryType.EXPENSE) it.value.negate() else it.value }
-        .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
+    ): Either<ExchangeRateError, BigDecimal> = either {
+        entries
+            .filter {
+                it.date in startDate..endDate
+            }
+            .map { changeEntryToUseBaseCurrency(it).bind() }
+            .map { if (it.entryType == EntryType.EXPENSE) it.value.negate() else it.value }
+            .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
+    }
 
     fun findExpenseSumContexts(subcategoryToExpenseSum: Map<BudgetCategory?, List<BigDecimal>>) =
         subcategoryToExpenseSum
@@ -75,4 +63,20 @@ class ExpenseCalculatorService(
                     subcategoryName = ""
                 )
             }
+
+    private suspend fun changeEntryToUseBaseCurrency(it: EntryDomain): Either<ExchangeRateError, EntryDomain> = either {
+        if (it.currency == CurrencyConstants.BASE_CURRENCY) {
+            it
+        } else {
+            it.copy(
+                currency = CurrencyConstants.BASE_CURRENCY,
+                value = exchangeRateApi.getConvertedAmountForDate(
+                    it.date,
+                    it.currency to CurrencyConstants.BASE_CURRENCY,
+                    it.value
+                ).bind()
+            )
+        }
+    }
+
 }
