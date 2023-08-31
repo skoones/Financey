@@ -1,8 +1,13 @@
 package com.financey.domain.service
 
+import arrow.core.Either
 import com.financey.TestDataLoader
+import com.financey.domain.model.EntryDomain
 import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -13,12 +18,23 @@ import java.time.Month
 
 class ExpenseCalculatorServiceTests {
 
+    @MockK
+    lateinit var currencyService: CurrencyService
+
     @InjectMockKs
     lateinit var expenseCalculatorService: ExpenseCalculatorService
 
     @BeforeEach
     fun setup() {
         MockKAnnotations.init(this)
+    }
+
+    @BeforeEach
+    fun currencySetup() {
+        val entryParam = slot<EntryDomain>()
+        every { runBlocking {
+            currencyService.changeEntryToUseBaseCurrency(capture(entryParam))
+        } } answers { Either.Right(entryParam.captured) }
     }
 
     @Test
@@ -33,7 +49,7 @@ class ExpenseCalculatorServiceTests {
                 entries = entries,
                 startDate = LocalDate.of(2023, Month.JULY, 1),
                 endDate = LocalDate.of(2023, Month.JULY, 5)
-            )
+            ).fold( { it }, { it })
 
             // then
             assertEquals(expectedResult, result)
@@ -48,7 +64,7 @@ class ExpenseCalculatorServiceTests {
         val expectedResults = testData.second
 
         // when
-        val result = expenseCalculatorService.findExpenseSumContexts(testInput)
+        val result = expenseCalculatorService.findExpenseSumContexts(testInput).fold( { it }, { it })
 
         // then
         assertEquals(expectedResults, result)
@@ -66,7 +82,7 @@ class ExpenseCalculatorServiceTests {
                 entries = entries,
                 startDate = LocalDate.of(2023, Month.JULY, 1),
                 endDate = LocalDate.of(2023, Month.JULY, 5)
-            )
+            ).fold( { it }, { it })
 
             // then
             assertEquals(expectedResult, result)

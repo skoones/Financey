@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import java.math.BigDecimal
+import java.time.LocalDate
 
 @SpringBootTest
 @ExtendWith(MockitoExtension::class)
@@ -27,7 +28,8 @@ class EntryControllerIntegrationTests(@Autowired val entryController: EntryContr
     @Test
     fun `creates, updates and deletes entry`(): Unit = runBlocking {
         val entry =
-                EntryDomain(value = BigDecimal.valueOf(1), currency = EntryCurrency.EUR, name = "test entry", userId = "demo")
+                EntryDomain(value = BigDecimal.valueOf(1), currency = EntryCurrency.EUR, name = "test entry", userId = "demo",
+                    date = LocalDate.now()) // todo is this even correct?
         val entryDto = entryDtoMapper.toDto(entry)
         val response = entryController.addEntry(entryDto)
         assertEquals(HttpStatus.OK, response.statusCode)
