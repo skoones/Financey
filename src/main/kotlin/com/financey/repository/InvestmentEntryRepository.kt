@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.inValues
 import org.springframework.data.mongodb.repository.MongoRepository
+import java.time.LocalDate
 
 interface InvestmentEntryRepository : MongoRepository<Entry, String>, CustomInvestmentEntryRepository
 
@@ -19,6 +20,8 @@ interface CustomInvestmentEntryRepository {
     fun save(entry: InvestmentEntry): Either<Nothing, InvestmentEntry>
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
     fun getAllByBudgetId(budgetId: String): Either<PersistenceError, List<InvestmentEntry>>
+    fun getAllByBudgetIdAndPeriod(budgetId: String, date: LocalDate, endDate: LocalDate): Either<PersistenceError, List<InvestmentEntry>>
+
 }
 
 class CustomInvestmentEntryRepositoryImpl(
@@ -41,6 +44,19 @@ class CustomInvestmentEntryRepositoryImpl(
 
     override fun getAllByBudgetId(budgetId: String): Either<PersistenceError, List<InvestmentEntry>> {
         val query = Query().addCriteria(Criteria.where("entry.budgetId").`is`(budgetId))
+
+        return try {
+            Either.Right(mongoTemplate.find(query, InvestmentEntry::class.java))
+        } catch (e: DataAccessException) {
+            Either.Left(DataAccessError("There was an issue with accessing database data. Entries could not be found."))
+        }
+    }
+
+    override fun getAllByBudgetIdAndPeriod(budgetId: String, startDate: LocalDate, endDate: LocalDate):
+            Either<PersistenceError, List<InvestmentEntry>> {
+        val query = Query().addCriteria(Criteria.where("entry.budgetId").`is`(budgetId))
+            .addCriteria(Criteria.where("entry.date").gte(startDate))
+            .addCriteria(Criteria.where("entry.date").lte(endDate))
 
         return try {
             Either.Right(mongoTemplate.find(query, InvestmentEntry::class.java))

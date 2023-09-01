@@ -17,7 +17,7 @@ import java.time.LocalDate
 
 @Service
 class ExpenseCalculatorService(
-    @Autowired private val exchangeRateApi: ExchangeRateApi
+    @Autowired private val currencyService: CurrencyService
 ) {
     suspend fun findExpenseSumForPeriodFromEntries(
         entries: List<EntryDomain>,
@@ -29,7 +29,7 @@ class ExpenseCalculatorService(
                 it.date in startDate..endDate
             }
             .filter { it.entryType == EntryType.EXPENSE }
-            .map { changeEntryToUseBaseCurrency(it).bind() }
+            .map { currencyService.changeEntryToUseBaseCurrency(it).bind() }
             .map { it.value }
             .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
     }
@@ -43,7 +43,7 @@ class ExpenseCalculatorService(
             .filter {
                 it.date in startDate..endDate
             }
-            .map { changeEntryToUseBaseCurrency(it).bind() }
+            .map {currencyService.changeEntryToUseBaseCurrency(it).bind() }
             .map { if (it.entryType == EntryType.EXPENSE) it.value.negate() else it.value }
             .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
     }
@@ -51,7 +51,7 @@ class ExpenseCalculatorService(
     suspend fun findExpenseSumContexts(subcategoryToExpenseSum: Map<BudgetCategory?, List<EntryDomain>>):
             Either<ExchangeRateError, List<SubcategoryExpenseSumContext>> = either {
         subcategoryToExpenseSum
-            .mapValues { it.value.map { entry -> changeEntryToUseBaseCurrency(entry).bind() } }
+            .mapValues { it.value.map { entry -> currencyService.changeEntryToUseBaseCurrency(entry).bind() } }
             .mapValues { it.value.map { entry -> entry.value } }
             .mapValues { it.value.fold(BigDecimal.ZERO, BigDecimal::add) }
             .map { (subcategory, expenseSum) ->
@@ -66,21 +66,6 @@ class ExpenseCalculatorService(
                     subcategoryName = ""
                 )
             }
-    }
-
-    private suspend fun changeEntryToUseBaseCurrency(it: EntryDomain): Either<ExchangeRateError, EntryDomain> = either {
-        if (it.currency == CurrencyConstants.BASE_CURRENCY) {
-            it
-        } else {
-            it.copy(
-                currency = CurrencyConstants.BASE_CURRENCY,
-                value = exchangeRateApi.getConvertedAmountForDate(
-                    it.date,
-                    it.currency to CurrencyConstants.BASE_CURRENCY,
-                    it.value
-                ).bind()
-            )
-        }
     }
 
 }

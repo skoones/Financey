@@ -720,6 +720,47 @@ paths:
             application/json:
               schema:
                 type: number
+  /investments/analysis/profits/{startDate}/{endDate}/{budgetId}:
+    get:
+      operationId: getProfitByPeriodAndId
+      description: "Get profit for a given period and budget."
+      parameters:
+        - name: startDate
+          in: path
+          description: "Start date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: path
+          description: "End date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetId
+          in: path
+          description: "Id of the given budget."
+          required: true
+          schema:
+            type: string
+        - name: excludePurchasesFrom
+          in: query
+          description: "Any units bought after this date will be excluded from profit analysis."
+          required: false
+          schema:
+            type: string
+            format: date
+      tags:
+        - investment-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
 
 components:
   schemas:

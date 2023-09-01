@@ -27,6 +27,7 @@ class BudgetAnalysisService(
 ) {
 
     // todo more descriptive error type?
+    // todo refactor - tuples for periods?
     suspend fun getBalanceByPeriodAndId(startDate: LocalDate, endDate: LocalDate, budgetId: String):
             Either<FinanceyError, BigDecimal> = either {
         val entries = entryRepository.getAllByBudgetId(budgetId).bind()

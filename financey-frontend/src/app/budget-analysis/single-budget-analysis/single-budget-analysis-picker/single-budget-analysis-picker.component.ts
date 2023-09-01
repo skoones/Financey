@@ -32,7 +32,7 @@ export class SingleBudgetAnalysisPicker implements OnInit {
   public async routeToAnalysisMainView() {
     const budgetId = await this.findBudgetIdFromName(this.budgetListControl.value);
 
-    await this.router.navigate([SINGLE_BUDGET_ANALYSIS_MAIN_VIEW], { queryParams: { budgetId: budgetId } })
+    await this.router.navigate([this.budgetRoute], { queryParams: { budgetId: budgetId } })
   }
 
   private _filter(value: string): BudgetDTO[] {

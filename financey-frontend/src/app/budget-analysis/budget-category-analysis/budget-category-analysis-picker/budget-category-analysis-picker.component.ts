@@ -33,7 +33,7 @@ export class BudgetCategoryAnalysisPicker implements OnInit {
   public async routeToAnalysisMainView() {
     const categoryId = await this.findCategoryIdFromName(this.categoryListControl.value);
 
-    await this.router.navigate([BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW], {queryParams: {categoryId: categoryId}})
+    await this.router.navigate([this.categoryRoute], {queryParams: {categoryId: categoryId}})
   }
 
   private _filter(value: string): BudgetCategoryDTO[] {
