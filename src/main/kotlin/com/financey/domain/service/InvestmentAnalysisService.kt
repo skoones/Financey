@@ -5,6 +5,7 @@ import arrow.core.continuations.either
 import com.financey.domain.error.FinanceyError
 import com.financey.domain.mapper.EntryDomainMapper
 import com.financey.repository.InvestmentEntryRepository
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -17,6 +18,8 @@ class InvestmentAnalysisService(
     @Autowired private val entryDomainMapper: EntryDomainMapper
 ) {
 
+    val logger = KotlinLogging.logger {}
+
     suspend fun getProfitByPeriodAndId(
         startDate: LocalDate,
         endDate: LocalDate,
@@ -27,6 +30,8 @@ class InvestmentAnalysisService(
         val investmentEntriesFromPeriod = investmentEntryRepository
             .getAllByBudgetIdAndPeriod(budgetId, startDate, endDate).bind()
             .map { entryDomainMapper.toInvestmentDomain(it) }
+        logger.debug { "Retrieved investment entries for profit analysis for budgetId: $budgetId, " +
+                "exclude date: $excludePurchasesFrom" }
 
         profitCalculatorService.getProfitByPeriodAndId(Pair(startDate, endDate), investmentEntriesFromPeriod,
             excludePurchasesFrom).bind()

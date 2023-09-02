@@ -7,14 +7,11 @@
 
   <div class="profit-analysis-container" *ngIf="profitHistory != undefined">
     <div class="exclude-toggle-container">
-      <app-entry-exclude-toggle></app-entry-exclude-toggle>
+      <app-entry-exclude-toggle (excludeFromDateEvent)="excludeFromDate($event)"></app-entry-exclude-toggle>
     </div>
     <span class="flex-spacer"></span>
-    <div class="profit-history-chart-container">
-      <app-profit-history-chart [profitHistory]="profitHistory"></app-profit-history-chart>
-    </div>
+    <app-profit-history-chart class="profit-history-chart-container" [profitHistory]="profitHistory"></app-profit-history-chart>
   </div>
 </div>
 
-<!-- todo: optional toggle for excluding recent entries
-todo + button opening popup/view with market price update -->
+<!-- todo button opening popup/view with market price update -->

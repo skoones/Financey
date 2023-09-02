@@ -3,7 +3,7 @@ import {
   dateToString,
   findEndOfDay,
   findMonthAndYearFromDate,
-  generateDatesForEveryMonth,
+  generateDatesForEveryMonth, getStartOfYear,
   groupIntoStartEndDates
 } from "../../utils/date-utils";
 import {forkJoin, tap} from "rxjs";
@@ -23,8 +23,9 @@ type ProfitHistoryEntry = {
 export class InvestmentBudgetAnalysisMainViewComponent implements OnInit {
 
   profitHistory?: ProfitHistoryEntry[];
-
   budgetId = "";
+  startDate: Date = getStartOfYear(new Date());
+  endDate: Date = new Date();
 
 
   constructor(private investmentAnalysisService: InvestmentAnalysisService, private route: ActivatedRoute) { }
@@ -34,17 +35,22 @@ export class InvestmentBudgetAnalysisMainViewComponent implements OnInit {
   }
 
   chooseDatesToAnalyze(dates: [Date, Date]) {
-    const startDate = dates[0];
-    const endDate = findEndOfDay(dates[1]);
-    this.initializeProfitHistoryChart(generateDatesForEveryMonth(startDate, endDate)).subscribe();
+    this.startDate = dates[0];
+    this.endDate = findEndOfDay(dates[1]);
+    this.initializeProfitHistoryChart(generateDatesForEveryMonth(this.startDate, this.endDate), undefined).subscribe();
   }
 
-  private initializeProfitHistoryChart(dates: Date[]) {
+  excludeFromDate(date: Date) {
+    this.initializeProfitHistoryChart(generateDatesForEveryMonth(this.startDate, this.endDate), date).subscribe();
+  }
+
+  private initializeProfitHistoryChart(dates: Date[], excludeFromDate: Date | undefined) {
     const startEndDatePairs = groupIntoStartEndDates(dates)
+    const excludeDateString = this.getDateStringToExclude(excludeFromDate);
 
     const requests = startEndDatePairs.map(startEndDates =>
       this.investmentAnalysisService.getProfitByPeriodAndId(dateToString(startEndDates[0]),
-        dateToString(startEndDates[1]), this.budgetId) // todo excluding from date
+        dateToString(startEndDates[1]), this.budgetId, excludeDateString)
     );
 
     return forkJoin(requests)
@@ -60,6 +66,13 @@ export class InvestmentBudgetAnalysisMainViewComponent implements OnInit {
           console.log(this.profitHistory)
         })
       )
+  }
+
+  private getDateStringToExclude(excludeFromDate: Date | undefined): string | undefined {
+    if (excludeFromDate == undefined) {
+      return undefined;
+    }
+    return dateToString(excludeFromDate);
   }
 
 }

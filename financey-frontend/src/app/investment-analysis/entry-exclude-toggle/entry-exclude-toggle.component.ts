@@ -8,8 +8,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 })
 export class EntryExcludeToggleComponent implements OnInit {
 
-  @Output() excludeFromDateEvent = new EventEmitter<boolean>();
-  @Output() dateChange = new EventEmitter<Date>();
+  @Output() excludeFromDateEvent = new EventEmitter<Date>();
 
   excludeFromDate = false;
   dateFormGroup: FormGroup;
@@ -25,7 +24,6 @@ export class EntryExcludeToggleComponent implements OnInit {
 
   toggleExclude() {
     this.excludeFromDate = !this.excludeFromDate;
-    this.excludeFromDateEvent.emit(this.excludeFromDate);
 
     if (!this.excludeFromDate) {
       this.dateFormGroup.reset();
@@ -33,7 +31,7 @@ export class EntryExcludeToggleComponent implements OnInit {
   }
 
   emitDate() {
-    this.dateChange.emit(this.dateFormGroup.get('date')?.value);
+    this.excludeFromDateEvent.emit(this.dateFormGroup.get('date')?.value);
   }
 
 }
