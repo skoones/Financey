@@ -3,11 +3,11 @@ import {BudgetAnalysisService, BudgetService} from "../../../../generated";
 import {forkJoin, tap} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {
-  addMonths,
   dateToString,
-  findEndOfDay, findMonthAndYearFromDate, generateDatesForEveryMonth, generateMonthBeginningsFromDate,
-  getFirstDayOfMonth,
-  getStartOfYear,
+  findEndOfDay,
+  findInitialDatesForAnalysis,
+  findMonthAndYearFromDate,
+  generateDatesForEveryMonth,
   groupIntoStartEndDates
 } from "../../../utils/date-utils";
 
@@ -32,7 +32,7 @@ export class SingleBudgetAnalysisMainViewComponent {
 
   ngOnInit() {
     this.budgetId = this.route.snapshot.queryParamMap.get('budgetId') || ""
-    this.initializeExpenseBalanceHistory(this.findDatesForAnalysis()).subscribe(() => {
+    this.initializeExpenseBalanceHistory(findInitialDatesForAnalysis()).subscribe(() => {
     });
   }
 
@@ -40,13 +40,6 @@ export class SingleBudgetAnalysisMainViewComponent {
     const startDate = dates[0];
     const endDate = findEndOfDay(dates[1]);
     this.initializeExpenseBalanceHistory(generateDatesForEveryMonth(startDate, endDate)).subscribe();
-  }
-
-  private findDatesForAnalysis() {
-    const datesSuffix = generateMonthBeginningsFromDate(new Date().getMonth(), getStartOfYear(new Date()));
-    const currentDate = new Date()
-
-    return [...datesSuffix, currentDate];
   }
 
   private initializeExpenseBalanceHistory(dates: Date[]) {

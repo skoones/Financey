@@ -79,6 +79,13 @@ export function findMonthAndYearFromDate(dateString: string) {
   return `${monthNames[monthIndex]} ${year}`
 }
 
+export function findInitialDatesForAnalysis(): Date[] {
+  const datesSuffix = generateMonthBeginningsFromDate(new Date().getMonth(), getStartOfYear(new Date()));
+  const currentDate = new Date()
+
+  return [...datesSuffix, currentDate];
+}
+
 
 function findDateAtMidnight(date: Date): Date {
   const newDate = new Date(date);

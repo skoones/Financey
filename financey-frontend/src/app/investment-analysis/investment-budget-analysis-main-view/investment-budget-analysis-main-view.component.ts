@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {
   dateToString,
-  findEndOfDay,
+  findEndOfDay, findInitialDatesForAnalysis,
   findMonthAndYearFromDate,
   generateDatesForEveryMonth, getStartOfYear,
   groupIntoStartEndDates
@@ -32,6 +32,7 @@ export class InvestmentBudgetAnalysisMainViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.budgetId = this.route.snapshot.queryParamMap.get('budgetId') || ""
+    this.initializeProfitHistoryChart(findInitialDatesForAnalysis(), undefined).subscribe();
   }
 
   chooseDatesToAnalyze(dates: [Date, Date]) {
