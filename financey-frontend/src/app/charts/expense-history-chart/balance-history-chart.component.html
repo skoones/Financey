@@ -1,0 +1,18 @@
+<ngx-charts-bar-vertical
+  [results]="expenseBalanceHistory"
+  [xAxis]="true"
+  [yAxis]="true"
+  [legend]="false"
+  [showXAxisLabel]="true"
+  [showYAxisLabel]="true"
+  [xAxisLabel]="'Month'"
+  [yAxisLabel]="'Budget balance [PLN]'">
+  <ng-template #tooltipTemplate let-model="model">
+    <div class="tooltip-name">
+      {{ model.name }}
+    </div>
+    <div class="tooltip-value">
+      {{ model.value }} PLN
+    </div>
+  </ng-template>
+</ngx-charts-bar-vertical>

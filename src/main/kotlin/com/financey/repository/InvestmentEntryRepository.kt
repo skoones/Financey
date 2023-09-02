@@ -55,8 +55,8 @@ class CustomInvestmentEntryRepositoryImpl(
     override fun getAllByBudgetIdAndPeriod(budgetId: String, startDate: LocalDate, endDate: LocalDate):
             Either<PersistenceError, List<InvestmentEntry>> {
         val query = Query().addCriteria(Criteria.where("entry.budgetId").`is`(budgetId))
-            .addCriteria(Criteria.where("entry.date").gte(startDate))
-            .addCriteria(Criteria.where("entry.date").lte(endDate))
+            .addCriteria(Criteria.where("entry.date").gte(startDate)
+                .andOperator(Criteria.where("entry.date").lte(endDate)))
 
         return try {
             Either.Right(mongoTemplate.find(query, InvestmentEntry::class.java))

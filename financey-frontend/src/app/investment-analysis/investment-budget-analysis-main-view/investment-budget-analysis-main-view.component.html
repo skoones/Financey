@@ -1,1 +1,20 @@
-<p>investment-budget-analysis-main-view works!</p>
+<div class="full-screen-container">
+  <div class="period-choosing-container">
+    <app-budget-history-date-picker (chooseDatesEvent)="chooseDatesToAnalyze($event)"></app-budget-history-date-picker>
+    <span class="flex-spacer"></span>
+    <app-history-period-shortcut-row (periodChange)="chooseDatesToAnalyze($event)"></app-history-period-shortcut-row>
+  </div>
+
+  <div class="profit-analysis-container" *ngIf="profitHistory != undefined">
+    <div class="exclude-toggle-container">
+      <app-entry-exclude-toggle></app-entry-exclude-toggle>
+    </div>
+    <span class="flex-spacer"></span>
+    <div class="profit-history-chart-container">
+      <app-profit-history-chart [profitHistory]="profitHistory"></app-profit-history-chart>
+    </div>
+  </div>
+</div>
+
+<!-- todo: optional toggle for excluding recent entries
+todo + button opening popup/view with market price update -->

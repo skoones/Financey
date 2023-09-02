@@ -43,7 +43,7 @@ import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {ExpenseCheckboxComponent} from "./entry/add-entry/expense-checkbox/expense-checkbox.component";
 import { SingleBudgetAnalysisPicker } from './budget-analysis/single-budget-analysis/single-budget-analysis-picker/single-budget-analysis-picker.component';
 import { BudgetHistoryDatePickerComponent } from './budget-analysis/analysis-history/budget-history-date-picker/budget-history-date-picker.component';
-import { ExpenseHistoryChartComponent } from './charts/expense-history-chart/expense-history-chart.component';
+import { BalanceHistoryChartComponent } from './charts/expense-history-chart/balance-history-chart.component';
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import { HistoryPeriodShortcutRowComponent } from './budget-analysis/analysis-history/history-period-shortcut-row/history-period-shortcut-row.component';
 import { ExpenseSumPieChartComponent } from './charts/expense-sum-pie-chart/expense-sum-pie-chart.component';
@@ -56,6 +56,8 @@ import { BudgetCategoryAnalysisMainViewComponent } from './budget-analysis/budge
 import { InvestmentAnalysisMainViewComponent } from './investment-analysis/investment-analysis-main-view/investment-analysis-main-view.component';
 import { InvestmentBudgetAnalysisMainViewComponent } from './investment-analysis/investment-budget-analysis-main-view/investment-budget-analysis-main-view.component';
 import { InvestmentCategoryAnalysisMainViewComponent } from './investment-analysis/investment-category-analysis-main-view/investment-category-analysis-main-view.component';
+import { EntryExcludeToggleComponent } from './investment-analysis/entry-exclude-toggle/entry-exclude-toggle.component';
+import { ProfitHistoryChartComponent } from './investment-analysis/charts/profit-history-chart/profit-history-chart.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +83,7 @@ import { InvestmentCategoryAnalysisMainViewComponent } from './investment-analys
     SingleBudgetAnalysisMainViewComponent,
     SingleBudgetAnalysisPicker,
     BudgetHistoryDatePickerComponent,
-    ExpenseHistoryChartComponent,
+    BalanceHistoryChartComponent,
     HistoryPeriodShortcutRowComponent,
     ExpenseSumPieChartComponent,
     BudgetCategoryAnalysisToggleComponent,
@@ -90,7 +92,9 @@ import { InvestmentCategoryAnalysisMainViewComponent } from './investment-analys
     BudgetCategoryAnalysisMainViewComponent,
     InvestmentAnalysisMainViewComponent,
     InvestmentBudgetAnalysisMainViewComponent,
-    InvestmentCategoryAnalysisMainViewComponent
+    InvestmentCategoryAnalysisMainViewComponent,
+    EntryExcludeToggleComponent,
+    ProfitHistoryChartComponent
   ],
     imports: [
         BrowserModule,

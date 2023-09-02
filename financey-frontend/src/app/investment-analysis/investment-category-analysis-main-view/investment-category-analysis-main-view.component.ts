@@ -12,4 +12,8 @@ export class InvestmentCategoryAnalysisMainViewComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  chooseDatesToAnalyze($event: [Date, Date]) { // todo
+
+  }
+
 }

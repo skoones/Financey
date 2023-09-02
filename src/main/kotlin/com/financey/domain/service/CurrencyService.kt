@@ -7,7 +7,9 @@ import com.financey.domain.error.ExchangeRateError
 import com.financey.domain.model.EntryDomain
 import com.financey.external.api.ExchangeRateApi
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
 
+@Service
 class CurrencyService(
     @Autowired private val exchangeRateApi: ExchangeRateApi
 ) {

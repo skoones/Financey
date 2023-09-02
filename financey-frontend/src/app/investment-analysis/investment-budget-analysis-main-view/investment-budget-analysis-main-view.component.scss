@@ -1,0 +1,21 @@
+.period-choosing-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.profit-history-chart-container {
+  display: flex;
+  width: 700px;
+  height: 500px;
+}
+
+.profit-analysis-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.exclude-toggle-container {
+  display: flex;
+  width: 50%;
+}
