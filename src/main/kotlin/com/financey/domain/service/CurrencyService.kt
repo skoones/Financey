@@ -6,8 +6,11 @@ import com.financey.constants.CurrencyConstants
 import com.financey.domain.error.ExchangeRateError
 import com.financey.domain.model.EntryDomain
 import com.financey.external.api.ExchangeRateApi
+import org.openapitools.model.EntryCurrency
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
+import java.time.LocalDate
 
 @Service
 class CurrencyService(
@@ -27,6 +30,11 @@ class CurrencyService(
                 ).bind()
             )
         }
+    }
+
+    suspend fun exchange(sourceToTargetCurrency: Pair<EntryCurrency, EntryCurrency>,
+                         amount: BigDecimal, date: LocalDate) = either {
+        exchangeRateApi.getConvertedAmountForDate(date, sourceToTargetCurrency, amount).bind()
     }
 
 }
