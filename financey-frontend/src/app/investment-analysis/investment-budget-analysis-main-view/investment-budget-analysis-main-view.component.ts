@@ -63,7 +63,6 @@ export class InvestmentBudgetAnalysisMainViewComponent implements OnInit {
             });
           });
           this.profitHistory = profitHistory;
-          console.log(this.profitHistory)
         })
       )
   }

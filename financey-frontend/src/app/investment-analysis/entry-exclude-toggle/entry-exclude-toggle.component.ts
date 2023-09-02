@@ -27,6 +27,7 @@ export class EntryExcludeToggleComponent implements OnInit {
 
     if (!this.excludeFromDate) {
       this.dateFormGroup.reset();
+      this.clearDate();
     }
   }
 
@@ -34,4 +35,7 @@ export class EntryExcludeToggleComponent implements OnInit {
     this.excludeFromDateEvent.emit(this.dateFormGroup.get('date')?.value);
   }
 
+  clearDate() {
+    this.excludeFromDateEvent.emit(undefined)
+  }
 }
