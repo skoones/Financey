@@ -2,12 +2,10 @@ package com.financey.domain.service
 
 import arrow.core.Either
 import arrow.core.continuations.either
-import com.financey.constants.CurrencyConstants
 import com.financey.domain.context.SubcategoryExpenseSumContext
 import com.financey.domain.db.model.BudgetCategory
 import com.financey.domain.error.ExchangeRateError
 import com.financey.domain.model.EntryDomain
-import com.financey.external.api.ExchangeRateApi
 import com.financey.utils.CommonUtils
 import org.openapitools.model.EntryType
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,12 +34,14 @@ class ExpenseCalculatorService(
 
     suspend fun findBalanceForPeriodFromEntries(
         entries: List<EntryDomain>,
-        startDate: LocalDate,
+        startDate: LocalDate?,
         endDate: LocalDate
     ): Either<ExchangeRateError, BigDecimal> = either {
         entries
-            .filter {
-                it.date in startDate..endDate
+            .filter {entry ->
+                startDate?.let {
+                    entry.date in it..endDate
+                } ?: (entry.date <= endDate)
             }
             .map {currencyService.changeEntryToUseBaseCurrency(it).bind() }
             .map { if (it.entryType == EntryType.EXPENSE) it.value.negate() else it.value }

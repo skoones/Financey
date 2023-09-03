@@ -20,7 +20,7 @@ interface CustomInvestmentEntryRepository {
     fun save(entry: InvestmentEntry): Either<Nothing, InvestmentEntry>
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
     fun getAllByBudgetId(budgetId: String): Either<PersistenceError, List<InvestmentEntry>>
-    fun getAllByBudgetIdAndPeriod(budgetId: String, date: LocalDate, endDate: LocalDate): Either<PersistenceError, List<InvestmentEntry>>
+    fun getAllByBudgetIdBeforeOrEqualDate(budgetId: String, date: LocalDate): Either<PersistenceError, List<InvestmentEntry>>
 
 }
 
@@ -52,11 +52,10 @@ class CustomInvestmentEntryRepositoryImpl(
         }
     }
 
-    override fun getAllByBudgetIdAndPeriod(budgetId: String, startDate: LocalDate, endDate: LocalDate):
+    override fun getAllByBudgetIdBeforeOrEqualDate(budgetId: String, date: LocalDate):
             Either<PersistenceError, List<InvestmentEntry>> {
         val query = Query().addCriteria(Criteria.where("entry.budgetId").`is`(budgetId))
-            .addCriteria(Criteria.where("entry.date").gte(startDate)
-                .andOperator(Criteria.where("entry.date").lte(endDate)))
+            .addCriteria(Criteria.where("entry.date").lte(date))
 
         return try {
             Either.Right(mongoTemplate.find(query, InvestmentEntry::class.java))

@@ -51,8 +51,7 @@ export class InvestmentBudgetAnalysisMainViewComponent implements OnInit {
     const excludeDateString = this.getDateStringToExclude(excludeFromDate);
 
     const requests = startEndDatePairs.map(startEndDates =>
-      this.investmentAnalysisService.getProfitByPeriodAndId(dateToString(startEndDates[0]),
-        dateToString(startEndDates[1]), this.budgetId, excludeDateString)
+      this.investmentAnalysisService.getProfitByDateAndId(dateToString(startEndDates[1]), this.budgetId, excludeDateString)
     );
 
     return forkJoin(requests)

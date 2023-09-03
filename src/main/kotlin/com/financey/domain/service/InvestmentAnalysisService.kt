@@ -20,20 +20,19 @@ class InvestmentAnalysisService(
 
     val logger = KotlinLogging.logger {}
 
-    suspend fun getProfitByPeriodAndId(
-        startDate: LocalDate,
-        endDate: LocalDate,
+    suspend fun getProfitByDateAndId(
+        date: LocalDate,
         budgetId: String,
         excludePurchasesFrom: LocalDate?
     ):
             Either<FinanceyError, BigDecimal> = either {
         val investmentEntriesFromPeriod = investmentEntryRepository
-            .getAllByBudgetIdAndPeriod(budgetId, startDate, endDate).bind()
+            .getAllByBudgetIdBeforeOrEqualDate(budgetId, date).bind()
             .map { entryDomainMapper.toInvestmentDomain(it) }
         logger.debug { "Retrieved investment entries for profit analysis for budgetId: $budgetId, " +
                 "exclude date: $excludePurchasesFrom" }
 
-        profitCalculatorService.getProfitByPeriodAndId(Pair(startDate, endDate), investmentEntriesFromPeriod,
+        profitCalculatorService.getProfitByDate(date, investmentEntriesFromPeriod,
             excludePurchasesFrom).bind()
     }
 

@@ -7,21 +7,14 @@ servers:
   - url: 'http://localhost:8980/investments/analysis'
 
 paths:
-  /profits/{startDate}/{endDate}/{budgetId}:
+  /profits/{date}/{budgetId}:
     get:
-      operationId: getProfitByPeriodAndId
-      description: "Get profit for a given period and budget."
+      operationId: getProfitByDateAndId
+      description: "Get profit for given date and budget."
       parameters:
-        - name: startDate
+        - name: date
           in: path
-          description: "Start date of the period to be analyzed."
-          required: true
-          schema:
-            type: string
-            format: date
-        - name: endDate
-          in: path
-          description: "End date of the period to be analyzed."
+          description: "Date for which profit should be calculated."
           required: true
           schema:
             type: string

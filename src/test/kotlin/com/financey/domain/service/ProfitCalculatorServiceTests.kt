@@ -48,13 +48,13 @@ class ProfitCalculatorServiceTests {
     fun `calculates profit based on price changes for period correctly`() = runBlocking {
         // given
         val testData = TestDataLoader.loadProfitByPeriodTestData()
-        val expectedResult = BigDecimal(-7800)
+        val expectedResult = BigDecimal(5700)
         every { runBlocking { expenseCalculatorService.findBalanceForPeriodFromEntries(any(), any(), any()) }
-        } answers { Either.Right(BigDecimal(-9000)) }
+        } answers { Either.Right(BigDecimal(-8000)) }
 
         // when
-        val result = profitCalculatorService.getProfitByPeriodAndId(
-            Pair(LocalDate.of(2023, 2, 1), LocalDate.of(2023, 7, 1)), testData, null).fold( { it }, { it })
+        val result = profitCalculatorService.getProfitByDate(
+             LocalDate.of(2023, 7, 1), testData, null).fold( { it }, { it })
 
         // then
         Assertions.assertEquals(expectedResult, result)
@@ -64,13 +64,13 @@ class ProfitCalculatorServiceTests {
     fun `calculates profit based on price changes for period with exclusion date correctly`() = runBlocking {
         // given
         val testData = TestDataLoader.loadProfitByPeriodTestData()
-        val expectedResult = BigDecimal(-1800)
+        val expectedResult = BigDecimal(3000)
         every { runBlocking { expenseCalculatorService.findBalanceForPeriodFromEntries(any(), any(), any()) }
-        } answers { Either.Right(BigDecimal(0)) }
+        } answers { Either.Right(BigDecimal(1000)) }
 
         // when
-        val result = profitCalculatorService.getProfitByPeriodAndId(
-            Pair(LocalDate.of(2023, 2, 1), LocalDate.of(2023, 7, 1)), testData, LocalDate.of(2023, 5, 1))
+        val result = profitCalculatorService.getProfitByDate(
+            LocalDate.of(2023, 7, 1), testData, LocalDate.of(2023, 5, 1))
             .fold( { it }, { it })
 
         // then

@@ -38,7 +38,7 @@ object ProfitCalculatorTestData {
             volume = 20,
             marketPriceAtOperation = BigDecimal(200),
             datesToMarketPrices = mapOf(LocalDate.of(2023, 2, 15) to BigDecimal(190),
-                LocalDate.of(2023, 3, 1) to BigDecimal(100)) // profit: -90 * 20 = -1800
+                LocalDate.of(2023, 3, 1) to BigDecimal(100))
         ),
         InvestmentEntryDomain(
             id = "3",
@@ -84,7 +84,7 @@ object ProfitCalculatorTestData {
             datesToMarketPrices = mapOf(LocalDate.of(2023, 5, 20) to BigDecimal(290),
                 LocalDate.of(2023, 5, 21) to BigDecimal(245),
                 LocalDate.of(2023, 5, 22) to BigDecimal(100),
-                LocalDate.of(2023, 6, 5) to BigDecimal(390)) // profit: 100 * 30 = 3000
+                LocalDate.of(2023, 6, 5) to BigDecimal(390))
         )
     )
 }

@@ -19,14 +19,13 @@ class InvestmentAnalysisController(
 
     val logger = KotlinLogging.logger {}
 
-    override fun getProfitByPeriodAndId(
-        startDate: LocalDate,
-        endDate: LocalDate,
+    override fun getProfitByDateAndId(
+        date: LocalDate,
         budgetId: String,
         excludePurchasesFrom: LocalDate?
     ): ResponseEntity<BigDecimal> {
         val result = runBlocking {
-            investmentAnalysisService.getProfitByPeriodAndId(startDate, endDate, budgetId, excludePurchasesFrom)
+            investmentAnalysisService.getProfitByDateAndId(date, budgetId, excludePurchasesFrom)
         }
 
         return result.fold(
