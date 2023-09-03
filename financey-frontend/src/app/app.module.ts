@@ -58,6 +58,8 @@ import { InvestmentBudgetAnalysisMainViewComponent } from './investment-analysis
 import { InvestmentCategoryAnalysisMainViewComponent } from './investment-analysis/investment-category-analysis-main-view/investment-category-analysis-main-view.component';
 import { EntryExcludeToggleComponent } from './investment-analysis/entry-exclude-toggle/entry-exclude-toggle.component';
 import { ProfitHistoryChartComponent } from './investment-analysis/charts/profit-history-chart/profit-history-chart.component';
+import { UpdateMarketPricesForEntryComponent } from './budget/update-market-prices/update-market-prices-for-entry.component';
+import { UpdatePricesEntryListComponent } from './budget/update-prices-entry-list/update-prices-entry-list.component';
 
 @NgModule({
   declarations: [
@@ -94,7 +96,9 @@ import { ProfitHistoryChartComponent } from './investment-analysis/charts/profit
     InvestmentBudgetAnalysisMainViewComponent,
     InvestmentCategoryAnalysisMainViewComponent,
     EntryExcludeToggleComponent,
-    ProfitHistoryChartComponent
+    ProfitHistoryChartComponent,
+    UpdateMarketPricesForEntryComponent,
+    UpdatePricesEntryListComponent
   ],
     imports: [
         BrowserModule,

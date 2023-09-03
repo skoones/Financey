@@ -15,7 +15,21 @@
   flex-direction: column;
 }
 
-.exclude-toggle-container {
+.analysis-buttons-container {
   display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.exclude-toggle {
   width: 50%;
+}
+
+.budget-view-button {
+  width: 30%;
+  margin-top: auto;
+}
+
+.analysis-buttons-spacer {
+  flex-grow: 3;
 }

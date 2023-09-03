@@ -1,0 +1,36 @@
+<mat-card class="mat-elevation-z8">
+  <mat-card-header>
+    <mat-card-title>Update market prices</mat-card-title>
+  </mat-card-header>
+  <form [formGroup]="pricesFormGroup">
+    <div formArrayName="datesToPrices" class="form-field-container">
+      <div *ngFor="let priceControl of datesToPrices.controls; let i = index" [formGroupName]="i">
+        <mat-form-field appearance="fill">
+          <mat-label>Date</mat-label>
+          <input matInput formControlName="date" [matDatepicker]="picker">
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker">
+            <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <span class="flex-spacer"></span>
+        <mat-form-field>
+          <mat-label>Price</mat-label>
+          <input matInput formControlName="price" placeholder="Market price">
+        </mat-form-field>
+        <button mat-icon-button (click)="deletePrice(priceControl)" color="warn">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="button-container">
+      <button mat-button color="primary" (click)="onSubmit()">Submit</button>
+      <button mat-button class="add-price-button" (click)="addPrice(undefined, undefined)">Add New Price</button>
+      <button mat-button color="accent" (click)="closeListPopup()">Cancel</button>
+    </div>
+    <span class="flex-spacer"></span>
+  </form>
+</mat-card>
+
+

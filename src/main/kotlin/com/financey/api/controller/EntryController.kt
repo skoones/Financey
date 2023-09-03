@@ -36,7 +36,7 @@ class EntryController(
             investmentEntryService.save(entry)
         } as Right
 
-        return ResponseEntity.ok("Entry saved with id ${savedEntry.value.id}.")
+        return ResponseEntity.ok("Investment entry saved with id ${savedEntry.value.id}.")
     }
 
     override fun updateEntry(entryDTO: EntryDTO): ResponseEntity<String> {
@@ -46,6 +46,15 @@ class EntryController(
        }
 
        return ResponseEntity.ok("Updated entry with id ${entry.id}.")
+    }
+
+    override fun updateInvestmentEntry(investmentEntryDTO: InvestmentEntryDTO): ResponseEntity<String> {
+        val entry = entryDtoMapper.fromInvestmentDto(investmentEntryDTO)
+        runBlocking {
+            investmentEntryService.save(entry)
+        }
+
+        return ResponseEntity.ok("Updated investment entry with id ${entry.id}.")
     }
 
     override fun deleteEntriesByIds(ids: List<String>): ResponseEntity<String> {

@@ -7,8 +7,8 @@ import {
   groupIntoStartEndDates
 } from "../../utils/date-utils";
 import {forkJoin, tap} from "rxjs";
-import {InvestmentAnalysisService} from "../../../generated";
-import {ActivatedRoute} from "@angular/router";
+import {BudgetService, InvestmentAnalysisService} from "../../../generated";
+import {ActivatedRoute, Router} from "@angular/router";
 
 type ProfitHistoryEntry = {
   name: string,
@@ -28,7 +28,8 @@ export class InvestmentBudgetAnalysisMainViewComponent implements OnInit {
   endDate: Date = new Date();
 
 
-  constructor(private investmentAnalysisService: InvestmentAnalysisService, private route: ActivatedRoute) { }
+  constructor(private investmentAnalysisService: InvestmentAnalysisService, private budgetService: BudgetService,
+              private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.budgetId = this.route.snapshot.queryParamMap.get('budgetId') || ""
@@ -73,6 +74,12 @@ export class InvestmentBudgetAnalysisMainViewComponent implements OnInit {
       return undefined;
     }
     return dateToString(excludeFromDate);
+  }
+
+  openFullBudgetView() {
+    this.budgetService.getById(this.budgetId).subscribe(budget => {
+      this.router.navigate([`/budgets/single/${this.budgetId}`],  { queryParams: { budget: JSON.stringify(budget) } });
+    })
   }
 
 }

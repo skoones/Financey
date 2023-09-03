@@ -65,7 +65,6 @@ export class SingleBudgetAnalysisMainViewComponent {
   }
 
   openFullBudgetView() {
-    console.log("budgetId: " + this.budgetId)
     this.budgetService.getById(this.budgetId).subscribe(budget => {
       this.router.navigate([`/budgets/single/${this.budgetId}`],  { queryParams: { budget: JSON.stringify(budget) } });
     })
