@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Inject, Input, OnInit, Output, OnChanges, SimpleChanges} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {BudgetDTO, EntryService, InvestmentEntryDTO} from "../../../generated";
-import {FormBuilder, FormGroup, FormArray, Validators, AbstractControl} from "@angular/forms";
+import {FormBuilder, FormGroup, FormArray, Validators, AbstractControl, ValidationErrors} from "@angular/forms";
 import {amountValidator} from "../../validators/number-validators";
 import {dateToString} from "../../utils/date-utils";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -86,16 +86,22 @@ export class UpdateMarketPricesForEntryComponent implements OnInit, OnChanges {
         });
       });
     } else {
-      const hasMissingFields = Object.keys(this.pricesFormGroup.controls)
-        .some((controlName) => {
-          return !!this.pricesFormGroup.get(controlName)?.errors?.['required'];
-        })
+      const datesToPrices = (this.pricesFormGroup.get('datesToPrices') as FormArray);
+      const allErrors = datesToPrices.controls.map((group: AbstractControl) => {
+        const typedGroup = group as FormGroup;
+        return Object.keys(typedGroup.controls).map(controlName => {
+          const control = typedGroup.get(controlName);
+          return control?.errors;
+        });
+      }).reduce((prev, curr) => [...prev, ...curr], [])
+        .filter(error => error !== null);
+      const hasMissingFields = allErrors.some(errors => !!errors && 'required' in errors);
       if (hasMissingFields) {
         this.openErrorSnackbar('Please fill out all required fields.');
       } else {
         Object.keys(this.pricesFormGroup.controls)
           .forEach((controlName) => {
-            this.handleEntryFormErrors(controlName);
+            this.handleEntryFormErrors(allErrors);
           })
       }
     }
@@ -132,10 +138,13 @@ export class UpdateMarketPricesForEntryComponent implements OnInit, OnChanges {
     return simpleObject;
   }
 
-  private handleEntryFormErrors(controlName: string) {
-    if (this.pricesFormGroup.get(controlName)?.errors?.['amountErrors']?.invalidNumber) {
+  private handleEntryFormErrors(allErrors: (ValidationErrors | null | undefined)[]) {
+    const hasInvalidNumberError = allErrors.some(errors => errors?.['amountErrors']?.invalidNumber);
+    const hasLessEqualZeroError = allErrors.some(errors => errors?.['amountErrors']?.lessEqualZero);
+
+    if (hasInvalidNumberError) {
       this.openErrorSnackbar('Price should be a valid number.');
-    } else if (this.pricesFormGroup.get(controlName)?.errors?.['amountErrors']?.lessEqualZero) {
+    } else if (hasLessEqualZeroError) {
       this.openErrorSnackbar(`Price should be greater than 0.`);
     }
   }
