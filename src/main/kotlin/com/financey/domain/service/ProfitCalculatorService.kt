@@ -3,9 +3,12 @@ package com.financey.domain.service
 import arrow.core.Either
 import arrow.core.continuations.either
 import com.financey.constants.CurrencyConstants
+import com.financey.domain.db.model.BudgetCategory
 import com.financey.domain.error.ExchangeRateError
 import com.financey.domain.error.FinanceyError
 import com.financey.domain.model.InvestmentEntryDomain
+import com.financey.domain.model.SubcategoryMarketValueDomain
+import com.financey.utils.CommonUtils
 import org.openapitools.model.EntryCurrency
 import org.openapitools.model.EntryType
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,6 +37,29 @@ class ProfitCalculatorService(
         val currentMarketValue = getCurrentMarketValue(filteredInvestments, date).bind()
 
         currentMarketValue - moneyFromOperations
+    }
+
+    suspend fun findMarketValueContexts(
+        subcategoryToBuyEntries: Map<BudgetCategory?, List<InvestmentEntryDomain>>,
+        endDate: LocalDate
+    ): Either<ExchangeRateError, List<SubcategoryMarketValueDomain>> = either {
+        subcategoryToBuyEntries
+            .mapValues { it.value.map {
+                    investmentEntry -> findMostRecentEntryValue(investmentEntry, endDate).bind()
+            } }
+            .mapValues { it.value.fold(BigDecimal.ZERO, BigDecimal::add) }
+            .map { (subcategory, marketValue) ->
+                subcategory?.let { category ->
+                    SubcategoryMarketValueDomain(
+                        subcategoryId = CommonUtils.objectIdToString(category.id),
+                        subcategoryName = category.name,
+                        marketValue = marketValue
+                    )
+                } ?: SubcategoryMarketValueDomain(
+                    subcategoryId = "",
+                    subcategoryName = ""
+                )
+            }
     }
 
     private suspend fun getCurrentMarketValue(
@@ -81,7 +107,5 @@ class ProfitCalculatorService(
     }
 
 }
-
-typealias DatePriceSelector = (Map<LocalDate, BigDecimal>) -> Map.Entry<LocalDate, BigDecimal>?
 
 private inline operator fun BigDecimal.times(other: Int): BigDecimal = this.times(BigDecimal(other))

@@ -4,7 +4,8 @@
     <span class="flex-spacer"></span>
     <app-history-period-shortcut-row (periodChange)="chooseDatesToAnalyze($event)"></app-history-period-shortcut-row>
   </div>
+  <app-expense-sum-pie-chart [categoryId]="categoryId" [investment]="true"></app-expense-sum-pie-chart>
 </div>
 
-<!-- todo: same period picker as in normal analysis + profit history line chart + optional toggle for excluding recent entries
+<!--  + profit history line chart + optional toggle for excluding recent entries
 todo + pie chart with currently owned (= bought, but not sold) budget percentages (how many % of a category all investment entries currently owned in each budget constitute) -->

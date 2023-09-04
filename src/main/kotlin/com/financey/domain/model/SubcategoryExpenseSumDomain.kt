@@ -1,8 +1,8 @@
-package com.financey.domain.context
+package com.financey.domain.model
 
 import java.math.BigDecimal
 
-data class SubcategoryExpenseSumContext(
+data class SubcategoryExpenseSumDomain(
     val subcategoryId: String?,
     val subcategoryName: String,
     val expenseSum: BigDecimal = BigDecimal.ZERO

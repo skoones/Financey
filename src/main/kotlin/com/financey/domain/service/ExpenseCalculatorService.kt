@@ -2,10 +2,10 @@ package com.financey.domain.service
 
 import arrow.core.Either
 import arrow.core.continuations.either
-import com.financey.domain.context.SubcategoryExpenseSumContext
 import com.financey.domain.db.model.BudgetCategory
 import com.financey.domain.error.ExchangeRateError
 import com.financey.domain.model.EntryDomain
+import com.financey.domain.model.SubcategoryExpenseSumDomain
 import com.financey.utils.CommonUtils
 import org.openapitools.model.EntryType
 import org.springframework.beans.factory.annotation.Autowired
@@ -49,19 +49,19 @@ class ExpenseCalculatorService(
     }
 
     suspend fun findExpenseSumContexts(subcategoryToExpenseSum: Map<BudgetCategory?, List<EntryDomain>>):
-            Either<ExchangeRateError, List<SubcategoryExpenseSumContext>> = either {
+            Either<ExchangeRateError, List<SubcategoryExpenseSumDomain>> = either {
         subcategoryToExpenseSum
             .mapValues { it.value.map { entry -> currencyService.changeEntryToUseBaseCurrency(entry).bind() } }
             .mapValues { it.value.map { entry -> entry.value } }
             .mapValues { it.value.fold(BigDecimal.ZERO, BigDecimal::add) }
             .map { (subcategory, expenseSum) ->
                 subcategory?.let { category ->
-                    SubcategoryExpenseSumContext(
+                    SubcategoryExpenseSumDomain(
                         subcategoryId = CommonUtils.objectIdToString(category.id),
                         subcategoryName = category.name,
                         expenseSum = expenseSum
                     )
-                } ?: SubcategoryExpenseSumContext(
+                } ?: SubcategoryExpenseSumDomain(
                     subcategoryId = "",
                     subcategoryName = ""
                 )

@@ -41,7 +41,42 @@ paths:
             application/json:
               schema:
                 type: number
-
+  /sum/marketValue/subcategories/{startDate}/{endDate}/{budgetCategoryId}:
+    get:
+      operationId: getTotalMarketValueForSubcategoriesAndPeriodByCategoryId
+      description: "Get total invested sum for direct subcategories of a category with given id."
+      parameters:
+        - name: startDate
+          in: path
+          description: "Start date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: path
+          description: "End date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetCategoryId
+          in: path
+          description: "Id of the given budget category."
+          required: true
+          schema:
+            type: string
+      tags:
+        - investment-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubcategoryMarketValueDTO'
 
 #  /investments/profits/category/{budgetCategoryId}:
 #    get:
@@ -70,4 +105,31 @@ paths:
 #            application/json:
 #              schema:
 #                type: number
+
+components:
+  schemas:
+    SubcategoryExpenseSumDTO:
+      type: object
+      required:
+        - subcategoryName
+        - expenseSum
+      properties:
+        subcategoryId:
+          type: string
+        subcategoryName:
+          type: string
+        expenseSum:
+          type: number
+    SubcategoryMarketValueDTO:
+      type: object
+      required:
+        - subcategoryName
+        - marketValue
+      properties:
+        subcategoryId:
+          type: string
+        subcategoryName:
+          type: string
+        marketValue:
+          type: number
   

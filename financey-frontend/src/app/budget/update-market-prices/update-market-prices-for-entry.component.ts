@@ -85,6 +85,7 @@ export class UpdateMarketPricesForEntryComponent implements OnInit, OnChanges {
           duration: 5000,
         });
       });
+      this.closeListPopup();
     } else {
       const datesToPrices = (this.pricesFormGroup.get('datesToPrices') as FormArray);
       const allErrors = datesToPrices.controls.map((group: AbstractControl) => {
@@ -130,7 +131,7 @@ export class UpdateMarketPricesForEntryComponent implements OnInit, OnChanges {
     const simpleObject: { [key: string]: number } = {};
 
     formArray.controls.forEach(control => {
-      const date = control.get('date')?.value;
+      const date = dateToString(new Date(control.get('date')?.value));
       const price = control.get('price')?.value as number;
       simpleObject[date] = price;
     });

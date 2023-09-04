@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+import {findEndOfDay} from "../../utils/date-utils";
+import {ExpenseSumPieChartComponent} from "../../charts/expense-sum-pie-chart/expense-sum-pie-chart.component";
 
 @Component({
   selector: 'app-investment-category-analysis-main-view',
@@ -7,13 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InvestmentCategoryAnalysisMainViewComponent implements OnInit {
 
-  constructor() { }
+  @ViewChild(ExpenseSumPieChartComponent, {static: false})
+  private expensePieChart?: ExpenseSumPieChartComponent
+
+  @Input() categoryId: string
+
+  constructor(private route: ActivatedRoute) {
+    this.categoryId = this.route.snapshot.queryParams["categoryId"];
+  }
 
   ngOnInit(): void {
   }
 
-  chooseDatesToAnalyze($event: [Date, Date]) { // todo
-
+  chooseDatesToAnalyze(dates: [Date, Date]) {
+    this.expensePieChart?.changeExpenseDates([dates[0], findEndOfDay(dates[1])])
   }
 
 }

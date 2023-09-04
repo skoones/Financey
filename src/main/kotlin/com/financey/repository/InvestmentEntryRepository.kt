@@ -21,6 +21,8 @@ interface CustomInvestmentEntryRepository {
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
     fun getAllByBudgetId(budgetId: String): Either<PersistenceError, List<InvestmentEntry>>
     fun getAllByBudgetIdBeforeOrEqualDate(budgetId: String, date: LocalDate): Either<PersistenceError, List<InvestmentEntry>>
+    fun getAllByBudgetIdsAndPeriod(startDate: LocalDate, endDate: LocalDate, budgetIds: List<String?>):
+            Either<PersistenceError, List<InvestmentEntry>>
 
 }
 
@@ -61,6 +63,22 @@ class CustomInvestmentEntryRepositoryImpl(
             Either.Right(mongoTemplate.find(query, InvestmentEntry::class.java))
         } catch (e: DataAccessException) {
             Either.Left(DataAccessError("There was an issue with accessing database data. Entries could not be found."))
+        }
+    }
+
+    override fun getAllByBudgetIdsAndPeriod(startDate: LocalDate, endDate: LocalDate, budgetIds: List<String?>):
+            Either<PersistenceError, List<InvestmentEntry>> {
+        val startDateCriteria = Criteria.where("entry.date").gte(startDate)
+        val endDateCriteria = Criteria.where("entry.date").lte(endDate)
+        val budgetIdsCriteria = Criteria.where("entry.budgetId").inValues(budgetIds)
+
+        return try {
+            val query = Query().addCriteria(budgetIdsCriteria
+                .andOperator(startDateCriteria, endDateCriteria))
+            Either.Right(mongoTemplate.find(query, InvestmentEntry::class.java))
+        } catch (e: DataAccessException) {
+            Either.Left(DataAccessError("There was an issue with accessing database data, database exception: " +
+                    "${e.message}. Entries could not be found."))
         }
     }
 

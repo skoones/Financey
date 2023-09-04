@@ -1,6 +1,6 @@
 package com.financey.data
 
-import com.financey.domain.context.SubcategoryExpenseSumContext
+import com.financey.domain.model.SubcategoryExpenseSumDomain
 import com.financey.domain.db.model.BudgetCategory
 import com.financey.domain.model.EntryDomain
 import org.bson.types.ObjectId
@@ -183,9 +183,9 @@ object BudgetAnalysisServiceTestData {
     )
 
     val categoryToExpenseSumResults = listOf(
-        SubcategoryExpenseSumContext("6155b0955faba1f03d48c2a1", "Category1", BigDecimal("225.70")),
-        SubcategoryExpenseSumContext("6155b0955faba1f03d48c2a2", "Category2", BigDecimal("280.35")),
-        SubcategoryExpenseSumContext("6155b0955faba1f03d48c2a3", "Category3", BigDecimal("611.65")),
+        SubcategoryExpenseSumDomain("6155b0955faba1f03d48c2a1", "Category1", BigDecimal("225.70")),
+        SubcategoryExpenseSumDomain("6155b0955faba1f03d48c2a2", "Category2", BigDecimal("280.35")),
+        SubcategoryExpenseSumDomain("6155b0955faba1f03d48c2a3", "Category3", BigDecimal("611.65")),
     )
 
 }

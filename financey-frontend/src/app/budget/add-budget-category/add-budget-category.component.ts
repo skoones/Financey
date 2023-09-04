@@ -62,8 +62,6 @@ export class AddBudgetCategoryComponent {
     }
 
     if (!categoryDto.investment || this.parentCategoryIsInvestment(categoryDto.parentCategoryId)) {
-      console.log("categoryDto:")
-      console.log(categoryDto)
       await firstValueFrom(this.budgetService.addCategory(categoryDto));
       this.anyAdded = true;
       return AddCategoryResult.Success;
@@ -125,7 +123,6 @@ export class AddBudgetCategoryComponent {
   }
 
   private parentCategoryIsInvestment(parentCategoryId: string | undefined) {
-    console.log("parent cateogyr id: " + parentCategoryId)
     return (parentCategoryId === undefined) || this.parentCategories.filter(category =>
       category.id == parentCategoryId).every(category => category.investment);
   }
