@@ -566,7 +566,7 @@ paths:
       operationId: addUser
       description: "Add a new user account to the database"
       tags:
-        - users
+        - user
       requestBody:
         content:
           application/json:
@@ -575,6 +575,25 @@ paths:
       responses:
         "200":
           description: OK
+  /users/get/username/{username}:
+    post:
+      operationId: getByUsername
+      description: "Get user by username"
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      tags:
+        - user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDTO"
   /entry/{budgetId}/entries:
     get:
       operationId: getEntriesByBudgetId
@@ -933,7 +952,10 @@ components:
     UserDTO:
       required:
         - userId
+        - username
       properties:
+        username:
+          type: string
         userId:
           type: string
         password:

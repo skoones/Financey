@@ -17,6 +17,8 @@ interface UserRepository : MongoRepository<User, String>, CustomUserRepository
 
 interface CustomUserRepository {
     fun getById(id: String): Either<PersistenceError, User>
+    fun getByUsername(username: String): Either<PersistenceError, User>
+
 }
 
 class CustomUserRepositoryImpl(
@@ -31,6 +33,21 @@ class CustomUserRepositoryImpl(
                 0 -> Either.Left(ElementDoesNotExistError("There is no user with given id in the database."))
                 1 -> Either.Right(foundResult.first())
                 else -> Either.Left(MultipleElementsError("There is more than one user with given id in the database."))
+            }
+        } catch (e: DataAccessException) {
+            Either.Left(DataAccessError("There was an issue with accessing database data. User could not be found."))
+        }
+    }
+
+    override fun getByUsername(username: String): Either<PersistenceError, User> {
+        val query = Query().addCriteria(User::username isEqualTo username)
+
+        return try {
+            val existingUsers = mongoTemplate.find(query, User::class.java)
+            when (existingUsers.size) {
+                0 -> Either.Left(ElementDoesNotExistError("There is no user with the given username in the database."))
+                1 -> Either.Right(existingUsers.first())
+                else -> Either.Left(MultipleElementsError("Multiple users with given name have been found."))
             }
         } catch (e: DataAccessException) {
             Either.Left(DataAccessError("There was an issue with accessing database data. User could not be found."))

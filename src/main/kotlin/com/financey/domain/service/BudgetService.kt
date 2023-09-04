@@ -44,19 +44,6 @@ class BudgetService(
         budgets
     }
 
-//    def example(input: Input): IO[Int] = {
-//        val x = IO(fun1("Hi!"))
-//        // ...
-//    }
-//
-//    def example(input: Input): IO[Int] = for {
-//        getPureX(input).flatMap(x =>
-//            IO(println("Hi!")).flatMap(_ =>
-//                x.combineMy(2 + 3)
-//            )
-//        )
-//    }
-
     suspend fun getAllUncategorizedByUserId(userId: String): Either<PersistenceError, List<BudgetDomain>> = either {
         val budgets = budgetRepository.getAllUncategorizedByUserId(userId).bind()
             .map { budgetDomainMapper.toDomain(it) }
