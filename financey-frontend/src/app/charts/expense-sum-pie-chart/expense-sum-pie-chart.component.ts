@@ -81,6 +81,7 @@ export class ExpenseSumPieChartComponent implements OnInit {
 
   private async getSubcategoryData(dates: [Date, Date]) {
     if (this.investment) {
+      // todo maybe only use end date here, not a closed period?
       return await this.investmentAnalysisService.getTotalMarketValueForSubcategoriesAndPeriodByCategoryId(dateToString(dates[0]),
         dateToString(dates[1]), this.categoryId || "").toPromise();
     }

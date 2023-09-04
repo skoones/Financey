@@ -54,7 +54,7 @@ class BudgetService(
     suspend fun getFavoriteBudgetsByUserId(userId: String): Either<PersistenceError, List<BudgetDomain>> = either {
         val user = userRepository.getById(userId).bind()
         logger.debug { "Retrieved user with id $userId." }
-        budgetRepository.getAllByIds(user.favoriteBudgetIds).bind()
+        budgetRepository.getAllByIds(user.favoriteBudgetIds ?: listOf()).bind()
             .map { budgetDomainMapper.toDomain(it) }
     }
 

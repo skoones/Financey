@@ -31,18 +31,22 @@ import {
 import {
   InvestmentAnalysisMainViewComponent
 } from "./investment-analysis/investment-analysis-main-view/investment-analysis-main-view.component";
+import {LoginMainComponent} from "./login/login-main/login-main.component";
+import {AuthGuard} from "./login/auth/auth.guard";
 
 const routes: Routes = [
-  { path: BUDGETS_PATH, component: AllBudgetsViewComponent },
-  { path: HOME_PATH, component: HomeComponent },
-  { path: SINGLE_BUDGET_PATH, component: SingleBudgetMainViewComponent },
-  { path: SINGLE_BUDGET_ID_PATH, component: SingleBudgetViewComponent },
-  { path: BUDGET_ANALYSIS_MAIN, component: AnalysisMainViewComponent },
-  { path: SINGLE_BUDGET_ANALYSIS_MAIN_VIEW, component: SingleBudgetAnalysisMainViewComponent },
-  { path: BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW, component: BudgetCategoryAnalysisMainViewComponent },
-  { path: INVESTMENT_ANALYSIS_MAIN, component: InvestmentAnalysisMainViewComponent },
-  { path: INVESTMENT_SINGLE_BUDGET_MAIN_VIEW, component: InvestmentBudgetAnalysisMainViewComponent },
-  { path: INVESTMENT_CATEGORY_MAIN_VIEW, component: InvestmentCategoryAnalysisMainViewComponent }
+  { path: 'login', component: LoginMainComponent },
+  { path: BUDGETS_PATH, component: AllBudgetsViewComponent, canActivate: [AuthGuard]  },
+  { path: HOME_PATH, component: HomeComponent, canActivate: [AuthGuard] },
+  { path: SINGLE_BUDGET_PATH, component: SingleBudgetMainViewComponent, canActivate: [AuthGuard]  },
+  { path: SINGLE_BUDGET_ID_PATH, component: SingleBudgetViewComponent, canActivate: [AuthGuard]  },
+  { path: BUDGET_ANALYSIS_MAIN, component: AnalysisMainViewComponent, canActivate: [AuthGuard]  },
+  { path: SINGLE_BUDGET_ANALYSIS_MAIN_VIEW, component: SingleBudgetAnalysisMainViewComponent, canActivate: [AuthGuard]  },
+  { path: BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW, component: BudgetCategoryAnalysisMainViewComponent, canActivate: [AuthGuard]  },
+  { path: INVESTMENT_ANALYSIS_MAIN, component: InvestmentAnalysisMainViewComponent, canActivate: [AuthGuard]  },
+  { path: INVESTMENT_SINGLE_BUDGET_MAIN_VIEW, component: InvestmentBudgetAnalysisMainViewComponent, canActivate: [AuthGuard]  },
+  { path: INVESTMENT_CATEGORY_MAIN_VIEW, component: InvestmentCategoryAnalysisMainViewComponent, canActivate: [AuthGuard]  },
+  { path: '**', redirectTo: '/login' }
 ];
 
 @NgModule({

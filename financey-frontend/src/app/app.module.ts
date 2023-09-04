@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -60,6 +61,9 @@ import { EntryExcludeToggleComponent } from './investment-analysis/entry-exclude
 import { ProfitHistoryChartComponent } from './investment-analysis/charts/profit-history-chart/profit-history-chart.component';
 import { UpdateMarketPricesForEntryComponent } from './budget/update-market-prices/update-market-prices-for-entry.component';
 import { UpdatePricesEntryListComponent } from './budget/update-prices-entry-list/update-prices-entry-list.component';
+import { LoginMainComponent } from './login/login-main/login-main.component';
+import {AuthInterceptor} from "./login/auth/auth.interceptor";
+import { LogoutButtonComponent } from './login/logout-button/logout-button.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +102,9 @@ import { UpdatePricesEntryListComponent } from './budget/update-prices-entry-lis
     EntryExcludeToggleComponent,
     ProfitHistoryChartComponent,
     UpdateMarketPricesForEntryComponent,
-    UpdatePricesEntryListComponent
+    UpdatePricesEntryListComponent,
+    LoginMainComponent,
+    LogoutButtonComponent
   ],
     imports: [
         BrowserModule,
@@ -126,7 +132,9 @@ import { UpdatePricesEntryListComponent } from './budget/update-prices-entry-lis
         MatDialogModule,
         MatButtonToggleModule
     ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

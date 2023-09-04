@@ -1,0 +1,53 @@
+openapi: 3.0.3
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8980'
+paths:
+  /login:
+    post:
+      operationId: login
+      description: "Log user in"
+      tags:
+        - login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequestDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponseDTO"
+  /logout:
+    post:
+      operationId: logout
+      description: "Log user out"
+      tags:
+        - login
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    LoginRequestDTO:
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    LoginResponseDTO:
+      required:
+        - token
+      properties:
+        token:
+          type: string
+

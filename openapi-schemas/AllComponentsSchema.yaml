@@ -864,6 +864,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SubcategoryMarketValueDTO'
+  /login:
+    post:
+      operationId: login
+      description: "Log user in"
+      tags:
+        - login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequestDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponseDTO"
+  /logout:
+    post:
+      operationId: logout
+      description: "Log user out"
+      tags:
+        - login
+      responses:
+        "200":
+          description: OK
+
 components:
   schemas:
     BudgetCategoryDTO:
@@ -1008,4 +1036,19 @@ components:
         - all
         - investmentOnly
         - nonInvestmentOnly
+    LoginRequestDTO:
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    LoginResponseDTO:
+      required:
+        - token
+      properties:
+        token:
+          type: string
 
