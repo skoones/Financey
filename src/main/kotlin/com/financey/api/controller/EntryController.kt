@@ -65,6 +65,13 @@ class EntryController(
             { ResponseEntity.ok("Entries with given ids have been deleted") })
     }
 
+    override fun deleteInvestmentEntriesByIds(ids: List<String>): ResponseEntity<String> {
+        val deletionResult = runBlocking {
+            investmentEntryService.delete(ids)
+        }
+        return deletionResult.fold({ throw it },
+            { ResponseEntity.ok("Entries with given ids have been deleted") })
+    }
     override fun getEntriesByBudgetId(budgetId: String): ResponseEntity<List<EntryDTO>> {
         val entriesResult = runBlocking {
             entryService.getAllByBudgetId(budgetId)

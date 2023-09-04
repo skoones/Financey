@@ -100,7 +100,7 @@ export class SingleBudgetViewComponent {
 
     dialogRef.componentInstance.updatePricesEventEmitter.subscribe((anyUpdated) => {
       if (anyUpdated) {
-       console.log("updated investments lol") // todo xd
+        this.entryListComponent?.initializeEntryList();
       }
     });
     dialogRef.componentInstance.closePopup.subscribe(() => {

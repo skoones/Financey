@@ -108,6 +108,27 @@ paths:
             text/plain:
               schema:
                 type: string
+  /investment/delete/{ids}:
+    delete:
+      operationId: deleteInvestmentEntriesByIds
+      description: "Delete investment entries with given ids."
+      parameters:
+        - in: path
+          name: ids
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      tags:
+        - entry
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /{budgetId}/entries:
     get:
       operationId: getEntriesByBudgetId

@@ -30,7 +30,9 @@ export class UpdateMarketPricesForEntryComponent implements OnInit, OnChanges {
 
   createPriceControls(): FormGroup[] {
     const datesToPrices = this.investmentEntry.datesToMarketPrices || { "": 0 };
-    return Object.keys(datesToPrices).map(date => {
+    const sortedDates = Object.keys(datesToPrices).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+    return sortedDates.map(date => {
       const price = datesToPrices[date] || 0;
       return this.formBuilder.group({
         date: [date, Validators.required],
@@ -68,7 +70,7 @@ export class UpdateMarketPricesForEntryComponent implements OnInit, OnChanges {
 
     const priceGroup = this.formBuilder.group({
       date: [date || dateAsString, Validators.required],
-      price: [price || 0, Validators.required, amountValidator()]
+      price: [price, Validators.required, amountValidator()]
     });
     (this.pricesFormGroup.get('datesToPrices') as FormArray)?.push(priceGroup);
   }
@@ -101,7 +103,7 @@ export class UpdateMarketPricesForEntryComponent implements OnInit, OnChanges {
         this.openErrorSnackbar('Please fill out all required fields.');
       } else {
         Object.keys(this.pricesFormGroup.controls)
-          .forEach((controlName) => {
+          .forEach((_) => {
             this.handleEntryFormErrors(allErrors);
           })
       }

@@ -34,7 +34,7 @@ export class UpdatePricesEntryListComponent implements OnInit {
     dialogRef.componentInstance.updatePricesEventEmitter.subscribe((anyUpdated) => {
       if (anyUpdated) {
        this.updatePricesEventEmitter.emit(anyUpdated);
-        this.updatedInvestments.add(investmentEntry);
+       this.updatedInvestments.add(investmentEntry);
       }
     });
     dialogRef.componentInstance.closePopup.subscribe(() => {

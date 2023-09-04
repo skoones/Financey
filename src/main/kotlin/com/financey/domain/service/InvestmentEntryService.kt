@@ -32,4 +32,9 @@ class InvestmentEntryService(
         entries
     }
 
+    suspend fun delete(ids: List<String>): Either<PersistenceError, Unit> = either {
+        investmentEntryRepository.deleteByIds(ids).bind()
+        logger.debug { "Removed investment entries with ids $ids from database" }
+    }
+
 }
