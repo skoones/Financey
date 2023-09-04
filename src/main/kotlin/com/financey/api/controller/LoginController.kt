@@ -44,10 +44,10 @@ class LoginController(
         return ResponseEntity.ok(LoginResponseDTO(jwt))
     }
 
-    override fun logout(): ResponseEntity<Unit> {
+    override fun logout(): ResponseEntity<String> {
         SecurityContextHolder.getContext().authentication = null
         logger.info { "Logged out" }
-        return ResponseEntity.ok().build()
+        return ResponseEntity.ok("Logged out")
     }
 
 }

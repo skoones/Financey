@@ -25,13 +25,13 @@ export class AuthService {
 
     const decodedToken: any = jwtDecode(token);
     const currentTime = Date.now() / 1000; // in seconds
-    console.log(decodedToken.exp + " " + currentTime)
 
     return decodedToken.exp < currentTime;
   }
 
   logout() {
     this.loginService.logout().subscribe(() => {
+      console.log("logged out")
       this.userIdSubject.next(null);
       localStorage.removeItem('jwtToken');
       this.router.navigate(['/login']);

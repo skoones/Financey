@@ -891,6 +891,10 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
 
 components:
   schemas:

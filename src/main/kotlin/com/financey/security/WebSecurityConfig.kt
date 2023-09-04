@@ -4,6 +4,7 @@ import com.financey.domain.service.CustomUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -35,8 +36,14 @@ class WebSecurityConfig {
                     .anyRequest().authenticated()
             }
             .httpBasic(withDefaults())
+            .logout()
+            .logoutSuccessHandler { _, response, _ ->
+                response.status = HttpStatus.OK.value()
+            }
+            .and()
             .addFilterBefore(JwtAuthorizationFilter(customUserDetailsService, jwtService), UsernamePasswordAuthenticationFilter::class.java)
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
         return http.build()
     }
 

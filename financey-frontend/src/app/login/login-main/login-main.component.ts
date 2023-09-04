@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../auth/auth-service";
+import {Component} from '@angular/core';
 import {LoginRequestDTO, LoginService} from "../../../generated";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login-main',
@@ -12,16 +12,33 @@ export class LoginMainComponent {
   username?: string;
   password?: string;
 
-  constructor(private loginService: LoginService) {}
+  userLoginGroup: FormGroup;
+  showPassword = false;
 
-  onSubmit() {
+  constructor(private loginService: LoginService, private formBuilder: FormBuilder,
+              private router: Router) {
+    this.userLoginGroup = this.formBuilder.group({
+        username: [],
+        password: []
+      }
+    )
+  }
+
+  login() {
+    const formGroupData = this.userLoginGroup.value
     const loginRequest = {
-      username: this.username,
-      password: this.password
+      username: formGroupData.username,
+      password: formGroupData.password
     } as LoginRequestDTO;
 
     this.loginService.login(loginRequest).subscribe((response) => {
       localStorage.setItem('jwtToken', response.token || "");
+      this.router.navigate(['/home']);
     })
   }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
 }
