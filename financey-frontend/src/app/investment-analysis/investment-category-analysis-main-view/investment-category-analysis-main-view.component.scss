@@ -3,3 +3,24 @@
   flex-direction: column;
   justify-content: space-evenly;
 }
+
+.profit-analysis-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.analysis-buttons-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.analysis-buttons-spacer {
+  flex-grow: 3;
+}
+
+.profit-history-chart-container {
+  display: flex;
+  width: 700px;
+  height: 500px;
+}

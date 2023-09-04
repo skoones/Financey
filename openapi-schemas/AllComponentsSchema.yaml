@@ -775,6 +775,40 @@ paths:
             application/json:
               schema:
                 type: number
+  /investments/analysis/profits/category/{date}/{budgetCategoryId}:
+    get:
+      operationId: getProfitByDateAndCategoryId
+      description: "Get profit for a given date and budget category."
+      parameters:
+        - name: date
+          in: path
+          description: "Date for which the profit should be calculated."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetCategoryId
+          in: path
+          description: "Id of the given budget category."
+          required: true
+          schema:
+            type: string
+        - name: excludePurchasesFrom
+          in: query
+          description: "Any units bought after this date will be excluded from profit analysis."
+          required: false
+          schema:
+            type: string
+            format: date
+      tags:
+        - investment-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
   /investments/analysis/sum/marketValue/subcategories/{startDate}/{endDate}/{budgetCategoryId}:
     get:
       operationId: getTotalMarketValueForSubcategoriesAndPeriodByCategoryId

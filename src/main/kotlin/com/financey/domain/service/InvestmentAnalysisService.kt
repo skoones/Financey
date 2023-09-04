@@ -5,6 +5,8 @@ import arrow.core.continuations.either
 import com.financey.domain.error.FinanceyError
 import com.financey.domain.mapper.EntryDomainMapper
 import com.financey.domain.model.SubcategoryMarketValueDomain
+import com.financey.repository.BudgetCategoryRepository
+import com.financey.repository.BudgetRepository
 import com.financey.repository.InvestmentEntryRepository
 import mu.KotlinLogging
 import org.openapitools.model.EntryType
@@ -18,6 +20,8 @@ class InvestmentAnalysisService(
     @Autowired private val profitCalculatorService: ProfitCalculatorService,
     @Autowired private val budgetAnalysisService: BudgetAnalysisService,
     @Autowired private val investmentEntryRepository: InvestmentEntryRepository,
+    @Autowired private val budgetRepository: BudgetRepository,
+    @Autowired private val budgetCategoryRepository: BudgetCategoryRepository,
     @Autowired private val entryDomainMapper: EntryDomainMapper
 ) {
 
@@ -52,6 +56,18 @@ class InvestmentAnalysisService(
                 .map { investmentEntryDto -> entryDomainMapper.toInvestmentDomain(investmentEntryDto) } }
 
         profitCalculatorService.findMarketValueContexts(subcategoryToBuyEntries, endDate).bind()
+    }
+
+    suspend fun getProfitByDateAndCategoryId(date: LocalDate, budgetCategoryId: String,
+                                             excludePurchasesFrom: LocalDate?):
+            Either<FinanceyError, BigDecimal> = either {
+        val childrenCategories = budgetCategoryRepository.getAllByParentId(budgetCategoryId).bind()
+        childrenCategories.map {
+            budgetRepository.getAllByCategoryId(it.id?.toString() ?: "").bind()
+        }.flatMap { budgets -> budgets.map {
+                    getProfitByDateAndId(date, it.id?.toString() ?: "", excludePurchasesFrom).bind()
+                }
+        }.reduceOrNull { a, b -> a + b } ?: BigDecimal.ZERO
     }
 
 }

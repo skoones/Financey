@@ -4,8 +4,14 @@
     <span class="flex-spacer"></span>
     <app-history-period-shortcut-row (periodChange)="chooseDatesToAnalyze($event)"></app-history-period-shortcut-row>
   </div>
-  <app-expense-sum-pie-chart [categoryId]="categoryId" [investment]="true"></app-expense-sum-pie-chart>
+  <div class="chart-container">
+    <app-expense-sum-pie-chart [categoryId]="categoryId" [investment]="true"></app-expense-sum-pie-chart>
+    <div class="profit-analysis-container">
+      <div class="analysis-buttons-container">
+        <app-profit-history-chart class="profit-history-chart-container" [profitHistory]="profitHistory"></app-profit-history-chart>
+        <span class="analysis-buttons-spacer"></span>
+        <app-entry-exclude-toggle class="exclude-toggle" (excludeFromDateEvent)="excludeFromDate($event)"></app-entry-exclude-toggle>
+      </div>
+    </div>
+  </div>
 </div>
-
-<!--  + profit history line chart + optional toggle for excluding recent entries
-todo + pie chart with currently owned (= bought, but not sold) budget percentages (how many % of a category all investment entries currently owned in each budget constitute) -->

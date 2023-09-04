@@ -60,4 +60,19 @@ class InvestmentAnalysisController(
         )
     }
 
+    override fun getProfitByDateAndCategoryId(date: LocalDate, budgetCategoryId: String, excludePurchasesFrom: LocalDate?):
+            ResponseEntity<BigDecimal> {
+        val result = runBlocking {
+            investmentAnalysisService.getProfitByDateAndCategoryId(date, budgetCategoryId, excludePurchasesFrom)
+        }
+
+        return result.fold(
+            {
+                logger.error { it.message }
+                throw it
+            },
+            { ResponseEntity.ok(it)  }
+        )
+    }
+
 }
