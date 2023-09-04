@@ -14,9 +14,10 @@ class JwtService(
     @Autowired private val jwtProperties: JwtProperties
 ) {
 
-    fun generateToken(username: String): String {
+    fun generateToken(username: String, userId: String): String {
         return Jwts.builder()
             .setSubject(username)
+            .claim("userId", userId)
             .setExpiration(Date(System.currentTimeMillis() + SecurityConstants.JWT_EXPIRATION_TIME))
             .signWith(stringToKey(jwtProperties.secretKey))
             .compact()

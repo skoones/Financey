@@ -14,13 +14,13 @@ export class BudgetListComponent implements OnInit {
   @Input() title = "Budgets"
   @Input() budgets: BudgetDTO[] = [];
   displayedColumns = ['name'];
+  userId = localStorage.getItem('userId') || "";
 
   constructor(private budgetService: BudgetService, private router: Router) {}
 
   ngOnInit(): void {
-    // todo placeholder userId
     if (this.budgets?.length == 0) {
-      this.budgetService.getUncategorizedBudgets("demo").subscribe(data => {
+      this.budgetService.getUncategorizedBudgets(this.userId).subscribe(data => {
         this.budgets = data;
       });
     }

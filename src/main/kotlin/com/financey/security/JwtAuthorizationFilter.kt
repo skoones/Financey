@@ -2,7 +2,7 @@ package com.financey.security
 
 // JwtAuthorizationFilter.kt
 
-import com.financey.domain.service.CustomUserDetailsService
+import com.financey.domain.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -12,7 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class JwtAuthorizationFilter(
-    private val userDetailsService: CustomUserDetailsService,
+    private val userService: UserService,
     @Autowired private val jwtService: JwtService
 ) : OncePerRequestFilter() {
 
@@ -26,7 +26,7 @@ class JwtAuthorizationFilter(
             val username = jwtService.validateToken(token)
 
             if (username != null && SecurityContextHolder.getContext().authentication == null) {
-                val userDetails = userDetailsService.loadUserByUsername(username)
+                val userDetails = userService.findUserDetailsAndIdByUsername(username).first
                 val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
                 authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = authentication

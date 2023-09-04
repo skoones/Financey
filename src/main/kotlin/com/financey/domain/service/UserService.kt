@@ -9,6 +9,8 @@ import com.financey.repository.UserRepository
 import mu.KLogger
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 
 @Service
@@ -27,5 +29,15 @@ class UserService(
         user
     }
 
+    fun findUserDetailsAndIdByUsername(username: String): Pair<UserDetails, String> {
+        return userRepository.getByUsername(username)
+            .fold(
+                { throw it },
+                { User.withUsername(it.username)
+                    .password(it.password)
+                    .roles("USER")
+                    .build() to (it.id?.toString() ?: "") }
+            )
+    }
 
 }

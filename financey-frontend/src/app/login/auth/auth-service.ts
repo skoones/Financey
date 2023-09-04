@@ -4,21 +4,15 @@ import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import jwtDecode from 'jwt-decode';
 import {LoginService} from "../../../generated";
+import {local} from "d3-selection";
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private userIdSubject = new BehaviorSubject<string | null>(null);
 
   constructor(private http: HttpClient, private router: Router, private loginService: LoginService) {}
-
-  userId$ = this.userIdSubject.asObservable();
-
-  setUserId(userId: string) {
-    this.userIdSubject.next(userId);
-  }
 
   isTokenExpired(token: string): boolean {
     if (!token) return true;
@@ -29,10 +23,14 @@ export class AuthService {
     return decodedToken.exp < currentTime;
   }
 
+  getUserId(token: string): string {
+    const decodedToken: any = jwtDecode(token);
+    return decodedToken.userId;
+  }
+
   logout() {
     this.loginService.logout().subscribe(() => {
-      console.log("logged out")
-      this.userIdSubject.next(null);
+      localStorage.removeItem('userId');
       localStorage.removeItem('jwtToken');
       this.router.navigate(['/login']);
     });

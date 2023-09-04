@@ -19,7 +19,7 @@ export class SingleBudgetAnalysisPicker implements OnInit {
   budgetListControl = new FormControl();
   budget?: BudgetDTO;
   filteredBudgets: Observable<BudgetDTO[]> = new Observable<BudgetDTO[]>();
-  userId = "demo" // todo
+  userId = localStorage.getItem('userId') || "";
   constructor(private budgetService: BudgetService, private router: Router) {}
 
   ngOnInit(): void {
@@ -46,8 +46,7 @@ export class SingleBudgetAnalysisPicker implements OnInit {
       const name: string = budgetName || this.budget?.name || "";
 
     return new Promise<string>((resolve) => {
-      // todo placeholder userId
-      this.budgetService.getByName(name, "demo")
+      this.budgetService.getByName(name, this.userId)
         .subscribe((budget: BudgetDTO) => {
           resolve(<string>budget.id);
         })

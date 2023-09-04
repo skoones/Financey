@@ -21,7 +21,7 @@ export class AddBudgetComponent {
   @Output() addCategoryEventEmitter = new EventEmitter<boolean>();
 
   anyAdded: boolean = false;
-  userId: string = "demo"; // todo placeholder userId
+  userId = localStorage.getItem('userId') || "";
   isInvestment = false;
 
   filteredCategories: Observable<BudgetCategoryDTO[]> = new Observable<BudgetCategoryDTO[]>();
@@ -120,8 +120,7 @@ export class AddBudgetComponent {
     const name: string = categoryName;
 
     return categoryName ? new Promise<string>((resolve) => {
-      // todo placeholder userId
-      this.budgetService.getCategoryByName(name, "demo")
+      this.budgetService.getCategoryByName(name, this.userId)
         .subscribe((category: BudgetCategoryDTO) => {
           resolve(<string>category.id);
         })

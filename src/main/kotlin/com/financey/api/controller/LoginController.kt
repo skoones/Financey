@@ -1,6 +1,6 @@
 package com.financey.api.controller
 
-import com.financey.domain.service.CustomUserDetailsService
+import com.financey.domain.service.UserService
 import com.financey.security.JwtService
 import mu.KLogger
 import mu.KotlinLogging
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 @CrossOrigin
 class LoginController(
     @Autowired private val authenticationManager: AuthenticationManager,
-    @Autowired private val customUserDetailsService: CustomUserDetailsService,
+    @Autowired private val userService: UserService,
     @Autowired private val jwtService: JwtService
 ) : LoginApi {
 
@@ -38,8 +38,8 @@ class LoginController(
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
         }
 
-        val userDetails = customUserDetailsService.loadUserByUsername(loginRequestDTO?.username ?: "")
-        val jwt = jwtService.generateToken(userDetails.username)
+        val (userDetails, userId) = userService.findUserDetailsAndIdByUsername(loginRequestDTO?.username ?: "")
+        val jwt = jwtService.generateToken(userDetails.username, userId)
 
         return ResponseEntity.ok(LoginResponseDTO(jwt))
     }

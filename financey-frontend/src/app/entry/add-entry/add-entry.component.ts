@@ -48,7 +48,7 @@ export class AddEntryComponent {
   isBuyControl: FormControl;
   entryType: EntryType = EntryType.EXPENSE;
   anyAdded: boolean = false;
-  userId: string = "demo"; // todo placeholder userId
+  userId = localStorage.getItem('userId') || "";
   isFocused = false;
 
   private readonly _amountControlName = 'amount';
@@ -227,8 +227,7 @@ export class AddEntryComponent {
     const name: string = budgetName || this.budget?.name || "";
 
     return new Promise<string>((resolve) => {
-      // todo placeholder userId
-      this.budgetService.getByName(name, "demo")
+      this.budgetService.getByName(name, this.userId)
         .subscribe((budget: BudgetDTO) => {
           resolve(<string>budget.id);
         })

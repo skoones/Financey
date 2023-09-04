@@ -1,6 +1,7 @@
 package com.financey.security
 
 import com.financey.domain.service.CustomUserDetailsService
+import com.financey.domain.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -24,7 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class WebSecurityConfig {
 
     @Bean
-    fun filterChain(http: HttpSecurity, @Autowired customUserDetailsService: CustomUserDetailsService,
+    fun filterChain(http: HttpSecurity, @Autowired userService: UserService,
                     @Autowired jwtService: JwtService): SecurityFilterChain {
         http
             .cors()
@@ -41,7 +42,7 @@ class WebSecurityConfig {
                 response.status = HttpStatus.OK.value()
             }
             .and()
-            .addFilterBefore(JwtAuthorizationFilter(customUserDetailsService, jwtService), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(JwtAuthorizationFilter(userService, jwtService), UsernamePasswordAuthenticationFilter::class.java)
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
         return http.build()
