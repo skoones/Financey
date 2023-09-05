@@ -1,12 +1,12 @@
 import {Component, ViewChild} from '@angular/core';
 import {LoginRequestDTO, LoginService} from "../../../generated";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder} from "@angular/forms";
 import {Router} from "@angular/router";
 import {AuthService} from "../auth/auth-service";
-import {AddBudgetCategoryComponent} from "../../budget/add-budget-category/add-budget-category.component";
 import {MatDialog} from "@angular/material/dialog";
 import {UserLoginFormComponent} from "../user-login-form/user-login-form.component";
 import {SignInPopupComponent} from "../sign-in-popup/sign-in-popup.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-login-main',
@@ -22,7 +22,8 @@ export class LoginMainComponent {
   password?: string;
 
   constructor(private loginService: LoginService, private authService: AuthService,
-              private formBuilder: FormBuilder, private router: Router, private dialog: MatDialog) {
+              private formBuilder: FormBuilder, private router: Router, private dialog: MatDialog,
+              private snackBar: MatSnackBar) {
   }
 
   login() {
@@ -33,11 +34,18 @@ export class LoginMainComponent {
     } as LoginRequestDTO;
 
     this.loginService.login(loginRequest).subscribe((response) => {
-      localStorage.setItem('jwtToken', response.token || "");
-      localStorage.setItem('userId', this.authService.getUserId(response.token))
-      console.log(localStorage.getItem('userId'))
-      this.router.navigate(['/home']);
-    })
+        localStorage.setItem('jwtToken', response.token || "");
+        localStorage.setItem('userId', this.authService.getUserId(response.token))
+        console.log(localStorage.getItem('userId'))
+        this.router.navigate(['/home']);
+      },
+      (error) => {
+        if (error.status === 401) {
+          this.snackBar.open('Username or password is incorrect.', 'Close', {
+            duration: 5000,
+          });
+        }
+      });
   }
 
   openSignInPopup() {
