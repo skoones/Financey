@@ -6,7 +6,7 @@
       </button>
       <span>Financey</span>
       <span class="toolbar-logout-spacer"></span>
-      <app-logout-button></app-logout-button>
+      <app-logout-button *ngIf="isLoggedIn()"></app-logout-button>
     </mat-toolbar>
   </p>
   <mat-drawer class="financey-sidenav" mode="side" [opened]="sidenavToggle" (closedStart)="toggleSidenav()">

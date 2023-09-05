@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {local} from "d3-selection";
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,10 @@ export class AppComponent {
 
   toggleSidenav() {
     this.sidenavToggle = !this.sidenavToggle
+  }
+
+  isLoggedIn(): boolean {
+    return localStorage.getItem('jwtToken') != null
   }
 
 }

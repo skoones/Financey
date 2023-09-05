@@ -13,6 +13,7 @@ paths:
       tags:
         - user
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -20,6 +21,17 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+
   /get/username/{username}:
     post:
       operationId: getByUsername
@@ -45,7 +57,6 @@ components:
   schemas:
     UserDTO:
       required:
-        - userId
         - username
       properties:
         username:

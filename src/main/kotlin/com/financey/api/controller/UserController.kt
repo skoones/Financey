@@ -17,8 +17,16 @@ class UserController(
     @Autowired private val userDtoMapper: UserDtoMapper
 ) : UserApi {
 
-    override fun addUser(userDTO: UserDTO?): ResponseEntity<Unit> {
-        return super.addUser(userDTO)
+    override fun addUser(userDTO: UserDTO): ResponseEntity<String> {
+        val user = userDtoMapper.fromDto(userDTO)
+        val saveUserResult = runBlocking {
+            userService.save(user)
+        }
+
+        return saveUserResult.fold(
+            { throw it },
+            { ResponseEntity.ok("User added.") }
+        )
     }
 
     override fun getByUsername(username: String): ResponseEntity<UserDTO> {

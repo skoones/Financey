@@ -64,6 +64,8 @@ import { UpdatePricesEntryListComponent } from './budget/update-prices-entry-lis
 import { LoginMainComponent } from './login/login-main/login-main.component';
 import {AuthInterceptor} from "./login/auth/auth.interceptor";
 import { LogoutButtonComponent } from './login/logout-button/logout-button.component';
+import { UserLoginFormComponent } from './login/user-login-form/user-login-form.component';
+import { SignInPopupComponent } from './login/sign-in-popup/sign-in-popup.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +106,9 @@ import { LogoutButtonComponent } from './login/logout-button/logout-button.compo
     UpdateMarketPricesForEntryComponent,
     UpdatePricesEntryListComponent,
     LoginMainComponent,
-    LogoutButtonComponent
+    LogoutButtonComponent,
+    UserLoginFormComponent,
+    SignInPopupComponent
   ],
     imports: [
         BrowserModule,

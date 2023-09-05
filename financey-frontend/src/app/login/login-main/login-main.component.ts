@@ -1,8 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {LoginRequestDTO, LoginService} from "../../../generated";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
 import {AuthService} from "../auth/auth-service";
+import {AddBudgetCategoryComponent} from "../../budget/add-budget-category/add-budget-category.component";
+import {MatDialog} from "@angular/material/dialog";
+import {UserLoginFormComponent} from "../user-login-form/user-login-form.component";
+import {SignInPopupComponent} from "../sign-in-popup/sign-in-popup.component";
 
 @Component({
   selector: 'app-login-main',
@@ -10,23 +14,19 @@ import {AuthService} from "../auth/auth-service";
   styleUrls: ['./login-main.component.scss']
 })
 export class LoginMainComponent {
+
+  @ViewChild(UserLoginFormComponent, {static: false})
+  userLoginFormComponent?: UserLoginFormComponent;
+
   username?: string;
   password?: string;
 
-  userLoginGroup: FormGroup;
-  showPassword = false;
-
   constructor(private loginService: LoginService, private authService: AuthService,
-              private formBuilder: FormBuilder, private router: Router) {
-    this.userLoginGroup = this.formBuilder.group({
-        username: [],
-        password: []
-      }
-    )
+              private formBuilder: FormBuilder, private router: Router, private dialog: MatDialog) {
   }
 
   login() {
-    const formGroupData = this.userLoginGroup.value
+    const formGroupData = this.userLoginFormComponent?.userLoginGroup.value
     const loginRequest = {
       username: formGroupData.username,
       password: formGroupData.password
@@ -40,8 +40,12 @@ export class LoginMainComponent {
     })
   }
 
-  togglePasswordVisibility() {
-    this.showPassword = !this.showPassword;
+  openSignInPopup() {
+    const dialogRef = this.dialog.open(SignInPopupComponent, {});
+
+    dialogRef.componentInstance.closePopup.subscribe(() => {
+      this.dialog.closeAll();
+    })
   }
 
 }

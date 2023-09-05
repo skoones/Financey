@@ -33,7 +33,7 @@ class WebSecurityConfig {
             .csrf().disable()
             .authorizeHttpRequests { authz ->
                 authz
-                    .requestMatchers("/login").permitAll()
+                    .requestMatchers("/login", "/users/add").permitAll()
                     .anyRequest().authenticated()
             }
             .httpBasic(withDefaults())
@@ -50,17 +50,6 @@ class WebSecurityConfig {
 
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
-
-
-
-//    @Bean
-//    fun userDetailsService(): InMemoryUserDetailsManager? {
-//        val user: UserDetails = User.withUsername("user")
-//            .password("{noop}password")
-//            .roles("USER")
-//            .build()
-//        return InMemoryUserDetailsManager(user)
-//    }
 
     @Bean
     fun authenticationManagerBean(@Autowired customUserDetailsService: CustomUserDetailsService): AuthenticationManager {

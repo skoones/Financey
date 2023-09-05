@@ -1,0 +1,14 @@
+<form [formGroup]="userLoginGroup">
+  <div class="form-field-container">
+    <mat-form-field>
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username">
+    </mat-form-field>
+    <span class="flex-spacer"></span>
+    <mat-form-field appearance="fill">
+      <mat-label>Password</mat-label>
+      <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password">
+      <mat-icon matSuffix (click)="togglePasswordVisibility()">{{showPassword?'visibility_off':'visibility'}}</mat-icon>
+    </mat-form-field>
+  </div>
+</form>

@@ -16,4 +16,5 @@ export class LogoutButtonComponent implements OnInit {
   logout() {
     this.authService.logout();
   }
+
 }
