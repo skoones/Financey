@@ -17,5 +17,5 @@ data class Entry(
     val userId: String,
     val budgetId: String? = null,
     val entryType: EntryType? = EntryType.EXPENSE,
-    val date: LocalDate? = null
+    val date: LocalDate
 )

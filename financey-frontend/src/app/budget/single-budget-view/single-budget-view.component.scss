@@ -3,13 +3,6 @@
 
 $info-banner-top-distance: 150px;
 
-.investment-info {
-  position: fixed;
-  top: $info-banner-top-distance;
-  left: 0;
-  width: 100%;
-}
-
 .budget-name-container {
   display: flex;
   justify-content: center;
@@ -30,6 +23,16 @@ $info-banner-top-distance: 150px;
   background-color: mat.get-color-from-palette($my-primary);
 }
 
+.add-entry-button-narrow {
+  background-color: mat.get-color-from-palette($my-primary);
+  width: 50%;
+}
+
+.update-prices-button {
+  background-color: mat.get-color-from-palette($my-primary);
+  width: 100%;
+}
+
 .add-entry-button .mat-icon{
   color: white;
 }
@@ -41,4 +44,16 @@ $info-banner-top-distance: 150px;
 
 .container button {
   margin-bottom: 16px;
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 60%;
 }

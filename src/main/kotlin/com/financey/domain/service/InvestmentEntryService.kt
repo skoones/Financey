@@ -3,7 +3,6 @@ package com.financey.domain.service
 import arrow.core.Either
 import arrow.core.continuations.either
 import com.financey.domain.error.PersistenceError
-import com.financey.domain.mapper.BudgetDomainMapper
 import com.financey.domain.mapper.EntryDomainMapper
 import com.financey.domain.model.InvestmentEntryDomain
 import com.financey.repository.InvestmentEntryRepository
@@ -31,6 +30,11 @@ class InvestmentEntryService(
             .map { entryDomainMapper.toInvestmentDomain(it) }
         logger.debug { "Retrieved investment entries for budget id $budgetId from database" }
         entries
+    }
+
+    suspend fun delete(ids: List<String>): Either<PersistenceError, Unit> = either {
+        investmentEntryRepository.deleteByIds(ids).bind()
+        logger.debug { "Removed investment entries with ids $ids from database" }
     }
 
 }

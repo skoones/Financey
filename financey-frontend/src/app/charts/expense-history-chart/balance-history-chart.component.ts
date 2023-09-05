@@ -6,11 +6,11 @@ type BalanceHistoryEntry = {
 }
 
 @Component({
-  selector: 'app-expense-history-chart',
-  templateUrl: './expense-history-chart.component.html',
-  styleUrls: ['./expense-history-chart.component.scss']
+  selector: 'app-balance-history-chart',
+  templateUrl: './balance-history-chart.component.html',
+  styleUrls: ['./balance-history-chart.component.scss']
 })
-export class ExpenseHistoryChartComponent implements OnInit {
+export class BalanceHistoryChartComponent implements OnInit {
 
   @Input() expenseBalanceHistory?: BalanceHistoryEntry[];
 

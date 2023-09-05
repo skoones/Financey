@@ -31,7 +31,7 @@ import { EntryListComponent } from './entry/entry-list/entry-list.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { EntryDetailsComponent } from './entry/entry-details/entry-details.component';
-import { InvestmentBudgetInfoComponent } from './budget/investment-budget-info/investment-budget-info.component';
+import { InfoCardComponent } from './common/info-card/info-card.component';
 import { InvestmentEntryDetailsComponent } from './entry/investment-entry-details/investment-entry-details.component';
 import {BudgetCategoryListComponent} from "./budget/budget-category-list/budget-category-list.component";
 import {AddBudgetCategoryComponent} from "./budget/add-budget-category/add-budget-category.component";
@@ -43,7 +43,7 @@ import {NgxChartsModule} from "@swimlane/ngx-charts";
 import {ExpenseCheckboxComponent} from "./entry/add-entry/expense-checkbox/expense-checkbox.component";
 import { SingleBudgetAnalysisPicker } from './budget-analysis/single-budget-analysis/single-budget-analysis-picker/single-budget-analysis-picker.component';
 import { BudgetHistoryDatePickerComponent } from './budget-analysis/analysis-history/budget-history-date-picker/budget-history-date-picker.component';
-import { ExpenseHistoryChartComponent } from './charts/expense-history-chart/expense-history-chart.component';
+import { BalanceHistoryChartComponent } from './charts/expense-history-chart/balance-history-chart.component';
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import { HistoryPeriodShortcutRowComponent } from './budget-analysis/analysis-history/history-period-shortcut-row/history-period-shortcut-row.component';
 import { ExpenseSumPieChartComponent } from './charts/expense-sum-pie-chart/expense-sum-pie-chart.component';
@@ -53,6 +53,13 @@ import {
   BudgetCategoryAnalysisPicker
 } from "./budget-analysis/budget-category-analysis/budget-category-analysis-picker/budget-category-analysis-picker.component";
 import { BudgetCategoryAnalysisMainViewComponent } from './budget-analysis/budget-category-analysis/budget-category-analysis-main-view/budget-category-analysis-main-view.component';
+import { InvestmentAnalysisMainViewComponent } from './investment-analysis/investment-analysis-main-view/investment-analysis-main-view.component';
+import { InvestmentBudgetAnalysisMainViewComponent } from './investment-analysis/investment-budget-analysis-main-view/investment-budget-analysis-main-view.component';
+import { InvestmentCategoryAnalysisMainViewComponent } from './investment-analysis/investment-category-analysis-main-view/investment-category-analysis-main-view.component';
+import { EntryExcludeToggleComponent } from './investment-analysis/entry-exclude-toggle/entry-exclude-toggle.component';
+import { ProfitHistoryChartComponent } from './investment-analysis/charts/profit-history-chart/profit-history-chart.component';
+import { UpdateMarketPricesForEntryComponent } from './budget/update-market-prices/update-market-prices-for-entry.component';
+import { UpdatePricesEntryListComponent } from './budget/update-prices-entry-list/update-prices-entry-list.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +74,7 @@ import { BudgetCategoryAnalysisMainViewComponent } from './budget-analysis/budge
     SingleBudgetViewComponent,
     EntryListComponent,
     EntryDetailsComponent,
-    InvestmentBudgetInfoComponent,
+    InfoCardComponent,
     InvestmentEntryDetailsComponent,
     BudgetCategoryListComponent,
     AddBudgetCategoryComponent,
@@ -78,13 +85,20 @@ import { BudgetCategoryAnalysisMainViewComponent } from './budget-analysis/budge
     SingleBudgetAnalysisMainViewComponent,
     SingleBudgetAnalysisPicker,
     BudgetHistoryDatePickerComponent,
-    ExpenseHistoryChartComponent,
+    BalanceHistoryChartComponent,
     HistoryPeriodShortcutRowComponent,
     ExpenseSumPieChartComponent,
     BudgetCategoryAnalysisToggleComponent,
     AnalysisMainViewComponent,
     BudgetCategoryAnalysisPicker,
-    BudgetCategoryAnalysisMainViewComponent
+    BudgetCategoryAnalysisMainViewComponent,
+    InvestmentAnalysisMainViewComponent,
+    InvestmentBudgetAnalysisMainViewComponent,
+    InvestmentCategoryAnalysisMainViewComponent,
+    EntryExcludeToggleComponent,
+    ProfitHistoryChartComponent,
+    UpdateMarketPricesForEntryComponent,
+    UpdatePricesEntryListComponent
   ],
     imports: [
         BrowserModule,

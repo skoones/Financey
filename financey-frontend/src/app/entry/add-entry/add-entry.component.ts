@@ -8,7 +8,7 @@ import {
   EntryCurrency,
   EntryDTO,
   EntryService,
-  EntryType,
+  EntryType, FetchType,
   InvestmentEntryDTO
 } from "../../../generated";
 import {amountValidator, volumeValidator} from "../../validators/number-validators";
@@ -16,6 +16,7 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {mapIsBuyToEntryType} from "../../utils/entry-utils";
 import {IncomeCheckboxComponent} from "./income-checkbox/income-checkbox.component";
 import {ExpenseCheckboxComponent} from "./expense-checkbox/expense-checkbox.component";
+import {dateToString} from "../../utils/date-utils";
 
 enum AddEntryResult {
   Success,
@@ -78,7 +79,7 @@ export class AddEntryComponent {
       startWith(''),
       map(value => this._filter(value || '')),
     );
-    this.budgetService.getBudgets(this.userId).subscribe(data => {
+    this.budgetService.getBudgets(this.userId, FetchType.ALL).subscribe(data => {
       this.budgets = data;
     });
     this.handleMarketPriceChanges('amount-volume');
@@ -136,10 +137,18 @@ export class AddEntryComponent {
     }
 
     if (this.isInvestment) {
+      const marketPriceAtOperation = formGroupData.marketPriceAtOperation ||
+          this.getMarketPriceAtOperation(formGroupData.amount, formGroupData.volume);
+
+      const datesToMarketPrices: { [key: string]: number; } = {
+        [dateToString(formGroupData.entryDate)]: marketPriceAtOperation
+      };
+
       const investmentEntryDto: InvestmentEntryDTO = {
         entry: entryDto,
         volume: formGroupData.volume,
-        marketPriceAtOperation: formGroupData.marketPriceAtOperation || this.getMarketPriceAtOperation(formGroupData.amount, formGroupData.volume)
+        marketPriceAtOperation: marketPriceAtOperation,
+        datesToMarketPrices: datesToMarketPrices
       }
 
       if (this.entryBudgetIsInvestment(investmentEntryDto)) {

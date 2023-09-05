@@ -39,7 +39,7 @@ paths:
   /budget/{userId}/budgets/all:
     get:
       operationId: getBudgets
-      description: "Get all budgets for a given user."
+      description: "Get all budgets for a given user, filtered by investment type or not."
       parameters:
         - name: userId
           in: path
@@ -47,6 +47,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: fetchType
+          in: query
+          description: "Specifies whether all, investment or non-investment budgets should be fetched."
+          required: true
+          schema:
+            $ref: "#/components/schemas/FetchType"
       tags:
         - budget
       responses:
@@ -156,7 +162,7 @@ paths:
   /budget/{userId}/categories:
     get:
       operationId: getCategories
-      description: "Get categories for given user."
+      description: "Get categories for given user, filtered or by investment type or not."
       parameters:
         - name: userId
           in: path
@@ -164,6 +170,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: fetchType
+          in: query
+          description: "Specifies whether all, investment or non-investment categories should be fetched."
+          required: true
+          schema:
+            $ref: "#/components/schemas/FetchType"
       tags:
         - budget
       responses:
@@ -528,6 +540,27 @@ paths:
             text/plain:
               schema:
                 type: string
+  /entry/investment/delete/{ids}:
+    delete:
+      operationId: deleteInvestmentEntriesByIds
+      description: "Delete investment entries with given ids."
+      parameters:
+        - in: path
+          name: ids
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      tags:
+        - entry
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /users/add:
     post:
       operationId: addUser
@@ -708,7 +741,110 @@ paths:
             application/json:
               schema:
                 type: number
-
+  /investments/analysis/profits/{date}/{budgetId}:
+    get:
+      operationId: getProfitByDateAndId
+      description: "Get profit for given date and budget."
+      parameters:
+        - name: date
+          in: path
+          description: "Date for which profit should be calculated."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetId
+          in: path
+          description: "Id of the given budget."
+          required: true
+          schema:
+            type: string
+        - name: excludePurchasesFrom
+          in: query
+          description: "Any units bought after this date will be excluded from profit analysis."
+          required: false
+          schema:
+            type: string
+            format: date
+      tags:
+        - investment-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
+  /investments/analysis/profits/category/{date}/{budgetCategoryId}:
+    get:
+      operationId: getProfitByDateAndCategoryId
+      description: "Get profit for a given date and budget category."
+      parameters:
+        - name: date
+          in: path
+          description: "Date for which the profit should be calculated."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetCategoryId
+          in: path
+          description: "Id of the given budget category."
+          required: true
+          schema:
+            type: string
+        - name: excludePurchasesFrom
+          in: query
+          description: "Any units bought after this date will be excluded from profit analysis."
+          required: false
+          schema:
+            type: string
+            format: date
+      tags:
+        - investment-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
+  /investments/analysis/sum/marketValue/subcategories/{startDate}/{endDate}/{budgetCategoryId}:
+    get:
+      operationId: getTotalMarketValueForSubcategoriesAndPeriodByCategoryId
+      description: "Get total invested sum for direct subcategories of a category with given id."
+      parameters:
+        - name: startDate
+          in: path
+          description: "Start date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: path
+          description: "End date of the period to be analyzed."
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: budgetCategoryId
+          in: path
+          description: "Id of the given budget category."
+          required: true
+          schema:
+            type: string
+      tags:
+        - investment-analysis
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubcategoryMarketValueDTO'
 components:
   schemas:
     BudgetCategoryDTO:
@@ -716,6 +852,7 @@ components:
       required:
         - userId
         - name
+        - investment
       properties:
         id:
           type: string
@@ -733,6 +870,8 @@ components:
             $ref: "#/components/schemas/BudgetDTO"
         parentCategoryId:
           type: string
+        investment:
+          type: boolean
     BudgetDTO:
       required:
         - name
@@ -759,6 +898,7 @@ components:
         - currency
         - name
         - userId
+        - date
       properties:
         id:
           type: string
@@ -812,6 +952,10 @@ components:
           type: integer
         marketPriceAtOperation:
           type: number
+        datesToMarketPrices:
+          type: object
+          additionalProperties:
+            type: number
     SubcategoryExpenseSumDTO:
       type: object
       required:
@@ -824,4 +968,22 @@ components:
           type: string
         expenseSum:
           type: number
+    SubcategoryMarketValueDTO:
+      type: object
+      required:
+        - subcategoryName
+        - marketValue
+      properties:
+        subcategoryId:
+          type: string
+        subcategoryName:
+          type: string
+        marketValue:
+          type: number
+    FetchType:
+      type: string
+      enum:
+        - all
+        - investmentOnly
+        - nonInvestmentOnly
 

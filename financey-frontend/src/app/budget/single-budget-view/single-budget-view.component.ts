@@ -8,6 +8,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {EntryListComponent} from "../../entry/entry-list/entry-list.component";
 import {RecentlyViewedBudgetsService} from "../recently-viewed-budgets.service";
 import {getFirstDayOfMonth} from "../../utils/date-utils";
+import {UpdateMarketPricesForEntryComponent} from "../update-market-prices/update-market-prices-for-entry.component";
+import {UpdatePricesEntryListComponent} from "../update-prices-entry-list/update-prices-entry-list.component";
 
 @Component({
   selector: 'app-single-budget-view',
@@ -88,6 +90,22 @@ export class SingleBudgetViewComponent {
 
   private initializeMonthlyBalance() {
     this.getMonthlyBalance().then(balance => this.monthlyBalance = balance || 0)
+  }
+
+  openUpdateMarketPricesPopup() {
+    const dialogRef = this.dialog.open(UpdatePricesEntryListComponent, {
+      data: { budget: this.budget, entries: this.entryListComponent?.investmentEntries }
+    });
+
+
+    dialogRef.componentInstance.updatePricesEventEmitter.subscribe((anyUpdated) => {
+      if (anyUpdated) {
+        this.entryListComponent?.initializeEntryList();
+      }
+    });
+    dialogRef.componentInstance.closePopup.subscribe(() => {
+      this.dialog.closeAll();
+    });
   }
 
 }

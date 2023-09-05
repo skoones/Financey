@@ -8,6 +8,7 @@ import com.financey.domain.model.BudgetCategoryDomain
 import com.financey.repository.BudgetCategoryRepository
 import mu.KLogger
 import mu.KotlinLogging
+import org.openapitools.model.FetchType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -19,9 +20,13 @@ class BudgetCategoryService(
 
     private val logger: KLogger = KotlinLogging.logger {}
 
-    suspend fun getAllCategoriesByUserId(userId: String): Either<PersistenceError, List<BudgetCategoryDomain>> = either {
-        val categories = budgetCategoryRepository.getAllByUserId(userId).bind()
-            .map { budgetDomainMapper.toCategoryDomain(it) }
+    suspend fun getCategoriesByUserIdAndFetchType(userId: String, fetchType: FetchType):
+            Either<PersistenceError, List<BudgetCategoryDomain>> = either {
+        val categories = when (fetchType) {
+            FetchType.ALL -> budgetCategoryRepository.getAllByUserId(userId).bind()
+            FetchType.INVESTMENT_ONLY -> budgetCategoryRepository.getAllInvestmentByUserId(userId).bind()
+            FetchType.NON_INVESTMENT_ONLY -> budgetCategoryRepository.getAllNonInvestmentByUserId(userId).bind()
+        }.map { budgetDomainMapper.toCategoryDomain(it) }
         logger.debug { "Retrieved budget categories for user with id $userId"}
         categories
     }

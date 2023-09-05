@@ -7,6 +7,9 @@ import com.financey.domain.model.InvestmentEntryDomain
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 
+
+
+
 @Mapper(componentModel = "spring", uses = [IdMapper::class])
 abstract class EntryDomainMapper {
 

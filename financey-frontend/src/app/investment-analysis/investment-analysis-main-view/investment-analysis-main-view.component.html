@@ -1,0 +1,14 @@
+<div class="full-screen-container">
+  <div class="main-view-contents">
+    <div class="analysis-option-container">
+      <app-budget-category-analysis-toggle (analysisOptionChange)="changeAnalysisOption($event)"></app-budget-category-analysis-toggle>
+      <span class="flex-spacer"></span>
+      <app-single-budget-analysis-picker [budgetRoute]="singleBudgetRoute" [mainCardTitle]="'Pick investment budget for analysis'"
+                                         [budgetsToChoose]="investmentBudgetsToChoose"
+                                         *ngIf="analysisOption == AnalysisOption.SINGLE_BUDGET"></app-single-budget-analysis-picker>
+      <app-budget-category-analysis-picker [categoryRoute]="categoryRoute" [mainCardTitle]="'Pick investment budget category for analysis'"
+                                           [categoriesToChoose]="investmentCategoriesToChoose"
+                                           *ngIf="analysisOption == AnalysisOption.BUDGET_CATEGORY"></app-budget-category-analysis-picker>
+    </div>
+  </div>
+</div>

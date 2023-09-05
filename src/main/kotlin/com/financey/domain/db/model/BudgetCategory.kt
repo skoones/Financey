@@ -10,5 +10,6 @@ data class BudgetCategory(
     val userId: String,
     val name: String,
     val parentCategoryId: String?,
-    val ancestorCategoryIds: List<String>?
+    val ancestorCategoryIds: List<String>?,
+    val investment: Boolean
 )

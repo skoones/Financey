@@ -13,6 +13,7 @@ import {amountValidator} from "../../validators/number-validators";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {firstValueFrom, tap} from "rxjs";
 import {mapEntryTypeToIsBuy, mapIsBuyToEntryType} from "../../utils/entry-utils";
+import {dateToString} from "../../utils/date-utils";
 
 enum UpdateEntryResult {
   Success,
@@ -35,9 +36,11 @@ export class InvestmentEntryDetailsComponent {
   hasUpdates: boolean = false;
   @Output() updateEventEmitter = new EventEmitter<boolean>();
 
+  private readonly _amountControlName = 'amount';
+  private readonly _volumeControlName = 'volume';
+
   constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private entryService: EntryService,
               private formSnackBar: MatSnackBar, @Inject(MAT_DIALOG_DATA) private data: any) {
-    // todo update/delete
     this.investmentEntry = data.entry;
     this.budget = data.budget
   }
@@ -57,6 +60,8 @@ export class InvestmentEntryDetailsComponent {
       isBuy: [isBuyValue],
       isSell: [{value: !isBuyValue, disabled: isBuyValue || true}]
     })
+    this.handleMarketPriceChanges('amount-volume');
+    this.handleMarketPriceChanges('volume-amount');
   }
 
   ngOnDestroy() {
@@ -81,13 +86,14 @@ export class InvestmentEntryDetailsComponent {
         entryType: mapIsBuyToEntryType(formGroupData.isBuy),
         userId: this.userId,
         budgetId: this.budget?.id,
-        date: formGroupData.entryDate
+        date: formGroupData.entryDate,
       },
       volume: formGroupData.volume,
-      marketPriceAtOperation: formGroupData.marketPriceAtOperation
+      marketPriceAtOperation: formGroupData.marketPriceAtOperation,
+      datesToMarketPrices: this.getUpdatedDatesToMarketPrices(this.investmentEntry?.datesToMarketPrices,
+        formGroupData.marketPriceAtOperation, formGroupData.entryDate)
     };
 
-    // todo maybe check is market price/volume/value are make sense?
     let result: string = "";
     await new Promise<void>((resolve) => this.entryService.updateInvestmentEntry(investmentEntryDTO).pipe(
       tap((value: string) => {
@@ -101,7 +107,20 @@ export class InvestmentEntryDetailsComponent {
       }
     ));
 
-    return result == `Updated entry with id ${this.investmentEntry?.id}.` ? UpdateEntryResult.Success : UpdateEntryResult.Fail;
+    return result == `Updated investment entry with id ${this.investmentEntry?.id}.` ? UpdateEntryResult.Success : UpdateEntryResult.Fail;
+  }
+
+  private getUpdatedDatesToMarketPrices(datesToMarketPrices: { [p: string]: number } | undefined, marketPriceAtOperation: number,
+                                        date: Date) {
+    if (!datesToMarketPrices) {
+      datesToMarketPrices = {};
+    }
+
+    const dateString = dateToString(new Date(date));
+    return {
+      ...datesToMarketPrices,
+      [dateString]: marketPriceAtOperation
+    };
   }
 
   submitEntryForm() {
@@ -122,10 +141,9 @@ export class InvestmentEntryDetailsComponent {
     }
   }
 
-  // todo delete investment
   async deleteEntry() {
     if (this.investmentEntry?.id != undefined) {
-      await firstValueFrom(this.entryService.deleteEntriesByIds([this.investmentEntry.id]))
+      await firstValueFrom(this.entryService.deleteInvestmentEntriesByIds([this.investmentEntry.id]))
       this.hasUpdates = true;
       this.formSnackBar.open('Entry deleted.', 'Close', {
         duration: 5000,
@@ -139,6 +157,27 @@ export class InvestmentEntryDetailsComponent {
 
   getIsSellDisabled(): boolean {
     return this.entryFormGroup?.get('isBuy')?.value || false;
+  }
+
+  // todo service?
+  private handleMarketPriceChanges(argumentOrder: 'amount-volume' | 'volume-amount'): void {
+    const controlName = argumentOrder === 'amount-volume' ? this._amountControlName : this._volumeControlName;
+    const dependentControlName = controlName == this._amountControlName ? this._volumeControlName : this._amountControlName;
+
+    this.entryFormGroup?.get(controlName)?.valueChanges.subscribe((value: number) => {
+      const marketPrice = this.entryFormGroup?.get('marketPriceAtOperation');
+
+      const dependentValue = this.entryFormGroup?.get(dependentControlName)?.value;
+      const amount = argumentOrder === 'amount-volume' ? value : dependentValue;
+      const volume = argumentOrder === 'amount-volume' ? dependentValue : value;
+      if (!marketPrice?.dirty) {
+        marketPrice?.setValue(this.getMarketPriceAtOperation(amount, volume));
+      }
+    })
+  }
+
+  private getMarketPriceAtOperation(amount: number, volume: number): number {
+    return amount / volume;
   }
 
 }

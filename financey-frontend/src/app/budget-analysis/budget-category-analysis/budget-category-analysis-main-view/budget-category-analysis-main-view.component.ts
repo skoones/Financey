@@ -11,6 +11,7 @@ import {ExpenseSumPieChartComponent} from "../../../charts/expense-sum-pie-chart
 })
 export class BudgetCategoryAnalysisMainViewComponent implements OnInit {
 
+  // todo handle case when category has no children
   @ViewChild(ExpenseSumPieChartComponent, {static: false})
   private expensePieChart?: ExpenseSumPieChartComponent
 
@@ -18,14 +19,12 @@ export class BudgetCategoryAnalysisMainViewComponent implements OnInit {
 
   constructor(private budgetAnalysisService: BudgetAnalysisService, private route: ActivatedRoute) {
     this.categoryId = this.route.snapshot.queryParams["categoryId"];
-    console.log(this.categoryId)
   }
 
   ngOnInit(): void {
   }
 
   chooseDatesToAnalyze(dates: [Date, Date]) {
-    console.log("new dates: " + [dates[0], findEndOfDay(dates[1])])
     this.expensePieChart?.changeExpenseDates([dates[0], findEndOfDay(dates[1])])
   }
 

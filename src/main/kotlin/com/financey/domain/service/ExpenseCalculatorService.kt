@@ -1,54 +1,71 @@
 package com.financey.domain.service
 
-import com.financey.domain.context.SubcategoryExpenseSumContext
+import arrow.core.Either
+import arrow.core.continuations.either
 import com.financey.domain.db.model.BudgetCategory
+import com.financey.domain.error.ExchangeRateError
 import com.financey.domain.model.EntryDomain
+import com.financey.domain.model.SubcategoryExpenseSumDomain
 import com.financey.utils.CommonUtils
 import org.openapitools.model.EntryType
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDate
 
 @Service
-class ExpenseCalculatorService {
-    fun findExpenseSumForPeriodFromEntries(
+class ExpenseCalculatorService(
+    @Autowired private val currencyService: CurrencyService
+) {
+    suspend fun findExpenseSumForPeriodFromEntries(
         entries: List<EntryDomain>,
         startDate: LocalDate,
         endDate: LocalDate
-    ): BigDecimal = entries
-        .filter {
-            (it.date ?: LocalDate.MIN) >= startDate && (it.date ?: LocalDate.MAX) <= endDate
-        }
-        .filter { it.entryType == EntryType.EXPENSE }
-        // todo take currency into consideration
-        .map { it.value }
-        .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
+    ): Either<ExchangeRateError, BigDecimal> = either {
+        entries
+            .filter {
+                it.date in startDate..endDate
+            }
+            .filter { it.entryType == EntryType.EXPENSE }
+            .map { currencyService.changeEntryToUseBaseCurrency(it).bind() }
+            .map { it.value }
+            .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
+    }
 
-    fun findBalanceForPeriodFromEntries(
+    suspend fun findBalanceForPeriodFromEntries(
         entries: List<EntryDomain>,
-        startDate: LocalDate,
+        startDate: LocalDate?,
         endDate: LocalDate
-    ): BigDecimal = entries
-        .filter {
-            (it.date ?: LocalDate.MIN) >= startDate && (it.date ?: LocalDate.MAX) <= endDate
-        }
-        // todo take currency into consideration
-        .map { if (it.entryType == EntryType.EXPENSE) it.value.negate() else it.value }
-        .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
+    ): Either<ExchangeRateError, BigDecimal> = either {
+        entries
+            .filter {entry ->
+                startDate?.let {
+                    entry.date in it..endDate
+                } ?: (entry.date <= endDate)
+            }
+            .map {currencyService.changeEntryToUseBaseCurrency(it).bind() }
+            .map { if (it.entryType == EntryType.EXPENSE) it.value.negate() else it.value }
+            .reduceOrNull { a, b -> a.plus(b) } ?: BigDecimal.ZERO
+    }
 
-    fun findExpenseSumContexts(subcategoryToExpenseSum: Map<BudgetCategory?, List<BigDecimal>>) =
+    suspend fun findExpenseSumContexts(subcategoryToExpenseSum: Map<BudgetCategory?, List<EntryDomain>>):
+            Either<ExchangeRateError, List<SubcategoryExpenseSumDomain>> = either {
         subcategoryToExpenseSum
+            .mapValues { it.value.map { entry -> currencyService.changeEntryToUseBaseCurrency(entry).bind() } }
+            .mapValues { it.value.map { entry -> entry.value } }
             .mapValues { it.value.fold(BigDecimal.ZERO, BigDecimal::add) }
             .map { (subcategory, expenseSum) ->
                 subcategory?.let { category ->
-                    SubcategoryExpenseSumContext(
+                    SubcategoryExpenseSumDomain(
                         subcategoryId = CommonUtils.objectIdToString(category.id),
                         subcategoryName = category.name,
                         expenseSum = expenseSum
                     )
-                } ?: SubcategoryExpenseSumContext(
+                } ?: SubcategoryExpenseSumDomain(
                     subcategoryId = "",
                     subcategoryName = ""
                 )
             }
+    }
+
 }

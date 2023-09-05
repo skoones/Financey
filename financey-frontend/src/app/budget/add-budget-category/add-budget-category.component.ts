@@ -3,7 +3,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {firstValueFrom, map, Observable, startWith} from "rxjs";
-import {BudgetCategoryDTO, BudgetService} from "../../../generated";
+import {BudgetCategoryDTO, BudgetService, FetchType} from "../../../generated";
 
 enum AddCategoryResult {
   Success,
@@ -25,6 +25,7 @@ export class AddBudgetCategoryComponent {
 
   filteredParentCategories = new Observable<BudgetCategoryDTO[]>();
   parentCategories: BudgetCategoryDTO[] = []
+  isInvestment = false;
 
   constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private formSnackBar: MatSnackBar,
               @Inject(MAT_DIALOG_DATA) private data: any) {
@@ -40,7 +41,7 @@ export class AddBudgetCategoryComponent {
       startWith(''),
       map(value => this._filter(value || '')),
     );
-    this.budgetService.getCategories(this.userId).subscribe(data => {
+    this.budgetService.getCategories(this.userId, FetchType.ALL).subscribe(data => {
       this.parentCategories = data;
     });
   }
@@ -56,12 +57,22 @@ export class AddBudgetCategoryComponent {
     const categoryDto: BudgetCategoryDTO = {
       name: formGroupData.name,
       userId: this.userId,
-      parentCategoryId: categoryName ? await this.findCategoryIdFromName(this.categoryListControl.value) : undefined
+      parentCategoryId: categoryName ? await this.findCategoryIdFromName(this.categoryListControl.value) : undefined,
+      investment: this.isInvestment
     }
 
-    await firstValueFrom(this.budgetService.addCategory(categoryDto));
-    this.anyAdded = true;
-    return AddCategoryResult.Success;
+    if (!categoryDto.investment || this.parentCategoryIsInvestment(categoryDto.parentCategoryId)) {
+      await firstValueFrom(this.budgetService.addCategory(categoryDto));
+      this.anyAdded = true;
+      return AddCategoryResult.Success;
+    } else {
+      this.formSnackBar.open('Investment category cannot be the child of a non-investment category.', 'Close', {
+        duration: 5000,
+        panelClass: 'error-snackbar'
+      });
+      return AddCategoryResult.Fail;
+    }
+
   }
 
   private _filter(value: string): BudgetCategoryDTO[] {
@@ -109,6 +120,11 @@ export class AddBudgetCategoryComponent {
           resolve(<string>category.id);
         })
     })
+  }
+
+  private parentCategoryIsInvestment(parentCategoryId: string | undefined) {
+    return (parentCategoryId === undefined) || this.parentCategories.filter(category =>
+      category.id == parentCategoryId).every(category => category.investment);
   }
 
 }

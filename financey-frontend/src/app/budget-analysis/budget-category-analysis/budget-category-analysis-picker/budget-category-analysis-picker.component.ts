@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {BudgetCategoryDTO, BudgetService} from "../../../../generated";
 import {map, Observable, startWith} from "rxjs";
@@ -12,19 +12,18 @@ import {BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW} from "../../../constants/path-consta
 })
 export class BudgetCategoryAnalysisPicker implements OnInit {
 
+  @Input() mainCardTitle = "Pick budget category for analysis"
+  @Input() categoryRoute = ""
+  @Input() categoriesToChoose: BudgetCategoryDTO[] = []
+
   categoryListControl = new FormControl();
   category?: BudgetCategoryDTO;
-  categoriesToChoose: BudgetCategoryDTO[] = []
   filteredCategories = new Observable<BudgetCategoryDTO[]>();
   userId = "demo" // todo
   constructor(private budgetService: BudgetService, private router: Router) {
   }
 
   ngOnInit(): void {
-    this.budgetService.getCategories(this.userId).subscribe(data => {
-      this.categoriesToChoose = data;
-    });
-
     this.filteredCategories = this.categoryListControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || '')),
@@ -34,13 +33,14 @@ export class BudgetCategoryAnalysisPicker implements OnInit {
   public async routeToAnalysisMainView() {
     const categoryId = await this.findCategoryIdFromName(this.categoryListControl.value);
 
-    await this.router.navigate([BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW], {queryParams: {categoryId: categoryId}})
+    await this.router.navigate([this.categoryRoute], {queryParams: {categoryId: categoryId}})
   }
 
   private _filter(value: string): BudgetCategoryDTO[] {
     const filterValue = value.toLowerCase();
+    const categories = this.categoriesToChoose || []
 
-    return this.categoriesToChoose.filter(category => category.name.toLowerCase().includes(filterValue));
+    return categories.filter(category => category.name.toLowerCase().includes(filterValue));
   }
 
   // todo mixin/utils

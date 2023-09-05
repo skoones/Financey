@@ -1,0 +1,15 @@
+mat-form-field {
+  width: 80%;
+  margin-left: 1em;
+  margin-top: 1em;
+}
+
+.exclude-card-buttons-container {
+  display: flex;
+  flex-direction: row;
+  align-content: flex-start;
+}
+
+.exclude-buttons-spacer {
+  flex-grow: 4;
+}

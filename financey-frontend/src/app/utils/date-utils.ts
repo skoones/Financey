@@ -54,6 +54,39 @@ export function dateToString(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+export function generateDatesForEveryMonth(start: Date, end: Date): Date[] {
+  const numberOfMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) - 1;
+  const monthsInBetween = generateMonthBeginningsFromDate(numberOfMonths, getFirstDayOfMonth(addMonths(start, 1)));
+
+  return [start, ...monthsInBetween, end];
+}
+
+export function generateMonthBeginningsFromDate(numberOfMonths: number, start: Date): Date[] {
+  return Array.from({length: numberOfMonths},
+    (_, index) => getFirstDayOfMonth(addMonths(start, index)));
+}
+
+export function findMonthAndYearFromDate(dateString: string) {
+  const date = new Date(dateString);
+  const monthIndex = date.getMonth();
+  const year = date.getFullYear();
+
+  const monthNames = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"
+  ];
+
+  return `${monthNames[monthIndex]} ${year}`
+}
+
+export function findInitialDatesForAnalysis(): Date[] {
+  const datesSuffix = generateMonthBeginningsFromDate(new Date().getMonth(), getStartOfYear(new Date()));
+  const currentDate = new Date()
+
+  return [...datesSuffix, currentDate];
+}
+
+
 function findDateAtMidnight(date: Date): Date {
   const newDate = new Date(date);
   newDate.setHours(0);
@@ -67,5 +100,5 @@ function getPreviousDayEnd(date: Date): Date {
   const previousDay = new Date(date);
   previousDay.setDate(previousDay.getDate() - 1);
 
- return findEndOfDay(previousDay);
+  return findEndOfDay(previousDay);
 }

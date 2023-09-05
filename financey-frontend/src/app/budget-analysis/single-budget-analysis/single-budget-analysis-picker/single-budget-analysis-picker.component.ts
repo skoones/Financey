@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {BudgetDTO, BudgetService} from "../../../../generated";
 import {map, Observable, startWith} from "rxjs";
@@ -12,18 +12,17 @@ import {SINGLE_BUDGET_ANALYSIS_MAIN_VIEW} from "../../../constants/path-constant
 })
 export class SingleBudgetAnalysisPicker implements OnInit {
 
+  @Input() mainCardTitle = "Pick budget for analysis"
+  @Input() budgetRoute = "";
+  @Input() budgetsToChoose: BudgetDTO[] = []
+
   budgetListControl = new FormControl();
   budget?: BudgetDTO;
-  budgetsToChoose: BudgetDTO[] = []
   filteredBudgets: Observable<BudgetDTO[]> = new Observable<BudgetDTO[]>();
   userId = "demo" // todo
   constructor(private budgetService: BudgetService, private router: Router) {}
 
   ngOnInit(): void {
-    this.budgetService.getBudgets(this.userId).subscribe(data => {
-      this.budgetsToChoose = data;
-    });
-
     this.filteredBudgets = this.budgetListControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || '')),
@@ -33,7 +32,7 @@ export class SingleBudgetAnalysisPicker implements OnInit {
   public async routeToAnalysisMainView() {
     const budgetId = await this.findBudgetIdFromName(this.budgetListControl.value);
 
-    await this.router.navigate([SINGLE_BUDGET_ANALYSIS_MAIN_VIEW], { queryParams: { budgetId: budgetId } })
+    await this.router.navigate([this.budgetRoute], { queryParams: { budgetId: budgetId } })
   }
 
   private _filter(value: string): BudgetDTO[] {

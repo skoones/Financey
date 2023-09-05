@@ -7,6 +7,7 @@ import kotlinx.coroutines.runBlocking
 import org.openapitools.api.BudgetApi
 import org.openapitools.model.BudgetCategoryDTO
 import org.openapitools.model.BudgetDTO
+import org.openapitools.model.FetchType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -86,9 +87,9 @@ class BudgetController(
         )
     }
 
-    override fun getCategories(userId: String): ResponseEntity<List<BudgetCategoryDTO>> {
+    override fun getCategories(userId: String, fetchType: FetchType): ResponseEntity<List<BudgetCategoryDTO>> {
        val categoriesResult = runBlocking {
-           budgetCategoryService.getAllCategoriesByUserId(userId)
+           budgetCategoryService.getCategoriesByUserIdAndFetchType(userId, fetchType)
        }
 
         return categoriesResult.fold(
@@ -173,9 +174,9 @@ class BudgetController(
         )
     }
 
-    override fun getBudgets(userId: String): ResponseEntity<List<BudgetDTO>> {
+    override fun getBudgets(userId: String, fetchType: FetchType): ResponseEntity<List<BudgetDTO>> {
         val budgetsResult = runBlocking {
-            budgetService.getAllByUserId(userId)
+            budgetService.getAllByUserIdAndFetchType(userId, fetchType)
         }
 
         return budgetsResult.fold(

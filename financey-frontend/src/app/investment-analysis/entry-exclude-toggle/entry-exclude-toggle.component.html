@@ -1,0 +1,28 @@
+<mat-card *ngIf="excludeFromDate">
+    <form [formGroup]="dateFormGroup">
+      <mat-form-field appearance="fill">
+        <mat-label>Exclude entries after...</mat-label>
+        <input matInput formControlName="date" [matDatepicker]="datePicker">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="datePicker">
+          <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+        </mat-datepicker-toggle>
+        <mat-datepicker #datePicker></mat-datepicker>
+      </mat-form-field>
+    </form>
+  <div class="exclude-card-buttons-container">
+    <mat-card-actions>
+      <button mat-button color="primary" (click)="emitDate()">Submit</button>
+    </mat-card-actions>
+    <span class="exclude-buttons-spacer"></span>
+    <mat-card-actions>
+      <button mat-button color="accent" (click)="clearDate()">Clear</button>
+    </mat-card-actions>
+  </div>
+
+</mat-card>
+
+<div class="flex-spacer"></div>
+<mat-button-toggle (change)="toggleExclude()">Exclude entry purchases after given date</mat-button-toggle>
+
+

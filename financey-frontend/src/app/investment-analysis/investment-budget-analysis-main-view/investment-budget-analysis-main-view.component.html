@@ -1,0 +1,18 @@
+<div class="full-screen-container">
+  <div class="period-choosing-container">
+    <app-budget-history-date-picker (chooseDatesEvent)="chooseDatesToAnalyze($event)"></app-budget-history-date-picker>
+    <span class="flex-spacer"></span>
+    <app-history-period-shortcut-row (periodChange)="chooseDatesToAnalyze($event)"></app-history-period-shortcut-row>
+  </div>
+
+  <div class="profit-analysis-container" *ngIf="profitHistory != undefined">
+    <div class="analysis-buttons-container">
+      <app-entry-exclude-toggle class="exclude-toggle" (excludeFromDateEvent)="excludeFromDate($event)"></app-entry-exclude-toggle>
+      <span class="analysis-buttons-spacer"></span>
+      <button mat-button color="primary" class="budget-view-button" (click)="openFullBudgetView()">Full budget view</button>
+    </div>
+
+    <span class="flex-spacer"></span>
+    <app-profit-history-chart class="profit-history-chart-container" [profitHistory]="profitHistory"></app-profit-history-chart>
+  </div>
+</div>

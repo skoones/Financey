@@ -1,5 +1,7 @@
 <div class="full-screen-container">
-  <app-investment-budget-info *ngIf="this.budget?.investment" message="This is an investment budget." icon="info" class="investment-info"></app-investment-budget-info>
+  <div class="info-card">
+    <app-info-card *ngIf="this.budget?.investment" message="This is an investment budget." icon="info"></app-info-card>
+  </div>
   <div class="budget-name-container">
     <mat-card class="budget-name">
       <mat-card-content>
@@ -10,19 +12,27 @@
   <div class="container">
     <app-entry-list [budget]="this.budget"></app-entry-list>
     <div class="flex-spacer"></div>
-    <button mat-button class="add-entry-button" style="color:white" (click)="openAddEntryPopup()">
-      <mat-icon>add</mat-icon>
-      Add entry
-    </button>
+    <div class="buttons-container">
+      <button mat-button [ngClass]="{'add-entry-button-narrow': this.budget?.investment, 'add-entry-button': !this.budget?.investment}"
+              style="color:white" (click)="openAddEntryPopup()">
+        <mat-icon>add</mat-icon>
+        Add entry
+      </button>
+      <span class="flex-spacer"></span>
+      <button *ngIf="this.budget?.investment" mat-button class="update-prices-button" style="color:white" (click)="openUpdateMarketPricesPopup()">
+        <mat-icon>update</mat-icon>
+        Update entry market prices
+      </button>
+    </div>
   </div>
   <mat-card>
     <mat-card-content>
       This month's total expenses:
-      <span> {{ this.monthlyExpenses }}</span>
+      <span> {{ this.monthlyExpenses }} PLN</span>
     </mat-card-content>
     <mat-card-content>
       This month's balance:
-      <span> {{ this.monthlyBalance }}</span>
+      <span> {{ this.monthlyBalance }} PLN</span>
     </mat-card-content>
   </mat-card>
 </div>

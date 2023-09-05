@@ -3,9 +3,9 @@ import {Component, EventEmitter, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {firstValueFrom, map, Observable, startWith} from "rxjs";
-import {BudgetCategoryDTO, BudgetDTO, BudgetService} from "../../../generated";
+import {BudgetCategoryDTO, BudgetDTO, BudgetService, FetchType} from "../../../generated";
 
-enum AddCategoryResult {
+enum AddBudgetResult {
   Success,
   Fail
 }
@@ -39,7 +39,7 @@ export class AddBudgetComponent {
       startWith(''),
       map(value => this._filter(value || '')),
     );
-    this.budgetService.getCategories(this.userId).subscribe(data => {
+    this.budgetService.getCategories(this.userId, FetchType.ALL).subscribe(data => {
       this.categories = data;
     });
   }
@@ -55,7 +55,7 @@ export class AddBudgetComponent {
     return this.categories.filter(category => category.name.toLowerCase().includes(filterValue));
   }
 
-  async addBudget(): Promise<[AddCategoryResult, string]> {
+  async addBudget(): Promise<[AddBudgetResult, string]> {
     const formGroupData = this.budgetFormGroup.value;
     const budgetDto: BudgetDTO = {
       name: formGroupData.name,
@@ -64,29 +64,35 @@ export class AddBudgetComponent {
       investment: this.isInvestment
     }
 
-    try {
-      await firstValueFrom(this.budgetService.addBudget(budgetDto, 'response'));
-      this.anyAdded = true;
-      return [AddCategoryResult.Success, "Budget saved."];
-    } catch (error) {
-      if (error instanceof HttpErrorResponse && error.status === HttpStatusCode.BadRequest) {
-        return [AddCategoryResult.Fail, error.error];
-      } else {
-        return [AddCategoryResult.Fail, "Failed to save budget."];
+    if (!budgetDto.investment || this.budgetCategoryIsInvestment(budgetDto.categoryId)) {
+      try {
+        await firstValueFrom(this.budgetService.addBudget(budgetDto, 'response'));
+        this.anyAdded = true;
+        return [AddBudgetResult.Success, "Budget saved."];
+      } catch (error) {
+        if (error instanceof HttpErrorResponse && error.status === HttpStatusCode.BadRequest) {
+          return [AddBudgetResult.Fail, error.error];
+        } else {
+          return [AddBudgetResult.Fail, "Failed to save budget."];
+        }
       }
+    } else {
+      return [AddBudgetResult.Fail, "Investment budget cannot be added to a non-investment category."]
     }
+
   }
 
   submitBudgetForm() {
     if (this.budgetFormGroup.valid) {
       this.addBudget().then((result) => {
-        if (result[0] == AddCategoryResult.Success) {
+        if (result[0] == AddBudgetResult.Success) {
           this.formSnackBar.open(result[1], 'Close', {
             duration: 5000,
           });
         } else {
           this.formSnackBar.open(result[1], 'Close', {
             duration: 5000,
+            panelClass: 'error-snackbar'
           });
         }
       });
@@ -120,6 +126,11 @@ export class AddBudgetComponent {
           resolve(<string>category.id);
         })
     }) : undefined;
+  }
+
+  private budgetCategoryIsInvestment(categoryId: string | undefined) {
+    return (categoryId === undefined) || this.categories.filter(category =>
+      category.id == categoryId).every(category => category.investment);
   }
 
 }

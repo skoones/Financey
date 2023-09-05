@@ -4,3 +4,6 @@ spring:
       "dev"
 server:
   port: 8980
+exchange-rate:
+  base-url: https://api.exchangerate.host
+

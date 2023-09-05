@@ -72,7 +72,8 @@ val openapiSpecs = mapOf(
     "entry" to "openapi-schemas/EntrySchema.yaml",
     "budget" to "openapi-schemas/BudgetsSchema.yaml",
     "user" to "openapi-schemas/UserSchema.yaml",
-    "analysis" to "openapi-schemas/BudgetAnalysisSchema.yaml"
+    "analysis" to "openapi-schemas/BudgetAnalysisSchema.yaml",
+    "investment-analysis" to "openapi-schemas/InvestmentAnalysisSchema.yaml"
 )
 openapiSpecs.forEach {
     tasks.create("openApiGenerate-${it.key}", org.openapitools.generator.gradle.plugin.tasks.GenerateTask::class) {
