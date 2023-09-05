@@ -24,6 +24,8 @@ export class BudgetCategoryListComponent implements OnInit {
   currentLevel = 0
   currentCategoryName = ""
 
+  userId = localStorage.getItem('userId') || "";
+
   ngOnInit(): void {
     this.initializeTopLevelBudgetList().then(() => {});
   }
@@ -58,12 +60,11 @@ export class BudgetCategoryListComponent implements OnInit {
   }
 
   async initializeTopLevelBudgetList() {
-    // todo placeholder userId
-    const categories = await firstValueFrom(this.budgetService.getCategories("demo", FetchType.ALL)).then(async categories => {
+    const categories = await firstValueFrom(this.budgetService.getCategories(this.userId, FetchType.ALL)).then(async categories => {
       return this.findFullCategories(categories.filter(category => category.parentCategoryId == undefined));
     });
 
-    const budgets = await firstValueFrom(this.budgetService.getUncategorizedBudgets("demo"));
+    const budgets = await firstValueFrom(this.budgetService.getUncategorizedBudgets(this.userId));
     this.topLevelBudgets = (categories as TopLevelBudget[]).concat(budgets as TopLevelBudget[]);
     this.levelToBudgetList.set(this.currentLevel, this.topLevelBudgets);
   }

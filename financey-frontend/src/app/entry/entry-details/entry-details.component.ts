@@ -22,7 +22,7 @@ export class EntryDetailsComponent {
   currencyEnum = EntryCurrency;
   @Input() entry?: EntryDTO;
   @Input() budget?: BudgetDTO;
-  userId: string = "demo"; // todo placeholder userId
+  userId = localStorage.getItem('userId') || "";
   hasUpdates: boolean = false;
   @Output() updateEventEmitter = new EventEmitter<boolean>();
 

@@ -19,7 +19,7 @@ export class BudgetCategoryAnalysisPicker implements OnInit {
   categoryListControl = new FormControl();
   category?: BudgetCategoryDTO;
   filteredCategories = new Observable<BudgetCategoryDTO[]>();
-  userId = "demo" // todo
+  userId = localStorage.getItem('userId') || "";
   constructor(private budgetService: BudgetService, private router: Router) {
   }
 
@@ -48,8 +48,7 @@ export class BudgetCategoryAnalysisPicker implements OnInit {
     const name: string = categoryName || this.category?.name || "";
 
     return new Promise<string>((resolve) => {
-      // todo placeholder userId
-      this.budgetService.getCategoryByName(name, "demo")
+      this.budgetService.getCategoryByName(name, this.userId)
         .subscribe((category: BudgetCategoryDTO) => {
           resolve(<string>category.id);
         })

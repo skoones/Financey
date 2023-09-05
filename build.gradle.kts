@@ -32,6 +32,11 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+//    implementation("io.jsonwebtoken:jjwt:0.9.1")
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
     implementation("javax.validation:validation-api:2.0.1.Final")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -73,7 +78,8 @@ val openapiSpecs = mapOf(
     "budget" to "openapi-schemas/BudgetsSchema.yaml",
     "user" to "openapi-schemas/UserSchema.yaml",
     "analysis" to "openapi-schemas/BudgetAnalysisSchema.yaml",
-    "investment-analysis" to "openapi-schemas/InvestmentAnalysisSchema.yaml"
+    "investment-analysis" to "openapi-schemas/InvestmentAnalysisSchema.yaml",
+    "security" to "openapi-schemas/SecuritySchema.yaml"
 )
 openapiSpecs.forEach {
     tasks.create("openApiGenerate-${it.key}", org.openapitools.generator.gradle.plugin.tasks.GenerateTask::class) {

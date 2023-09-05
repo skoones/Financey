@@ -566,8 +566,9 @@ paths:
       operationId: addUser
       description: "Add a new user account to the database"
       tags:
-        - users
+        - user
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -575,6 +576,35 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /users/get/username/{username}:
+    post:
+      operationId: getByUsername
+      description: "Get user by username"
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      tags:
+        - user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDTO"
   /entry/{budgetId}/entries:
     get:
       operationId: getEntriesByBudgetId
@@ -845,6 +875,38 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SubcategoryMarketValueDTO'
+  /login:
+    post:
+      operationId: login
+      description: "Log user in"
+      tags:
+        - login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequestDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponseDTO"
+  /logout:
+    post:
+      operationId: logout
+      description: "Log user out"
+      tags:
+        - login
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+
 components:
   schemas:
     BudgetCategoryDTO:
@@ -932,8 +994,10 @@ components:
         - expense
     UserDTO:
       required:
-        - userId
+        - username
       properties:
+        username:
+          type: string
         userId:
           type: string
         password:
@@ -986,4 +1050,19 @@ components:
         - all
         - investmentOnly
         - nonInvestmentOnly
+    LoginRequestDTO:
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    LoginResponseDTO:
+      required:
+        - token
+      properties:
+        token:
+          type: string
 

@@ -22,7 +22,7 @@ export class InvestmentAnalysisMainViewComponent implements OnInit {
   investmentBudgetsToChoose: BudgetDTO[] = [];
   investmentCategoriesToChoose: BudgetCategoryDTO[] = [];
 
-  private userId = "demo"; // todo placeholder userId
+  private userId = localStorage.getItem('userId') || "";
 
   constructor(private budgetService: BudgetService) {
     this.budgetService.getBudgets(this.userId, FetchType.INVESTMENT_ONLY).subscribe(result => {

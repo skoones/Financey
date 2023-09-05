@@ -5,3 +5,11 @@
   padding: 20px;
   background-color: mat.get-color-from-palette($my-theme);
 }
+
+.toolbar-container {
+  display: flex;
+}
+
+.toolbar-logout-spacer {
+  flex-grow: 10;
+}

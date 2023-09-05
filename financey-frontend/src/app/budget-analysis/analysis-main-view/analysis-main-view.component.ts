@@ -24,7 +24,7 @@ export class AnalysisMainViewComponent implements OnInit {
 
   AnalysisOption = AnalysisOption
 
-  private userId: string = "demo" // todo placeholder user id
+  private userId= localStorage.getItem('userId') || "";
 
   constructor(private budgetService: BudgetService) {
     this.budgetService.getBudgets(this.userId, FetchType.NON_INVESTMENT_ONLY).subscribe(result => {

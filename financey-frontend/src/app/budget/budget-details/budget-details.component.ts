@@ -24,7 +24,7 @@ export class BudgetDetailsComponent {
   @Output() closePopup = new EventEmitter<void>();
 
   hasUpdates: boolean = false;
-  userId: string = "demo"; // todo placeholder userId
+  userId = localStorage.getItem('userId') || "";
   isInvestment = false;
 
   constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private formSnackBar: MatSnackBar,

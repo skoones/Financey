@@ -23,7 +23,7 @@ export class BudgetCategoryDetailsComponent {
   @Input() categoryName = "";
   @Output() addCategoryEventEmitter = new EventEmitter<boolean>();
   anyAdded: boolean = false;
-  userId: string = "demo"; // todo placeholder userId
+  userId = localStorage.getItem('userId') || "";
 
   filteredParentCategories = new Observable<BudgetCategoryDTO[]>();
   parentCategories: BudgetCategoryDTO[] = []
@@ -109,8 +109,7 @@ export class BudgetCategoryDetailsComponent {
     const name = categoryName;
 
     return new Promise<string>((resolve) => {
-      // todo placeholder userId
-      this.budgetService.getCategoryByName(name, "demo")
+      this.budgetService.getCategoryByName(name, this.userId)
         .subscribe((category: BudgetCategoryDTO) => {
           resolve(<string>category.id);
         })

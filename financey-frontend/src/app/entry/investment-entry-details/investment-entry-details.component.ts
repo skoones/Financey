@@ -32,7 +32,7 @@ export class InvestmentEntryDetailsComponent {
   currencyEnum = EntryCurrency;
   @Input() investmentEntry?: InvestmentEntryDTO;
   @Input() budget?: BudgetDTO;
-  userId: string = "demo"; // todo placeholder userId
+  userId  = localStorage.getItem('userId') || "";
   hasUpdates: boolean = false;
   @Output() updateEventEmitter = new EventEmitter<boolean>();
 
