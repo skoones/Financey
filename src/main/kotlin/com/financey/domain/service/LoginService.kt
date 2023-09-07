@@ -28,8 +28,8 @@ class LoginService(
                 UsernamePasswordAuthenticationToken(loginRequestDTO?.username, loginRequestDTO?.password)
             )
             SecurityContextHolder.getContext().authentication = authentication
-        } catch (e: BadCredentialsException) { // todo
-            Either.Left(BadCredentialsError(e.message))
+        } catch (e: BadCredentialsException) {
+            Either.Left(BadCredentialsError(e.message)).bind()
         }
 
         val (userDetails, userId) = userService.findUserDetailsAndIdByUsername(loginRequestDTO?.username ?: "")
