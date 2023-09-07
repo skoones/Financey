@@ -5,7 +5,7 @@ import {Router} from "@angular/router";
 import {AuthService} from "../auth/auth-service";
 import {MatDialog} from "@angular/material/dialog";
 import {UserLoginFormComponent} from "../user-login-form/user-login-form.component";
-import {SignInPopupComponent} from "../sign-in-popup/sign-in-popup.component";
+import {SignUpPopupComponent} from "../sign-up-popup/sign-up-popup.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
@@ -49,7 +49,7 @@ export class LoginMainComponent {
   }
 
   openSignInPopup() {
-    const dialogRef = this.dialog.open(SignInPopupComponent, {});
+    const dialogRef = this.dialog.open(SignUpPopupComponent, {});
 
     dialogRef.componentInstance.closePopup.subscribe(() => {
       this.dialog.closeAll();

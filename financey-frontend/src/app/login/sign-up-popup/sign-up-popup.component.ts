@@ -5,11 +5,11 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {HttpStatusCode} from "@angular/common/http";
 
 @Component({
-  selector: 'app-sign-in-popup',
-  templateUrl: './sign-in-popup.component.html',
-  styleUrls: ['./sign-in-popup.component.scss']
+  selector: 'app-sign-up-popup',
+  templateUrl: './sign-up-popup.component.html',
+  styleUrls: ['./sign-up-popup.component.scss']
 })
-export class SignInPopupComponent implements OnInit {
+export class SignUpPopupComponent implements OnInit {
 
   @ViewChild(UserLoginFormComponent, {static: false})
   userLoginFormComponent?: UserLoginFormComponent;

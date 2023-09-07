@@ -65,7 +65,7 @@ import { LoginMainComponent } from './login/login-main/login-main.component';
 import {AuthInterceptor} from "./login/auth/auth.interceptor";
 import { LogoutButtonComponent } from './login/logout-button/logout-button.component';
 import { UserLoginFormComponent } from './login/user-login-form/user-login-form.component';
-import { SignInPopupComponent } from './login/sign-in-popup/sign-in-popup.component';
+import { SignUpPopupComponent } from './login/sign-up-popup/sign-up-popup.component';
 
 @NgModule({
   declarations: [
@@ -108,7 +108,7 @@ import { SignInPopupComponent } from './login/sign-in-popup/sign-in-popup.compon
     LoginMainComponent,
     LogoutButtonComponent,
     UserLoginFormComponent,
-    SignInPopupComponent
+    SignUpPopupComponent
   ],
     imports: [
         BrowserModule,
