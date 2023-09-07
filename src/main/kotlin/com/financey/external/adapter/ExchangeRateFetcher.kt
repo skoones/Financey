@@ -32,14 +32,13 @@ class ExchangeRateFetcher(
         val urlString = "${properties.baseUrl}/$date?base=$baseCurrency&symbols=$targetCurrency&amount=$amount" +
                 "&places=${CurrencyConstants.DEFAULT_DECIMAL_PLACES}"
 
-        val response: ExchangeRateResponse? = restTemplate.getForObject(urlString, ExchangeRateResponse::class.java)
+        val response = restTemplate.getForObject(urlString, ExchangeRateResponse::class.java)
 
-        return if (response != null) {
-            response.rates[targetCurrency]
-                ?.let { rate -> Either.Right(BigDecimal.valueOf(rate)) } ?: Either.Left(RateNotFound(pair))
-        } else {
-            Either.Left(InvalidApiResponse("Invalid API response for $pair on $date"))
-        }
+        return response?.let {
+            it.rates[targetCurrency]?.let { rate ->
+                Either.Right(BigDecimal.valueOf(rate))
+            } ?: Either.Left(RateNotFound(pair))
+        } ?: Either.Left(InvalidApiResponse("Invalid API response for $pair on $date"))
     }
 
 }

@@ -8,8 +8,17 @@
 
 .toolbar-container {
   display: flex;
+  justify-content: left;
 }
 
-.toolbar-logout-spacer {
+.toolbar-content-container {
+  display: flex;
+}
+
+.equal-flex-spacer {
+  flex-grow: 1;
+}
+
+.spacer {
   flex-grow: 10;
 }

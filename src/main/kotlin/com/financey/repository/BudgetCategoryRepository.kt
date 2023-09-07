@@ -27,7 +27,7 @@ interface CustomBudgetCategoryRepository {
     fun getAllInvestmentByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>>
     fun getAllNonInvestmentByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>>
     fun getById(id: String): Either<PersistenceError, BudgetCategory>
-    fun getByName(name: String): Either<PersistenceError, BudgetCategory>
+    fun getByNameAndUserId(name: String, userId: String): Either<PersistenceError, BudgetCategory>
     fun getAllByParentId(parentId: String): Either<PersistenceError, List<BudgetCategory>>
 }
 
@@ -104,8 +104,9 @@ open class CustomBudgetCategoryRepositoryImpl(
         }
     }
 
-    override fun getByName(name: String): Either<PersistenceError, BudgetCategory> {
+    override fun getByNameAndUserId(name: String, userId: String): Either<PersistenceError, BudgetCategory> {
         val query = Query().addCriteria(BudgetCategory::name isEqualTo name)
+            .addCriteria(BudgetCategory::userId isEqualTo userId)
 
         return try {
             val existingBudgets = mongoTemplate.find(query, BudgetCategory::class.java)

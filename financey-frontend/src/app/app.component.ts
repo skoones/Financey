@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {local} from "d3-selection";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -9,6 +9,7 @@ import {local} from "d3-selection";
 export class AppComponent {
 
   sidenavToggle: boolean = false;
+  viewTitle = "Home";
 
   toggleSidenav() {
     this.sidenavToggle = !this.sidenavToggle
@@ -18,4 +19,11 @@ export class AppComponent {
     return localStorage.getItem('jwtToken') != null
   }
 
+  updateViewTitle(title: string) {
+    this.viewTitle = title;
+  }
+
+  resetViewTitle() {
+    this.viewTitle = "Home";
+  }
 }

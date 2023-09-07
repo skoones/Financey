@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Inject, Input, OnInit, Output} from '@angular/core';
-import {BudgetDTO, InvestmentEntryDTO} from "../../../generated";
+import {BudgetDTO, EntryDTO, EntryType, InvestmentEntryDTO} from "../../../generated";
 import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import {UpdateMarketPricesForEntryComponent} from "../update-market-prices/update-market-prices-for-entry.component";
 
@@ -18,7 +18,7 @@ export class UpdatePricesEntryListComponent implements OnInit {
   updatedInvestments = new Set();
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: any, private dialog: MatDialog) {
-    this.entries = data.entries;
+    this.entries = (data.entries as InvestmentEntryDTO[]).filter(entry => entry.entry.entryType == EntryType.EXPENSE);
     this.budget = data.budget;
   }
 

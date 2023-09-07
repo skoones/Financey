@@ -1,23 +1,24 @@
 <mat-drawer-container [hasBackdrop]="true" >
   <p>
     <mat-toolbar color="primary" class="toolbar-container">
-      <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="toggleSidenav()" >
+      <button mat-icon-button (click)="toggleSidenav()" >
         <mat-icon>menu</mat-icon>
       </button>
       <span>Financey</span>
-      <span class="toolbar-logout-spacer"></span>
-      <app-logout-button *ngIf="isLoggedIn()"></app-logout-button>
+      <span class="equal-flex-spacer"></span>
+      <span *ngIf="isLoggedIn()">{{ this.viewTitle }}</span>
+      <span class="equal-flex-spacer"></span>
+      <app-logout-button *ngIf="isLoggedIn()" (click)="resetViewTitle()"></app-logout-button>
     </mat-toolbar>
   </p>
   <mat-drawer class="financey-sidenav" mode="side" [opened]="sidenavToggle" (closedStart)="toggleSidenav()">
     <mat-nav-list >
-      <a mat-list-item routerLink="/home">Home</a>
-      <a mat-list-item routerLink="/budgets">All budgets</a>
-      <a mat-list-item routerLink="/budgets/single/main">Single budget</a>
-      <a mat-list-item routerLink="/analysis">Analysis</a>
-      <a mat-list-item routerLink="/investments">Investments</a>
+      <a mat-list-item routerLink="/home" (click)="updateViewTitle('Home')">Home</a>
+      <a mat-list-item routerLink="/budgets" (click)="updateViewTitle('All budgets')">All budgets</a>
+      <a mat-list-item routerLink="/budgets/single/main" (click)="updateViewTitle('Single budget')">Single budget</a>
+      <a mat-list-item routerLink="/analysis" (click)="updateViewTitle('Analysis')">Analysis</a>
+      <a mat-list-item routerLink="/investments" (click)="updateViewTitle('Investments')">Investments</a>
     </mat-nav-list>
   </mat-drawer>
   <router-outlet></router-outlet>
-
 </mat-drawer-container>

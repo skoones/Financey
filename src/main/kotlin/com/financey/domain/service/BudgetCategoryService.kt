@@ -43,8 +43,8 @@ class BudgetCategoryService(
         logger.debug { "Removed budget categories with ids $categoryIds from database" }
     }
 
-    suspend fun getByName(name: String): Either<PersistenceError, BudgetCategoryDomain> = either {
-        val category = budgetCategoryRepository.getByName(name).bind()
+    suspend fun getByName(name: String, userId: String): Either<PersistenceError, BudgetCategoryDomain> = either {
+        val category = budgetCategoryRepository.getByNameAndUserId(name, userId).bind()
         val budgetCategoryDomain = budgetDomainMapper.toCategoryDomain(category)
         logger.debug { "Retrieved budget with name ${name}." }
         budgetCategoryDomain
