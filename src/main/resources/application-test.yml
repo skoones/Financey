@@ -2,9 +2,12 @@ spring:
   data:
     mongodb:
       host: localhost
-      port: 27017
+      port: 27020
       authentication-database: admin
       username: rootuser
       password: rootpass
       database: financey_db
       auto-index-creation: true
+
+jwt:
+  secret-key: test_secret_key_very_very_long_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

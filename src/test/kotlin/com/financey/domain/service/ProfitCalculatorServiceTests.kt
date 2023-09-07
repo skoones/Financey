@@ -2,7 +2,9 @@ package com.financey.domain.service
 
 import arrow.core.Either
 import com.financey.TestDataLoader
+import com.financey.data.ProfitCalculatorTestData
 import com.financey.domain.model.EntryDomain
+import com.financey.domain.model.SubcategoryMarketValueDomain
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -75,6 +77,28 @@ class ProfitCalculatorServiceTests {
 
         // then
         Assertions.assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun `returns correct market values for each subcategory`() = runBlocking {
+        // given
+        val testData = ProfitCalculatorTestData.marketValueTestData
+        val endDate = LocalDate.of(2023, 7, 1)
+        val expectedMarketValueForCategory1 = BigDecimal(10000)
+        val expectedMarketValueForCategory2 = BigDecimal(6000)
+        val expectedMarketValueForCategory3 = BigDecimal(7000)
+        val expectedMarketValueForCategory4 = BigDecimal(8000)
+
+        // when
+        val result = profitCalculatorService.findMarketValueContexts(testData, endDate).fold({ it }, { it })
+            as List<SubcategoryMarketValueDomain>
+
+        // then
+        val category1MarketValue = result.find { it.subcategoryName == "Category1" }?.marketValue
+        val category2MarketValue = result.find { it.subcategoryName == "Category2" }?.marketValue
+
+        Assertions.assertEquals(expectedMarketValueForCategory1, category1MarketValue)
+        Assertions.assertEquals(expectedMarketValueForCategory2, category2MarketValue)
     }
 
 }

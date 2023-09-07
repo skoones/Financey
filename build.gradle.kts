@@ -53,6 +53,8 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     implementation("org.mapstruct:mapstruct-processor:1.5.3.Final")
     implementation("io.arrow-kt:arrow-core:1.1.2")
+    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
+
     kapt("org.mapstruct:mapstruct-processor:1.5.3.Final")
 }
 
