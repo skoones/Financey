@@ -110,10 +110,6 @@ class BudgetController(
         )
     }
 
-    override fun deleteCategoryById(categoryId: String, budgetCategoryDTO: BudgetCategoryDTO): ResponseEntity<String> {
-        return super.deleteCategoryById(categoryId, budgetCategoryDTO)
-    }
-
     override fun getCategoryByName(name: String, userId: String): ResponseEntity<BudgetCategoryDTO> {
         val categoryResult = runBlocking {
             budgetCategoryService.getByName(name, userId)
@@ -128,13 +124,13 @@ class BudgetController(
     override fun updateBudgetCategory(budgetCategoryDTO: BudgetCategoryDTO): ResponseEntity<String> {
         val category = budgetDtoMapper.fromCategoryDto(budgetCategoryDTO)
         runBlocking {
-            budgetCategoryService.save(category)
+            budgetCategoryService.update(category)
         }
 
         return ResponseEntity.ok("Updated budget category with id ${category.id}.")
     }
 
-    override fun deleteBudgetCategories(categoryIds: List<String>, userId: String): ResponseEntity<String> {
+    override fun deleteBudgetCategories(categoryIds: List<String>): ResponseEntity<String> {
         val deletionResult = runBlocking {
             budgetCategoryService.delete(categoryIds)
         }

@@ -58,11 +58,51 @@ export class BudgetCategoryDetailsComponent {
 
     return this.parentCategories.filter(category => category.name.toLowerCase().includes(filterValue));
   }
-  private openErrorSnackbar(message: string) {
-    this.formSnackBar.open(message, 'Close', {
-      duration: 5000,
-      panelClass: 'error-snackbar'
+
+
+  async deleteCategory() {
+    const categoryName = this.categoryListControl.value || this.categoryName;
+    // todo extract
+    let categoryId = "";
+    await this.findCategoryIdFromName(categoryName).then((id) => {
+      categoryId = id
     });
+    this.budgetService.deleteBudgetCategories([categoryId]).subscribe(() => {
+      this.formSnackBar.open('Budget category deleted.', 'Close', {
+        duration: 5000,
+        panelClass: 'error-snackbar'
+      });
+    });
+    this.anyChanged = true;
+  }
+
+  async updateCategory() {
+    if (this.categoryFormGroup.valid) {
+      const formGroupData = this.categoryFormGroup.value;
+      const categoryName = this.categoryListControl.value || this.categoryName;
+      const category = await this.getCategoryByName(categoryName);
+      const categoryId = category.id;
+      // await this.findCategoryIdFromName(categoryName).then((id) => {
+      //   categoryId = id
+      // })
+
+      const categoryDto: BudgetCategoryDTO = {
+        id: categoryId,
+        name: formGroupData.name,
+        userId: this.userId,
+        parentCategoryId: category.parentCategoryId,
+        investment: this.isInvestment
+      }
+
+      console.log(categoryDto)
+      this.budgetService.updateBudgetCategory(categoryDto).subscribe(() => {
+        this.formSnackBar.open('Budget category updated.', 'Close', {
+          duration: 5000,
+          panelClass: 'error-snackbar'
+        });
+      });
+      this.anyChanged = true;
+    }
   }
 
   // todo mixin? (duplicate from add-budget)
@@ -77,33 +117,15 @@ export class BudgetCategoryDetailsComponent {
     })
   }
 
-  deleteCategory() {
-    // this.budgetService.deleteCategoryById(this.)
-    this.anyChanged = true;
-  }
+  private async getCategoryByName(categoryName: string): Promise<BudgetCategoryDTO> {
+    const name = categoryName;
 
-  async updateCategory() {
-    if (this.categoryFormGroup.valid) {
-      const formGroupData = this.categoryFormGroup.value;
-      const categoryName = this.categoryListControl.value;
-      let categoryId = "";
-      await this.findCategoryIdFromName(categoryName).then((id) => {
-        categoryId = id
-      })
-
-      const categoryDto: BudgetCategoryDTO = {
-        id: categoryId,
-        name: formGroupData.name,
-        userId: this.userId,
-        parentCategoryId: categoryName ? categoryId : undefined,
-        investment: this.isInvestment
-      }
-
-      console.log(categoryDto)
-      this.budgetService.updateBudgetCategory(categoryDto);
-      this.anyChanged = true;
-    }
-
+    return new Promise<BudgetCategoryDTO>((resolve) => {
+      this.budgetService.getCategoryByName(name, this.userId)
+        .subscribe((category: BudgetCategoryDTO) => {
+          resolve(<BudgetCategoryDTO>category);
+        })
+    })
   }
 
 }

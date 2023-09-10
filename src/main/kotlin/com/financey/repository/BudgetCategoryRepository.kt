@@ -22,6 +22,7 @@ interface BudgetCategoryRepository : MongoRepository<Budget, String>, CustomBudg
 
 interface CustomBudgetCategoryRepository {
     fun save(budgetCategory: BudgetCategory): Either<PersistenceError, BudgetCategory>
+    fun update(budgetCategory: BudgetCategory): Either<PersistenceError, BudgetCategory>
     fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit>
     fun getAllByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>>
     fun getAllInvestmentByUserId(userId: String): Either<PersistenceError, List<BudgetCategory>>
@@ -44,6 +45,10 @@ open class CustomBudgetCategoryRepositoryImpl(
             { Left(it) },
             { parent -> saveCategoryWithAncestors(budgetCategory, parent) }
         ) ?: Right(mongoTemplate.save(budgetCategory))
+    }
+
+    override fun update(budgetCategory: BudgetCategory): Either<PersistenceError, BudgetCategory> {
+       return Right(mongoTemplate.save(budgetCategory))
     }
 
     override fun deleteByIds(ids: List<String>): Either<PersistenceError, Unit> {

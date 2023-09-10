@@ -64,4 +64,11 @@ class BudgetCategoryService(
         budgetCategoryDomain
     }
 
+    suspend fun update(category: BudgetCategoryDomain): Either<PersistenceError, BudgetCategoryDomain> = either {
+        val updatedCategory = budgetCategoryRepository.update(budgetDomainMapper.fromCategoryDomain(category)).bind()
+        val updatedCategoryDomain = budgetDomainMapper.toCategoryDomain(updatedCategory)
+        logger.debug ("Updated $updatedCategory")
+        updatedCategoryDomain
+    }
+
 }

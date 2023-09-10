@@ -331,13 +331,6 @@ paths:
             type: string
       tags:
         - budget
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref:
-                '#/components/schemas/BudgetCategoryDTO'
       responses:
         "200":
           description: OK
@@ -470,7 +463,7 @@ paths:
             text/plain:
               schema:
                 type: string
-  /budget/{userId}/categories/delete/{categoryIds}:
+  /budget/categories/delete/{categoryIds}:
     delete:
       operationId: deleteBudgetCategories
       description: "Delete budget categories with given ids."
@@ -482,12 +475,6 @@ paths:
             type: array
             items:
               type: string
-        - in: path
-          name: userId
-          description: "Id of the currently logged in user"
-          required: true
-          schema:
-            type: string
       tags:
         - budget
       responses:
