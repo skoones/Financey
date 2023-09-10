@@ -6,7 +6,7 @@
       <td mat-cell *matCellDef="let budget" (click)="chooseBudget(budget)" class="mat-cell-hover">
         {{budget.name}}
         <span class="flex-spacer"></span>
-          <mat-icon *ngIf="isFavoriteBudget(budget)" color="accent" class="favorite">favorite</mat-icon>
+          <mat-icon *ngIf="isFavoriteBudget(budget) && !this.isFavoriteBudgetList" color="accent" class="favorite">favorite</mat-icon>
       </td>
 
     </ng-container>

@@ -17,15 +17,11 @@ export class BudgetListComponent implements OnInit {
   @Input() budgets: BudgetDTO[] = [];
   displayedColumns = ['name'];
   userId = localStorage.getItem('userId') || "";
+  @Input() isFavoriteBudgetList = false;
 
   constructor(private budgetService: BudgetService, private router: Router, private mainTitleService: MainTitleService) {}
 
   ngOnInit(): void {
-    // if (this.budgets?.length == 0) {
-    //   this.budgetService.getUncategorizedBudgets(this.userId).subscribe(data => {
-    //     this.budgets = data;
-    //   });
-    // }
   }
 
   chooseBudget(budget: BudgetDTO) {
