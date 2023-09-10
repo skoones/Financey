@@ -22,7 +22,7 @@ export class BudgetCategoryDetailsComponent {
 
   @Input() categoryName = "";
   @Output() addCategoryEventEmitter = new EventEmitter<boolean>();
-  anyAdded: boolean = false;
+  anyChanged: boolean = false;
   userId = localStorage.getItem('userId') || "";
 
   filteredParentCategories = new Observable<BudgetCategoryDTO[]>();
@@ -50,24 +50,7 @@ export class BudgetCategoryDetailsComponent {
   }
 
   ngOnDestroy() {
-    this.addCategoryEventEmitter.emit(this.anyAdded)
-  }
-
-  async addCategory(): Promise<AddCategoryResult> {
-    // todo update/delete instead
-    const formGroupData = this.categoryFormGroup.value;
-    const categoryName = this.categoryListControl.value;
-
-    const categoryDto: BudgetCategoryDTO = {
-      name: formGroupData.name,
-      userId: this.userId,
-      parentCategoryId: categoryName ? await this.findCategoryIdFromName(this.categoryListControl.value) : undefined,
-      investment: this.isInvestment // todo fix
-    }
-
-    await firstValueFrom(this.budgetService.addCategory(categoryDto));
-    this.anyAdded = true;
-    return AddCategoryResult.Success;
+    this.addCategoryEventEmitter.emit(this.anyChanged)
   }
 
   private _filter(value: string): BudgetCategoryDTO[] {
@@ -75,28 +58,6 @@ export class BudgetCategoryDetailsComponent {
 
     return this.parentCategories.filter(category => category.name.toLowerCase().includes(filterValue));
   }
-
-  submitCategoryForm() {
-    if (this.categoryFormGroup.valid) {
-      this.addCategory().then((result) => {
-        if (result == AddCategoryResult.Success) {
-          this.formSnackBar.open('Budget category saved.', 'Close', {
-            duration: 5000,
-          });
-        }
-      });
-    } else {
-      const hasMissingFields = Object.keys(this.categoryFormGroup.controls)
-        .some((controlName) => {
-          return !!this.categoryFormGroup.get(controlName)?.errors?.['required'];
-        })
-
-      if (hasMissingFields) {
-        this.openErrorSnackbar('Please fill out all required fields.');
-      }
-    }
-  }
-
   private openErrorSnackbar(message: string) {
     this.formSnackBar.open(message, 'Close', {
       duration: 5000,
@@ -117,6 +78,32 @@ export class BudgetCategoryDetailsComponent {
   }
 
   deleteCategory() {
-    // todo implement
+    // this.budgetService.deleteCategoryById(this.)
+    this.anyChanged = true;
   }
+
+  async updateCategory() {
+    if (this.categoryFormGroup.valid) {
+      const formGroupData = this.categoryFormGroup.value;
+      const categoryName = this.categoryListControl.value;
+      let categoryId = "";
+      await this.findCategoryIdFromName(categoryName).then((id) => {
+        categoryId = id
+      })
+
+      const categoryDto: BudgetCategoryDTO = {
+        id: categoryId,
+        name: formGroupData.name,
+        userId: this.userId,
+        parentCategoryId: categoryName ? categoryId : undefined,
+        investment: this.isInvestment
+      }
+
+      console.log(categoryDto)
+      this.budgetService.updateBudgetCategory(categoryDto);
+      this.anyChanged = true;
+    }
+
+  }
+
 }

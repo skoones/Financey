@@ -51,7 +51,7 @@ export class AllBudgetsViewComponent {
     const dialogRef = this.dialog.open(BudgetCategoryDetailsComponent, {
       data: {
         categoryName: this.budgetCategoryListComponent?.currentCategoryName,
-        parentCategoryName: this.budgetCategoryListComponent?.getParentCategoryName()
+        parentCategoryName: this.budgetCategoryListComponent?.getParentCategoryName(),
       }
     });
 

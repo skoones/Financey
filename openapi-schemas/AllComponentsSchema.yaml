@@ -318,6 +318,33 @@ paths:
             text/plain:
               schema:
                 type: string
+  /budget/deleteCategory/{categoryId}:
+    post:
+      operationId: deleteCategoryById
+      description: "Delete budget category with given id."
+      parameters:
+        - name: categoryId
+          in: path
+          description: "Id of the category to be deleted."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/BudgetCategoryDTO'
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /budget/{userId}/budgetFavorites:
     get:
       operationId: getBudgetFavorites

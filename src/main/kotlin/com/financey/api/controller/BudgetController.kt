@@ -110,6 +110,10 @@ class BudgetController(
         )
     }
 
+    override fun deleteCategoryById(categoryId: String, budgetCategoryDTO: BudgetCategoryDTO): ResponseEntity<String> {
+        return super.deleteCategoryById(categoryId, budgetCategoryDTO)
+    }
+
     override fun getCategoryByName(name: String, userId: String): ResponseEntity<BudgetCategoryDTO> {
         val categoryResult = runBlocking {
             budgetCategoryService.getByName(name, userId)

@@ -1,9 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {BudgetDTO, BudgetService} from "../../../../generated";
 import {map, Observable, startWith} from "rxjs";
 import {Router} from "@angular/router";
-import {SINGLE_BUDGET_ANALYSIS_MAIN_VIEW} from "../../../constants/path-constants";
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-single-budget-analysis-picker',
@@ -16,11 +16,15 @@ export class SingleBudgetAnalysisPicker implements OnInit {
   @Input() budgetRoute = "";
   @Input() budgetsToChoose: BudgetDTO[] = []
 
+  @Input() budget?: BudgetDTO
+
   budgetListControl = new FormControl();
-  budget?: BudgetDTO;
+  budgetForControl?: BudgetDTO;
   filteredBudgets: Observable<BudgetDTO[]> = new Observable<BudgetDTO[]>();
   userId = localStorage.getItem('userId') || "";
-  constructor(private budgetService: BudgetService, private router: Router) {}
+  @Input() budgetIdInPath= false;
+  constructor(private budgetService: BudgetService, private router: Router) {
+  }
 
   ngOnInit(): void {
     this.filteredBudgets = this.budgetListControl.valueChanges.pipe(
@@ -30,9 +34,18 @@ export class SingleBudgetAnalysisPicker implements OnInit {
   }
 
   public async routeToAnalysisMainView() {
-    const budgetId = await this.findBudgetIdFromName(this.budgetListControl.value);
+    const budgetName = this.budgetListControl.value;
+    const budgetId = await this.findBudgetIdFromName(budgetName);
 
-    await this.router.navigate([this.budgetRoute], { queryParams: { budgetId: budgetId } })
+    if (this.budgetIdInPath) {
+      const route = this.budgetRoute.replace(":id", budgetId)
+      const budget = await this.findBudgetFromName(budgetName)
+
+      await this.router.navigate([route], { queryParams: { budget: JSON.stringify(budget) } })
+    } else {
+      await this.router.navigate([this.budgetRoute], { queryParams: { budgetId: budgetId } })
+    }
+
   }
 
   private _filter(value: string): BudgetDTO[] {
@@ -49,6 +62,17 @@ export class SingleBudgetAnalysisPicker implements OnInit {
       this.budgetService.getByName(name, this.userId)
         .subscribe((budget: BudgetDTO) => {
           resolve(<string>budget.id);
+        })
+    })
+  }
+
+  async findBudgetFromName(budgetName: string): Promise<BudgetDTO> {
+    const name: string = budgetName || this.budget?.name || "";
+
+    return new Promise<BudgetDTO>((resolve) => {
+      this.budgetService.getByName(name, this.userId)
+        .subscribe((budget: BudgetDTO) => {
+          resolve(<BudgetDTO>budget);
         })
     })
   }
