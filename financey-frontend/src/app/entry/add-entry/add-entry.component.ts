@@ -151,7 +151,7 @@ export class AddEntryComponent {
         datesToMarketPrices: datesToMarketPrices
       }
 
-      if (this.entryBudgetIsInvestment(investmentEntryDto)) {
+      if (this.investmentEntryBudgetIsInvestment(investmentEntryDto)) {
         await firstValueFrom(this.entryService.addInvestmentEntry(investmentEntryDto));
         this.anyAdded = true;
         return AddEntryResult.Success;
@@ -163,6 +163,13 @@ export class AddEntryComponent {
         return AddEntryResult.Fail;
       }
     } else {
+      if (this.entryBudgetIsInvestment(entryDto)) {
+        this.formSnackBar.open('Only investment entries can be added to an investment budget.', 'Close', {
+          duration: 5000,
+          panelClass: 'error-snackbar'
+        });
+        return AddEntryResult.Fail;
+      }
       await firstValueFrom(this.entryService.addEntry(entryDto));
       this.anyAdded = true;
       return AddEntryResult.Success;
@@ -170,8 +177,12 @@ export class AddEntryComponent {
 
   }
 
-  private entryBudgetIsInvestment(investmentEntryDto: InvestmentEntryDTO): boolean {
+  private investmentEntryBudgetIsInvestment(investmentEntryDto: InvestmentEntryDTO): boolean {
     return this.budgets.filter(b => b.id == investmentEntryDto.entry.budgetId).every(b => b.investment);
+  }
+
+  private entryBudgetIsInvestment(entryDto: EntryDTO): boolean {
+    return this.budgets.filter(b => b.id == entryDto.budgetId).every(b => b.investment);
   }
 
   private getMarketPriceAtOperation(amount: number, volume: number): number {
