@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import {RecentlyViewedBudgetsService} from "../budget/recently-viewed-budgets.service";
-import {BudgetDTO} from "../../generated";
+import {BudgetDTO, BudgetService} from "../../generated";
 
 @Component({
   selector: 'app-home',
@@ -15,9 +15,15 @@ export class HomeComponent {
   recentBudgetsTitle: string = this.RECENT_BUDGETS_TITLE;
   @Output() sidenavToggleEvent = new EventEmitter<boolean>();
   recentBudgets: BudgetDTO[];
+  favoriteBudgets: BudgetDTO[] = [];
 
-  constructor(private recentlyViewedBudgetsService: RecentlyViewedBudgetsService) {
+  userId = localStorage.getItem('userId') || "";
+
+  constructor(private recentlyViewedBudgetsService: RecentlyViewedBudgetsService, private budgetService: BudgetService) {
     this.recentBudgets = recentlyViewedBudgetsService.getRecentlyViewed();
+    budgetService.getBudgetFavorites(this.userId).subscribe((budgets) => {
+      this.favoriteBudgets = budgets;
+    })
   }
 
 }

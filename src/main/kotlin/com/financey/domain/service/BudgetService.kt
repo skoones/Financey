@@ -79,4 +79,28 @@ class BudgetService(
         budgetDomain
     }
 
+    suspend fun addToFavorites(userId: String, budgetId: String): Either<PersistenceError, Unit> = either {
+        val user = userRepository.getById(userId).bind()
+        val budget = budgetRepository.getById(budgetId).bind() // todo pass in dto to avoid fetching?
+        val updatedUser = user.copy(favoriteBudgetIds = user.favoriteBudgetIds?.plus(budgetId) ?: listOf(budgetId))
+        val updatedBudget = budget.copy(favorite = true)
+
+        userRepository.update(updatedUser)
+        budgetRepository.save(updatedBudget)
+
+        logger.debug { "Added budget with id $budgetId to favorites of user $userId." }
+    }
+
+    suspend fun deleteFromFavoritesById(userId: String, budgetId: String): Either<PersistenceError, Unit> = either {
+        val user = userRepository.getById(userId).bind()
+        val budget = budgetRepository.getById(budgetId).bind()
+        val updatedUser = user.copy(favoriteBudgetIds = user.favoriteBudgetIds?.minus(budgetId) ?: listOf())
+        val updatedBudget = budget.copy(favorite = false)
+
+        userRepository.update(updatedUser)
+        budgetRepository.save(updatedBudget)
+
+        logger.debug { "Removed budget with id $budgetId from favorites of user $userId." }
+    }
+
 }

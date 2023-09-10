@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import {BudgetDTO} from "../../../generated";
 import {BudgetService} from "../../../generated";
+import {Budget} from "@angular-devkit/build-angular";
 
 
 @Component({
@@ -19,15 +20,19 @@ export class BudgetListComponent implements OnInit {
   constructor(private budgetService: BudgetService, private router: Router) {}
 
   ngOnInit(): void {
-    if (this.budgets?.length == 0) {
-      this.budgetService.getUncategorizedBudgets(this.userId).subscribe(data => {
-        this.budgets = data;
-      });
-    }
+    // if (this.budgets?.length == 0) {
+    //   this.budgetService.getUncategorizedBudgets(this.userId).subscribe(data => {
+    //     this.budgets = data;
+    //   });
+    // }
   }
 
   chooseBudget(budget: BudgetDTO) {
     this.router.navigate([`/budgets/single/${budget.id}`],  { queryParams: { budget: JSON.stringify(budget) } });
+  }
+
+  isFavoriteBudget(budget: BudgetDTO) {
+    return budget.favorite;
   }
 
 }

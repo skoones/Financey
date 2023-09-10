@@ -14,6 +14,7 @@ interface UserRepository : MongoRepository<User, String>, CustomUserRepository
 
 interface CustomUserRepository {
     fun save(user: User): Either<PersistenceError, User>
+    fun update(user: User): Either<PersistenceError, User>
     fun getById(id: String): Either<PersistenceError, User>
     fun getByUsername(username: String): Either<PersistenceError, User>
 
@@ -32,6 +33,12 @@ class CustomUserRepositoryImpl(
     {
         Either.Left(UniqueElementExistsError("User with this username is already registered."))
     })
+
+    override fun update(user: User): Either<PersistenceError, User> = getByUsername(user.username)
+        .fold({ Either.Left(it) },
+            {
+                Either.Right(mongoTemplate.save(user))
+            })
 
     override fun getById(id: String): Either<PersistenceError, User> {
         val query = Query().addCriteria(User::id isEqualTo  id)

@@ -442,6 +442,58 @@ paths:
             text/plain:
               schema:
                 type: string
+  /{userId}/budgetFavorites/add:
+    post:
+      operationId: addToFavorites
+      description: "Add a budget to favorites."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+        - name: budgetId
+          in: query
+          description: "Id of the budget to be added to favorites."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /{userId}/budgetFavorites/delete:
+    delete:
+      operationId: deleteFromFavoritesById
+      description: "Delete a budget from favorites by id."
+      parameters:
+        - name: userId
+          in: path
+          description: "Id of the currently logged in user."
+          required: true
+          schema:
+            type: string
+        - name: budgetId
+          in: query
+          description: "Id of the budget to be deleted from favorites."
+          required: true
+          schema:
+            type: string
+      tags:
+        - budget
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
 
 components:
   schemas:
@@ -490,7 +542,8 @@ components:
           type: string
         categoryId:
           type: string
-
+        favorite:
+          type: boolean
     FetchType:
       type: string
       enum:

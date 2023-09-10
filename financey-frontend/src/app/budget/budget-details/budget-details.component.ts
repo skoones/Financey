@@ -125,4 +125,22 @@ export class BudgetDetailsComponent {
     }
   }
 
+  addToFavorites() {
+    this.budgetService.addToFavorites(this.userId, this.budget?.id || "").subscribe(() => {
+      this.formSnackBar.open('Budget added to favorites.', 'Close', {
+        duration: 5000,
+      });
+    });
+    this.hasUpdates = true;
+  }
+
+  removeFromFavorites() {
+    this.budgetService.deleteFromFavoritesById(this.userId, this.budget?.id || "").subscribe(() => {
+      this.formSnackBar.open('Budget deleted from favorites.', 'Close', {
+        duration: 5000,
+      });
+    });
+    this.hasUpdates = true;
+  }
+
 }

@@ -196,4 +196,26 @@ class BudgetController(
         )
     }
 
+    override fun addToFavorites(userId: String, budgetId: String): ResponseEntity<String> {
+        val result = runBlocking {
+            budgetService.addToFavorites(userId, budgetId)
+        }
+
+        return result.fold(
+            { throw it },
+            { ResponseEntity.ok("Budget with id $budgetId added to favorites.") }
+        )
+    }
+
+    override fun deleteFromFavoritesById(userId: String, budgetId: String): ResponseEntity<String> {
+        val deletionResult = runBlocking {
+            budgetService.deleteFromFavoritesById(userId, budgetId)
+        }
+
+        return deletionResult.fold(
+            { throw it },
+            { ResponseEntity.ok("Budget with id $budgetId has been deleted from favorites.") }
+        )
+    }
+
 }

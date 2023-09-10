@@ -99,4 +99,12 @@ export class BudgetCategoryListComponent implements OnInit {
     return Promise.all(categoryPromises);
   }
 
+  isFavoriteBudget(topLevelBudget: TopLevelBudget) {
+    if (this.isBudgetDto(topLevelBudget)) {
+      return (topLevelBudget as BudgetDTO).favorite;
+    } else {
+      return false;
+    }
+  }
+
 }

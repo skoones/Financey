@@ -16,6 +16,8 @@
           {{topLevelBudget.name}}
         </div>
         <span class="flex-spacer"></span>
+        <mat-icon *ngIf="isFavoriteBudget(topLevelBudget)" color="accent">favorite</mat-icon>
+        <span class="flex-spacer"></span>
         <div *ngIf="!this.isBudgetDto(topLevelBudget)" class="icon-container">
           <mat-icon>arrow_forward_ios</mat-icon>
         </div>
