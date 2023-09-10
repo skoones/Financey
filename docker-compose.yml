@@ -17,7 +17,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: rootuser
       MONGO_INITDB_ROOT_PASSWORD: rootpass
     ports:
-      - 27018:27017
+      - 27020:27017
   mongo-express: # todo for development purposes, remove later
     image: mongo-express
     container_name: mongo_express_container

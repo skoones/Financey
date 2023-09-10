@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+  financey-mongodb:
+    image: 'mongo:4.4.3'
+    container_name: mongodb_container
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: rootuser
+      MONGO_INITDB_ROOT_PASSWORD: rootpass
+    ports:
+      - 27018:27017
+    volumes:
+      - data:/data/db
+
+  financey-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8981:8980
+    depends_on:
+      - financey-mongodb
+    networks:
+      - financey_network
+    environment:
+      - SPRING_DATA_MONGODB_URI=financey-mongodb://rootuser:rootpass@mongodb:27017/my_db?authSource=admin
+      - SERVER_PORT=8981
+
+  financey-frontend:
+    build:
+      context: ./financey-frontend
+      dockerfile: Dockerfile
+    ports:
+      - 4201:80
+    networks:
+      - financey_network
+
+networks:
+  financey_network:
+    name: financey_network
+
+volumes:
+  data: {}
