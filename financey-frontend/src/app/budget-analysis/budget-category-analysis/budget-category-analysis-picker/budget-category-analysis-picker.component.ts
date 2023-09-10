@@ -4,6 +4,7 @@ import {BudgetCategoryDTO, BudgetService} from "../../../../generated";
 import {map, Observable, startWith} from "rxjs";
 import {Router} from "@angular/router";
 import {BUDGET_CATEGORY_ANALYSIS_MAIN_VIEW} from "../../../constants/path-constants";
+import {MainTitleService} from "../../../main-title-service";
 
 @Component({
   selector: 'app-budget-category-analysis-picker',
@@ -20,7 +21,7 @@ export class BudgetCategoryAnalysisPicker implements OnInit {
   category?: BudgetCategoryDTO;
   filteredCategories = new Observable<BudgetCategoryDTO[]>();
   userId = localStorage.getItem('userId') || "";
-  constructor(private budgetService: BudgetService, private router: Router) {
+  constructor(private budgetService: BudgetService, private router: Router, private mainTitleService: MainTitleService) {
   }
 
   ngOnInit(): void {
@@ -33,6 +34,7 @@ export class BudgetCategoryAnalysisPicker implements OnInit {
   public async routeToAnalysisMainView() {
     const categoryId = await this.findCategoryIdFromName(this.categoryListControl.value);
 
+    this.mainTitleService.emitTitle("Analysis")
     await this.router.navigate([this.categoryRoute], {queryParams: {categoryId: categoryId}})
   }
 

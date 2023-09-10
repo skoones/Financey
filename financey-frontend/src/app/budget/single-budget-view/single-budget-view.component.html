@@ -28,7 +28,7 @@
       </button>
     </div>
   </div>
-  <mat-card>
+  <mat-card *ngIf="!this.budget?.investment">
     <mat-card-content>
       This month's total expenses:
       <span> {{ this.monthlyExpenses }} PLN</span>
@@ -36,6 +36,12 @@
     <mat-card-content>
       This month's balance:
       <span> {{ this.monthlyBalance }} PLN</span>
+    </mat-card-content>
+  </mat-card>
+  <mat-card *ngIf="this.budget?.investment">
+    <mat-card-content>
+      Total profit:
+      <span> {{ this.totalProfit }} PLN</span>
     </mat-card-content>
   </mat-card>
 </div>

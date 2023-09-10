@@ -4,6 +4,7 @@ import {BudgetDTO, BudgetService} from "../../../../generated";
 import {map, Observable, startWith} from "rxjs";
 import {Router} from "@angular/router";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MainTitleService} from "../../../main-title-service";
 
 @Component({
   selector: 'app-single-budget-analysis-picker',
@@ -23,7 +24,7 @@ export class SingleBudgetAnalysisPicker implements OnInit {
   filteredBudgets: Observable<BudgetDTO[]> = new Observable<BudgetDTO[]>();
   userId = localStorage.getItem('userId') || "";
   @Input() budgetIdInPath= false;
-  constructor(private budgetService: BudgetService, private router: Router) {
+  constructor(private budgetService: BudgetService, private router: Router, private mainTitleService: MainTitleService) {
   }
 
   ngOnInit(): void {
@@ -41,6 +42,7 @@ export class SingleBudgetAnalysisPicker implements OnInit {
       const route = this.budgetRoute.replace(":id", budgetId)
       const budget = await this.findBudgetFromName(budgetName)
 
+      this.mainTitleService.emitTitle("Single budget")
       await this.router.navigate([route], { queryParams: { budget: JSON.stringify(budget) } })
     } else {
       await this.router.navigate([this.budgetRoute], { queryParams: { budgetId: budgetId } })

@@ -10,6 +10,7 @@ import {
   generateDatesForEveryMonth,
   groupIntoStartEndDates
 } from "../../../utils/date-utils";
+import {MainTitleService} from "../../../main-title-service";
 
 type BalanceHistoryEntry = {
   name: string,
@@ -27,7 +28,7 @@ export class SingleBudgetAnalysisMainViewComponent {
   budgetId = "";
 
   constructor(private budgetService: BudgetService, private budgetAnalysisService: BudgetAnalysisService,
-              private router: Router, private route: ActivatedRoute) {
+              private router: Router, private route: ActivatedRoute, private mainTitleService: MainTitleService) {
   }
 
   ngOnInit() {
@@ -66,6 +67,7 @@ export class SingleBudgetAnalysisMainViewComponent {
 
   openFullBudgetView() {
     this.budgetService.getById(this.budgetId).subscribe(budget => {
+      this.mainTitleService.emitTitle("Single budget")
       this.router.navigate([`/budgets/single/${this.budgetId}`],  { queryParams: { budget: JSON.stringify(budget) } });
     })
 

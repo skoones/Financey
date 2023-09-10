@@ -5,6 +5,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import {firstValueFrom, map, Observable, startWith} from "rxjs";
 import {BudgetCategoryDTO, BudgetDTO, BudgetService} from "../../../generated";
+import {MainTitleService} from "../../main-title-service";
 
 enum AddCategoryResult {
   Success,
@@ -28,7 +29,7 @@ export class BudgetDetailsComponent {
   isInvestment = false;
 
   constructor(private formBuilder: FormBuilder, private budgetService: BudgetService, private formSnackBar: MatSnackBar,
-              private router: Router, @Inject(MAT_DIALOG_DATA) private data: any) {
+              private router: Router, @Inject(MAT_DIALOG_DATA) private data: any, private mainTitleService: MainTitleService) {
     this.budget = data.budget
     this.categoryId = data.categoryId
 
@@ -121,6 +122,7 @@ export class BudgetDetailsComponent {
   openFullBudgetView() {
     if (this.budget !== undefined) {
       this.closePopup.emit();
+      this.mainTitleService.emitTitle("Single budget")
       this.router.navigate([`/budgets/single/${this.budget.id}`],  { queryParams: { budget: JSON.stringify(this.budget) } });
     }
   }
@@ -136,7 +138,7 @@ export class BudgetDetailsComponent {
 
   removeFromFavorites() {
     this.budgetService.deleteFromFavoritesById(this.userId, this.budget?.id || "").subscribe(() => {
-      this.formSnackBar.open('Budget deleted from favorites.', 'Close', {
+      this.formSnackBar.open('Budget removed from favorites.', 'Close', {
         duration: 5000,
       });
     });

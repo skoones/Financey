@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import {BudgetDTO} from "../../../generated";
 import {BudgetService} from "../../../generated";
 import {Budget} from "@angular-devkit/build-angular";
+import {MainTitleService} from "../../main-title-service";
 
 
 @Component({
@@ -17,7 +18,7 @@ export class BudgetListComponent implements OnInit {
   displayedColumns = ['name'];
   userId = localStorage.getItem('userId') || "";
 
-  constructor(private budgetService: BudgetService, private router: Router) {}
+  constructor(private budgetService: BudgetService, private router: Router, private mainTitleService: MainTitleService) {}
 
   ngOnInit(): void {
     // if (this.budgets?.length == 0) {
@@ -28,6 +29,7 @@ export class BudgetListComponent implements OnInit {
   }
 
   chooseBudget(budget: BudgetDTO) {
+    this.mainTitleService.emitTitle("Single budget")
     this.router.navigate([`/budgets/single/${budget.id}`],  { queryParams: { budget: JSON.stringify(budget) } });
   }
 

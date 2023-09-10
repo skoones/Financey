@@ -2,12 +2,12 @@ import {Component, EventEmitter, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
 import {SINGLE_BUDGET_PATH} from "../../constants/path-constants";
-import {BudgetAnalysisService, BudgetDTO, BudgetService} from "../../../generated";
+import {BudgetAnalysisService, BudgetDTO, BudgetService, InvestmentAnalysisService} from "../../../generated";
 import {AddEntryComponent} from "../../entry/add-entry/add-entry.component";
 import {MatDialog} from "@angular/material/dialog";
 import {EntryListComponent} from "../../entry/entry-list/entry-list.component";
 import {RecentlyViewedBudgetsService} from "../recently-viewed-budgets.service";
-import {getFirstDayOfMonth} from "../../utils/date-utils";
+import {dateToString, getFirstDayOfMonth} from "../../utils/date-utils";
 import {UpdateMarketPricesForEntryComponent} from "../update-market-prices/update-market-prices-for-entry.component";
 import {UpdatePricesEntryListComponent} from "../update-prices-entry-list/update-prices-entry-list.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -27,8 +27,10 @@ export class SingleBudgetViewComponent {
   monthlyBalance?: number;
 
   userId = localStorage.getItem('userId') || "";
+  totalProfit = 0;
 
   constructor(private recentlyViewedService: RecentlyViewedBudgetsService, private budgetAnalysisService: BudgetAnalysisService,
+              private investmentAnalysisService: InvestmentAnalysisService,
               private route: ActivatedRoute, private location: Location, private dialog: MatDialog,
               private budgetService: BudgetService,  private formSnackBar: MatSnackBar) {
   }
@@ -36,8 +38,12 @@ export class SingleBudgetViewComponent {
   ngOnInit() {
     this.location.replaceState(SINGLE_BUDGET_PATH);
     this.initBudget();
-    this.initializeMonthlyExpenses();
-    this.initializeMonthlyBalance();
+    if (this.budget?.investment) {
+      this.initializeTotalProfit();
+    } else {
+      this.initializeMonthlyExpenses();
+      this.initializeMonthlyBalance();
+    }
   }
 
   ngAfterViewInit() {
@@ -126,7 +132,7 @@ export class SingleBudgetViewComponent {
 
   removeFromFavorites() {
     this.budgetService.deleteFromFavoritesById(this.userId, this.budget?.id || "").subscribe(() => {
-      this.formSnackBar.open('Budget deleted from favorites.', 'Close', {
+      this.formSnackBar.open('Budget removed from favorites.', 'Close', {
         duration: 5000,
       });
     });
@@ -136,4 +142,9 @@ export class SingleBudgetViewComponent {
     }
   }
 
+  private initializeTotalProfit() {
+    this.investmentAnalysisService.getProfitByDateAndId(dateToString(new Date()), this.budget?.id || "").subscribe((profit) => {
+      this.totalProfit = profit;
+    })
+  }
 }

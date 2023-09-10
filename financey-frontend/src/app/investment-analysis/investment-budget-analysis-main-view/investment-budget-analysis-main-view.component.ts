@@ -9,6 +9,7 @@ import {
 import {forkJoin, tap} from "rxjs";
 import {BudgetService, InvestmentAnalysisService} from "../../../generated";
 import {ActivatedRoute, Router} from "@angular/router";
+import {MainTitleService} from "../../main-title-service";
 
 type ProfitHistoryEntry = {
   name: string,
@@ -29,7 +30,7 @@ export class InvestmentBudgetAnalysisMainViewComponent implements OnInit {
 
 
   constructor(private investmentAnalysisService: InvestmentAnalysisService, private budgetService: BudgetService,
-              private router: Router, private route: ActivatedRoute) { }
+              private router: Router, private route: ActivatedRoute, private mainTitleService: MainTitleService) { }
 
   ngOnInit(): void {
     this.budgetId = this.route.snapshot.queryParamMap.get('budgetId') || ""
@@ -77,6 +78,7 @@ export class InvestmentBudgetAnalysisMainViewComponent implements OnInit {
 
   openFullBudgetView() {
     this.budgetService.getById(this.budgetId).subscribe(budget => {
+      this.mainTitleService.emitTitle("Single budget");
       this.router.navigate([`/budgets/single/${this.budgetId}`],  { queryParams: { budget: JSON.stringify(budget) } });
     })
   }
